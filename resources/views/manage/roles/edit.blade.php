@@ -80,11 +80,7 @@
 								$(this).prop('checked',true);
 							}
 						}
-						
-                        
-                       //$('#permission_list').append('<li class="list-group-item">'+
-                       // $(this).val()+'-'+resource_val+'</li>');
-                    }); //alert(role_permissions);
+		             });
 		});
 	</script>
 @endsection

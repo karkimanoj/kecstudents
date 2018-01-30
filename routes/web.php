@@ -12,7 +12,10 @@
 */
 
 Route::prefix('manage')->middleware('role:superadministrator|administrator|editor|author|contributor')->group( function(){
-	Route::resource('/roles', 'RoleController', ['except'=>'destroy']);
+
+		Route::resource('/subjects', 'SubjectController');
+		Route::resource('/faculties', 'FacultyController', ['except'=>'update']);
+		Route::resource('/roles', 'RoleController', ['except'=>'destroy']);
 		Route::resource('/permissions', 'PermissionController', ['except'=>'destroy']);
 		Route::resource('/users', 'UserController');
 		Route::get('/', 'ManageController@index');

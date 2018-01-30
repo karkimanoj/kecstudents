@@ -14,6 +14,7 @@
         <!-- Our Custom CSS -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto+Condensed" rel="stylesheet">
+        @yield('styles')
      
 
 </head>
@@ -52,7 +53,7 @@
             $.each($('.col_ul').children('li'), function() {
            // $.each($('#pageSubmenu').next().children('li'), function(){
              if($(this).hasClass('active'))
-                //$('.col_ul').removeClass('collapse');
+                //bootstrap collapse attribute
                $('.col_ul').collapse('show');
             });
 
