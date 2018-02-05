@@ -22,12 +22,13 @@
 				    <h2 class="card-title"> Subjects</h2>
 				    <p >
 						<ol class="list-group">
-							
+							@foreach($faculty->subjects as $subject)
 							  <li class="list-group-item borderless">
 							  	<i class="fa fa-circle" aria-hidden="true"></i>
-							  	
+							  	{{$subject->name}}
 							  	<i class="text-muted"></i>
 							  </li>
+							  @endforeach
 							 
 						</ol>
 				    	

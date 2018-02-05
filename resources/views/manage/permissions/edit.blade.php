@@ -8,7 +8,7 @@
             <hr>
              <form method="POST"  action="{{route('permissions.update', $permission->id)}} ">
                         {{csrf_field()}}
-                        {{method_field('PUT')}};
+                        {{method_field('PUT')}}
                    
                 <div class="panel panel-default  m-t-30" id="basic_panel">
                     <div class="panel-body">

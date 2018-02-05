@@ -10,33 +10,56 @@
 
 		<div class="row">
 			<div class="col-md-6">
-				<h1>Faculties</h1>
+				<h1>All Uploads</h1>
+		{{bin2hex(openssl_random_pseudo_bytes(30))}}
 			</div>
 			<div class="col-md-4 col-md-offset-2 ">
-				<a href="{{ route('faculties.create') }}" class="btn  btn-primary pull-right"> create new Faculty</a>
+				<a href="{{ route('downloads.create') }}" class="btn  btn-primary pull-right"> upload</a>
 			</div>
 
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<table class="table">
+				<h4>
+					<span class="text-muted">includes notes, books, tutorials, labmanual, routine, question collection</span>
+					</h4>
+				
+				
+				<table class="table m-t-20">
 					<thead>
 						<th>id</th>
-						<th>Name</th>
-						<th>Display Name</th>
+						<th>Filepath</th>
+						<th>Category</th>
+						<th>Uploaded by</th>
+						<th>published at</th>
 						<th>Date Created</th>
 						<th>Actions</th>
 					</thead>
 					<tbody>
-						@foreach($faculties as $faculty)
+						@foreach($downloads as $download)
 						<tr>
-							<td>{{ $faculty->id }}</td>
-							<td>{{ $faculty->name }}</td>
-							<td>{{ $faculty->display_name }}</td>
-							<td>{{ $faculty->created_at->toFormattedDateString() }}</td>
-							<td class="text-center">
-								<a href="{{ route('faculties.show', [$faculty->id]) }}" class="btn btn-default"> view </a>
-								<a href="{{ route('faculties.edit', [$faculty->id]) }}" class="btn btn-default"> edit </a>
+							<td>{{ $download->id }}</td>
+							<td>
+								{{ substr(strip_tags($download->filepath),0,38) }} <span style="color: blue"> {{ strlen(strip_tags($download->filepath))>38?'....':'' }} </span>
+							</td>
+							<td>{{$download->download_category->name}}</td>
+							<td>{{ $download->user->name }}</td>
+							<td>{{$download->published_at}}</td>
+							<td>{{ $download->created_at->toFormattedDateString() }}</td>
+							<td >
+								<div class="input-group-btn">
+							        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></button>
+							        <ul class="dropdown-menu dropdown-menu-right">
+							          <li><a href="{{ route('downloads.show', [$download->id]) }}" > view </a>
+							          </li>
+							          <li><a href="{{ route('downloads.edit', [$download->id]) }}"> edit </a>
+							          </li>
+							         
+							          <li role="separator" class="divider"></li>
+							          <li><a href="#">Separated link</a></li>
+							        </ul>
+							    </div><!-- /btn-group -->
+
 								<!-- delete with modal-->
 								{{--
 								<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">delete</button>
@@ -81,11 +104,12 @@
 					</tbody>
 				</table>
 				<center>
-				{{ $faculties->links()}}
+				{{ $downloads->links()}}
 				</center>
 				</div>
 			</div>
 		</div>
+
 	</div>
 @endsection
 

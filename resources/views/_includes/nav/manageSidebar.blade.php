@@ -29,12 +29,12 @@
                         </ul>
                     </li>
 
-                    <li>
-                        <a href="#">Portfolio</a>
+                    <li class="{{Nav::isResource('faculties')}}"> 
+                        <a href="{{route('faculties.index')}}">faculty</a>
                     </li>
 
-                    <li>
-                        <a href="#">Contact</a>
+                    <li class="{{Nav::isResource('subjects')}}">
+                        <a href="{{route('subjects.index')}}">subjects</a>
                     </li>
                 </ul>
 

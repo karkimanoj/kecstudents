@@ -1,4 +1,4 @@
-@extends('layouts.manage')
+'@extends('layouts.manage')
 
 @section('content')
 	<div class="main-container">
@@ -10,7 +10,7 @@
 			<div class="col-md-4 col-md-offset-4 ">
 				<a href="{{ route('users.edit', $user->id) }}" class="btn  btn-primary pull-right"> Edit user</a>
 			</div>
-		</div> <!--end of ro-->
+		</div> <!--end of role-->
 
 		<div class="row">
 			<div class="col-md-8  m-t-20">

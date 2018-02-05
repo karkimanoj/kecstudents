@@ -11403,6 +11403,10 @@ button.close {
   }
 }
 
+label {
+  font-weight: 650;
+}
+
 /*
 This .scss loop will create "margin helpers" and "padding helpers" for use in your web projects.
 It will generate several classes such as:
@@ -12012,5 +12016,14 @@ a.article:hover {
 
 .panel_card {
   height: 125px;
+}
+
+.bg-matgreen {
+  background-color: #5FCF80;
+  height: 60px;
+}
+
+.right {
+  float: right;
 }
 

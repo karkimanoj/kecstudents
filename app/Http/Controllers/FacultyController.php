@@ -51,6 +51,11 @@ class FacultyController extends Controller
         }
     }
 
+    public function edit($id){
+        $faculty=Faculty::findOrFail($id);
+        return view('manage.faculties.edit', ['faculty'=>$faculty]);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -69,7 +74,20 @@ class FacultyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    
+     public function update(Request $request, $id)
+    {
+        $this->validate($request, ['name'=>'required|max:100|unique:faculties,name,'.$id,
+            'display_name'=>'required|max:255']);
+
+        $faculty=Faculty::findOrFail($id);
+        $faculty->name=$request->name;
+        $faculty->display_name=$request->display_name;
+
+        if($faculty->save()){
+            Session::flash('success', $request->name.' faculty has been edited successfully');
+            return redirect()->route('faculties.show', $faculty->id);
+        }
+    }
     
     public function destroy($id)
     {

@@ -28,4 +28,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function downloads(){
+        return $this->hasMany('App\Download','uploader_id');
+    }
 }

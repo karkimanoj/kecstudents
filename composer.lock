@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "47ab8608e05a792be2fed2f2fb3ed5e7",
+    "content-hash": "b1b152e559c5bbed7aefc9a8caad3565",
     "packages": [
         {
             "name": "devmarketer/easynav",

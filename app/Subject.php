@@ -11,4 +11,8 @@ class Subject extends Model
     public function faculties(){
     	return $this->belongsToMany('App\Faculty')->withPivot('semester');
     }
+
+    public function download_detail1s(){
+    	return $this->hasMany('App\DownloadDetail1');
+    }
 }
