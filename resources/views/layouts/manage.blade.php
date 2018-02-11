@@ -8,38 +8,58 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Devmarketer-Management</title>
+    <title>Devmarketer</title>
 
-    
-        <!-- Our Custom CSS -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <!-- Styles -->
+
+        <!--      not needed because we installed bootstrap via npm from bash -->
+     
+      <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto+Condensed" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
         @yield('styles')
      
 
 </head>
-<body>
+<body> @include('_includes.nav.main') 
     <div id="app">
-         @include('_includes.nav.main')  
+      <!-- navbar -->
+          
         <div class="wrapper">
-                       
+           <!--sidebar -->            
               @include('_includes.nav.manageSidebar')
 
               <div id="content">
+                <div class="row">
+                  <div class="col-md-12">
+                  <!-- click button to collapse sidebar-->
+                      <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                          <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                      </button>
+                      <!--  display success and error messages -->
+                      @include('_includes.messages')
+                       
 
-                @include('_includes.nav.managenavbar')
-                @yield('content')
+                    @yield('content')
+                  </div>
+                </div>
+               
 
               </div>
         </div>
     </div>
 
-       <!-- jQuery CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+       <!-- jQuery CDN 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
       integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
       crossorigin="anonymous"></script>
-        <!-- Bootstrap Js CDN -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>-->
+       <!--  Bootstrap Js CDN -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script><!-- >
 
     @yield('scripts')
 

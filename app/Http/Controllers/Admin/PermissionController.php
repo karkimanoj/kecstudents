@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Permission;
@@ -9,7 +10,7 @@ use Session;
 class PermissionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource.ffdg
      *
      * @return \Illuminate\Http\Response
      */
@@ -55,7 +56,7 @@ class PermissionController extends Controller
         }
         elseif ($request->permission_type=='crud') 
         {
-            $this->validate($request, ['resource'=>'required|min:5|max:80|unique:permissions,name']);
+            $this->validate($request, ['resource'=>'required|min:2|max:80|unique:permissions,name']);
 
             $resource=trim($request->resource);
             $cruds=$request->crud_checks;
@@ -73,7 +74,7 @@ class PermissionController extends Controller
                     $permission->description=$description;
                     $permission->save();
                 }    
-                Session::flash('new permissions created successfully ');
+                Session::flash('success','new permissions created successfully ');
                 return redirect()->route('permissions.index');
             }           
         } else

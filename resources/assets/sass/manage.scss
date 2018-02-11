@@ -8,6 +8,7 @@ body {
     font-family: 'Poppins', sans-serif;
     background: #fafafa;
     font-family: 'Roboto Condensed', sans-serif;
+    font-family: 'Cabin', sans-serif;
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -16,7 +17,7 @@ p {
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
-    color: #999;
+    
 }
 
 a, a:hover, a:focus {
@@ -27,7 +28,7 @@ a, a:hover, a:focus {
 
 .navbar {
     padding: 15px 10px;
-    background: #fff;
+    background: white;
     border: none;
     border-radius: 0;
     margin-bottom: 0px;
@@ -58,8 +59,8 @@ a, a:hover, a:focus {
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    background: #7386D5;
-    color: #fff;
+    background: white;
+    color: #777;
     transition: all 0.3s;
 }
 
@@ -69,32 +70,37 @@ a, a:hover, a:focus {
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #6d7fcc;
+    background: white;
 }
 
 #sidebar ul.components {
     padding: 20px 0;
     border-bottom: 1px solid #47748b;
+    margin-right:10px;
+    margin-left:20px;
 }
 
 #sidebar ul p {
-    color: #fff;
+    color: #777;
     padding: 10px;
 }
 
 #sidebar ul li a {
     padding: 10px;
-    font-size: 1.1em;
+    font-size: 1.2em;
+    font-weight:200;
     display: block;
 }
 #sidebar ul li a:hover {
-    color: #7386D5;
-    background: #fff;
+    color: #228AE6;
+
+    
 }
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
-    color: #fff;
-    background: #3F51B5;
+    color: #228AE6;
+
+       
 }
 
 
@@ -177,6 +183,10 @@ box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     border-radius: 5px;}
 
 .panel_card{height:125px;}
+
+.col_ul li{
+    margin-left:20px;
+}
 
 .bg-matgreen{background-color:#5FCF80;
                 height:60px;}

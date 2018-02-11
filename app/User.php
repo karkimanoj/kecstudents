@@ -32,4 +32,9 @@ class User extends Authenticatable
     public function downloads(){
         return $this->hasMany('App\Download','uploader_id');
     }
+
+    public function projects(){
+        return $this->hasMany('App\Project','uploader_id');
+    }
+
 }

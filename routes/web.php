@@ -12,32 +12,43 @@
 */
 
 Route::middleware('role:superadministrator|administrator|teacher|student|staff')->group(function(){
-	Route::resource('/downloads', 'Download\DownloadController');
+	Route::resource('/user/projects', 'User\ProjectController', ['as'=>'user']);
 });
 
-Route::get('/manage/downloads/publish', 'Download\DownloadController@publish');
+
 
 Route::prefix('manage')->middleware('role:superadministrator|administrator')->group( function(){
 
+		//Route::get('/test11', 'ManageController@index');
+		//Route::get('/test', 'Project\ProjectController@test');
+		Route::get('/projects/publish', 'Admin\ProjectController@publish');
 
-		Route::resource('/downloads', 'Download\DownloadController');
+		Route::get('/tags', 'Admin\TagController@index')->name('tags.index');
+		Route::delete('/tags/{id}', 'Admin\TagController@destroy')->name('tags.destroy');
 
-		Route::get('/downloads/category', 'Download\DownloadCategoryController@index')->name('download_categories.index');
-		Route::post('/downloads/category', 'Download\DownloadCategoryController@store')->name('download_categories.store');
+		Route::resource('/projects', 'Admin\ProjectController');
 
-		Route::resource('/subjects', 'SubjectController');
+		Route::get('/downloads/category', 'Admin\DownloadCategoryController@index')->name('download_categories.index');
+		Route::post('/downloads/category', 'Admin\DownloadCategoryController@store')->name('download_categories.store');
+		
+		Route::get('/downloads/publish', 'Admin\DownloadController@publish');
 
-		Route::resource('/faculties', 'FacultyController');
+		Route::resource('/downloads', 'Admin\DownloadController');
 
-		Route::resource('/roles', 'RoleController', ['except'=>'destroy']);
 
-		Route::resource('/permissions', 'PermissionController', ['except'=>'destroy']);
+		Route::resource('/subjects', 'Admin\SubjectController');
 
-		Route::resource('/users', 'UserController');
+		Route::resource('/faculties', 'Admin\FacultyController');
 
-		Route::get('/', 'ManageController@index');
+		Route::resource('/roles', 'Admin\RoleController', ['except'=>'destroy']);
 
-		Route::get('/dashboard',  ['as'=>'manage.dashboard', 'uses'=>'ManageController@dashboard']);
+		Route::resource('/permissions', 'Admin\PermissionController', ['except'=>'destroy']);
+
+		Route::resource('/users', 'Admin\UserController');
+
+		Route::get('/', 'Admin\ManageController@index');
+
+		Route::get('/dashboard',  ['as'=>'manage.dashboard', 'uses'=>'Admin\ManageController@dashboard']);
 });
 
 Route::get('/', function () {

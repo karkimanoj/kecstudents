@@ -11403,8 +11403,34 @@ button.close {
   }
 }
 
+.show > .dropdown-menu {
+  display: block;
+}
+
+.show > .dropdown-menu {
+  display: block;
+}
+
 label {
   font-weight: 650;
+}
+
+#brand_name:hover {
+  color: #228AE6;
+}
+
+#navbar_items a:hover {
+  color: #228AE6;
+}
+
+#navbar_items a {
+  font-size: 1.9rem;
+  font-weight: 100;
+  font-family: 'Cabin', sans-serif;
+}
+
+#navbar_items li {
+  margin-left: 20px;
 }
 
 /*
@@ -11816,6 +11842,56 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
   RUN GULP to generate the classes. Now you can use these helpers to customize spacing on HTML elements.
 */
 
+#top_header {
+  min-height: 120px;
+  background-color: #5FCF80;
+  padding: 40px;
+}
+
+.section_box1 {
+  width: 30%;
+  height: 170px;
+  background-color: white;
+  display: inline-block;
+  position: relative;
+  float: left;
+  -webkit-box-shadow: 0 0.25rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0.25rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+}
+
+.section_box2 {
+  width: 68%;
+  height: 170px;
+  background-color: white;
+  display: inline-block;
+  position: relative;
+  float: left;
+  -webkit-box-shadow: 0 0.25rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0.25rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+}
+
+#footer .li_header {
+  color: white;
+  font-weight: 500;
+}
+
+#footer {
+  background-color: #495057;
+}
+
+#footer ul {
+  list-style: none;
+}
+
+#footer ul li {
+  font-size: 1.8rem;
+  color: #7E858D;
+}
+
+#footer a:hover {
+  color: white;
+}
+
 /*
     DEMO STYLE
 */
@@ -11824,6 +11900,7 @@ body {
   font-family: 'Poppins', sans-serif;
   background: #fafafa;
   font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Cabin', sans-serif;
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -11832,7 +11909,6 @@ p {
   font-size: 1.1em;
   font-weight: 300;
   line-height: 1.7em;
-  color: #999;
 }
 
 a,
@@ -11846,7 +11922,7 @@ a:focus {
 
 .navbar {
   padding: 15px 10px;
-  background: #fff;
+  background: white;
   border: none;
   border-radius: 0;
   margin-bottom: 0px;
@@ -11884,8 +11960,8 @@ a:focus {
 #sidebar {
   min-width: 250px;
   max-width: 250px;
-  background: #7386D5;
-  color: #fff;
+  background: white;
+  color: #777;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
 }
@@ -11896,34 +11972,35 @@ a:focus {
 
 #sidebar .sidebar-header {
   padding: 20px;
-  background: #6d7fcc;
+  background: white;
 }
 
 #sidebar ul.components {
   padding: 20px 0;
   border-bottom: 1px solid #47748b;
+  margin-right: 10px;
+  margin-left: 20px;
 }
 
 #sidebar ul p {
-  color: #fff;
+  color: #777;
   padding: 10px;
 }
 
 #sidebar ul li a {
   padding: 10px;
-  font-size: 1.1em;
+  font-size: 1.2em;
+  font-weight: 200;
   display: block;
 }
 
 #sidebar ul li a:hover {
-  color: #7386D5;
-  background: #fff;
+  color: #228AE6;
 }
 
 #sidebar ul li.active > a,
 a[aria-expanded="true"] {
-  color: #fff;
-  background: #3F51B5;
+  color: #228AE6;
 }
 
 a[data-toggle="collapse"] {
@@ -12016,6 +12093,10 @@ a.article:hover {
 
 .panel_card {
   height: 125px;
+}
+
+.col_ul li {
+  margin-left: 20px;
 }
 
 .bg-matgreen {

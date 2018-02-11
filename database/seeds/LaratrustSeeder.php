@@ -19,6 +19,7 @@ class LaratrustSeeder extends Seeder
         $userPermission = config('laratrust_seeder.permission_structure');
         $mapPermission = collect(config('laratrust_seeder.permissions_map'));
 
+        $i=1;
         foreach ($config as $key => $modules) {
 
             // Create a new role
@@ -56,10 +57,13 @@ class LaratrustSeeder extends Seeder
             // Create default user for each role
             $user = \App\User::create([
                 'name' => ucwords(str_replace('_', ' ', $key)),
+                'roll_no'=>$i.'/BCT/2071',
                 'email' => $key.'@app.com',
-                'password' => bcrypt('password')
+                'password' => bcrypt('password'),
+                'api_token'=>bin2hex(openssl_random_pseudo_bytes(30)),
             ]);
 
+            $i++;
             $user->attachRole($role);
         }
 

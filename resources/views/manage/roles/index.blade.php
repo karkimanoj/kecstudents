@@ -24,7 +24,7 @@
 					    <h4>{{$role->name}}</h4>
 					    <h5 class="mb-2 text-muted">{{$role->display_name}}</h5>
 					  </div>
-					  <div class="panel-body panel_card">
+					  <div class="panel-body panel_card ">
 					    {{$role->description}}
 					  </div>
 					 

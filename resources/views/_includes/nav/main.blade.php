@@ -2,19 +2,19 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#colapsable_navbar" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{{ route('home') }}">Devmarketer</a>
+      <a class="navbar-brand " style="display: flex;" href="{{ route('home') }}"><i class="fa fa-graduation-cap fa-2x "  data-fa-transform="shrink-8 up-6" style="color:#228AE6"></i> <span style="font-size: 2.3rem; margin-left: 4px" id="brand_name"> Kecstudents</span></a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Learn <span class="sr-only">(current)</span></a></li>
+    <div class="collapse navbar-collapse" id="colapsable_navbar">
+      <ul class="nav navbar-nav" id="navbar_items">
+        <li ><a href="#">Learn </a></li>
         <li><a href="#">Discuss</a></li>
          <li><a href="#">Share</a></li>
         

@@ -8,7 +8,8 @@ class DownloadCategory extends Model
 {
     public $timestamps = false;
 
-    public function downloads(){
+    public function downloads()
+    {
         return $this->hasMany('App\Download','category_id');
     }
 }

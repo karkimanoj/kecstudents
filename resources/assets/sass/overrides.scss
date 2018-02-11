@@ -1,1 +1,9 @@
+.show > .dropdown-menu {
+  display: block;
+}
 label{font-weight:650;}
+$enable-gradients: true;
+#brand_name:hover { color:#228AE6;}
+#navbar_items a:hover {color:#228AE6; }
+#navbar_items a{ font-size:1.9rem; font-weight:100; font-family: 'Cabin', sans-serif;}
+#navbar_items  li{ margin-left:20px;}

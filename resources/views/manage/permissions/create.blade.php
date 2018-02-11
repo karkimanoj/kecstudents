@@ -44,7 +44,7 @@
                     <div class="panel-heading">
                         <div class="form-group {{ $errors->has('resource')?'has-error':'' }}">
                             <label> Resource </label>
-                            <input type="text" name="resource" class="form-control" required minlength="5" maxlength="80">
+                            <input type="text" name="resource" class="form-control" required minlength="2" maxlength="80">
                         </div>
                     </div>
                     <div class="panel-body">

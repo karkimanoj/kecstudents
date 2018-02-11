@@ -15,4 +15,9 @@ class Subject extends Model
     public function download_detail1s(){
     	return $this->hasMany('App\DownloadDetail1');
     }
+
+    public function projects(){
+    	return $this->hasMany('App\Project');
+    }
+
 }

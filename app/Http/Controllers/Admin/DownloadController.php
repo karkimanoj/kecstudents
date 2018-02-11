@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Download;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -102,7 +102,7 @@ class DownloadController extends Controller
         {
                     $this->validate($request, [
             'description'=>'required|max:2000',
-            'file1'=>'required|file|mimetypes:application/pdf',
+            'file1'=>'required|file|max:31000|mimetypes:application/pdf,image/gif,image/jpeg,image/png,image/svg',
             'faculty'=>'required|integer',
             'semester'=>'required|integer',
             'subject'=>'sometimes|integer'
@@ -111,7 +111,7 @@ class DownloadController extends Controller
         } else {
                     $this->validate($request, [
             'description'=>'required|max:2000',
-            'file1'=>'required|file|mimetypes:application/pdf',
+            'file1'=>'required|file|max:31000|mimetypes:application/pdf,application/vnd.ms-powerpoint',
             'faculty'=>'required|integer',
             'semester'=>'required|integer',
             'subject'=>'sometimes|integer'
@@ -172,7 +172,7 @@ class DownloadController extends Controller
           
 
             $download->save();
-            echo $download->id;
+            //echo $download->id;
             /*saving DownloadDetail model according to upload type
             */
             
@@ -199,15 +199,11 @@ class DownloadController extends Controller
         
         return redirect()->route('downloads.index');
 
-        //return redirect()->route('users.index');
-
-
 
      /*   return redirect()->route('users.index');
-       'file1'=>'required|file|mimetypes:application/pdf,application/msword,application/vnd.ms-powerpoint,application/x-rar-compressed, application/octet-stream,application/zip, application/octet-stream,image/gif,image/jpeg,image/png,image/svg',
+       'file1'=>'required|file|mimetypes:application/pdf,application/msword,application/vnd.ms-powerpoint,application/x-rar-compressed, application/octet-stream,application/zip, application/octet-stream,image/gif,image/jpeg,image/png,image/svg'
+    */
 
-'file1'=>'required|file|mimetypes:application/pdf,application/msword,application/vnd.ms-powerpoint,application/x-rar-compressed, application/octet-stream,application/zip, application/octet-stream',
-*/
     }
 
     /**

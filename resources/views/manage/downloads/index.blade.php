@@ -11,7 +11,7 @@
 		<div class="row">
 			<div class="col-md-6">
 				<h1>All Uploads</h1>
-		{{bin2hex(openssl_random_pseudo_bytes(30))}}
+	
 			</div>
 			<div class="col-md-4 col-md-offset-2 ">
 				<a href="{{ route('downloads.create') }}" class="btn  btn-primary pull-right"> upload</a>

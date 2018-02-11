@@ -1,23 +1,91 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Dashboard</div>
-
-                <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
-                </div>
-            </div>
-        </div>
+<div class="container-fluid" style="background-color:#F8F9FA">
+    <div class="row" id="top_header" >
+        
     </div>
+
+    <div class="row" style="margin: 2% 1%;">
+      <div class="col-md-12" {{--style="border:1px solid green;"--}}>
+
+           <div class="row m-t-20 " style="height:170px"{{--"border:1px solid purple;"--}}>
+              <div class="col-md-6" style="min-height:170px">
+                
+                   <div class="section_box1" ><p>
+                      <i class="fa fa-download fa-5x "  style="color:#228AE6; height: 150px; width:80%"></i>Lorem ipsum
+                  </p>
+                   </div>
+                   <div class="section_box2"  >
+                   
+                        Downloads Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                   
+                  
+                    
+                   </div>
+                
+               </div>
+               <div class="col-md-6 ">
+                 
+                   <div class="section_box1">
+                       
+                   </div>
+                   <div class="section_box2">
+                       
+                   </div>
+               
+               </div>
+           </div> 
+           <div class="row m-t-20" {{--"border:1px solid purple;"--}}>
+
+               <div class="col-md-6" >
+                
+                   <div class="section_box1" >
+                      
+                   </div>
+                   <div class="section_box2">
+                       
+                   </div>
+                
+               </div>
+               <div class="col-md-6 ">
+                 
+                   <div class="section_box1">
+                       
+                   </div>
+                   <div class="section_box2">
+                       
+                   </div>
+               
+               </div>
+
+            </div> <div class="row m-t-20" {{--"border:1px solid purple;"--}}>
+
+               <div class="col-md-6" >
+                
+                   <div class="section_box1" >
+                      
+                   </div>
+                   <div class="section_box2">
+                       
+                   </div>
+                
+               </div>
+               <div class="col-md-6 ">
+                 
+                   <div class="section_box1">
+                       
+                   </div>
+                   <div class="section_box2">
+                       
+                   </div>
+               
+               </div>
+
+            </div> 
+
+          </div>
+    </div>
+
 </div>
 @endsection

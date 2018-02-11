@@ -10,8 +10,7 @@
                     <p>Dummy Heading</p>
                     <li >
                         <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Home</a>
-                        <ul class="collapse list-unstyled" id="homeSubmenu">
-                            <li><a href="#">Home 1</a></li>
+                        <ul class="collapse list-unstyled col_ul" id="homeSubmenu">
                             <li><a href="#">Home 2</a></li>
                             <li><a href="#">Home 3</a></li>
                         </ul>
@@ -21,7 +20,7 @@
                     </li>
                     <li>
                         <a href="#pageSubmenu" class="{{Nav::hasSegment(['users','roles','permissions'], 2)}}" data-toggle="collapse" aria-expanded="false">Administration</a>
-                        <ul class="collapse list-unstyled col_ul" id="pageSubmenu">
+                        <ul class="collapse list-unstyled col_ul" id="pageSubmenu" >
                             <li class="{{Nav::isResource('users')}}"><a href="{{route('users.index')}}"><i class="fa fa-users m-r-5" aria-hidden="true"></i> Manage users</a></li>
                             <li class="{{Nav::isResource('roles')}}"><a href="{{route('roles.index')}}"><i class="fa fa-user-secret" aria-hidden="true"></i> Manage Roles</a></li>
                             <li class="{{Nav::isResource('permissions')}}"><a href="{{route('permissions.index')}}"><i class="fa fa-key" aria-hidden="true"></i> Manage permission</a></li>
@@ -35,6 +34,18 @@
 
                     <li class="{{Nav::isResource('subjects')}}">
                         <a href="{{route('subjects.index')}}">subjects</a>
+                    </li>
+                    <li class="{{Nav::isRoute('download_categories.index')}}">
+                        <a href="{{route('download_categories.index')}}">Download categories</a>
+                    </li>
+                    <li class="{{Nav::isRoute('tags.index')}}">
+                        <a href="{{route('tags.index')}}">Tags</a>
+                    </li>
+                    <li class="{{Nav::isResource('downloads')}}">
+                        <a href="{{route('downloads.index')}}">Downloads</a>
+                    </li>
+                    <li class="{{Nav::isResource('projects')}}">
+                        <a href="{{route('projects.index')}}">Projects</a>
                     </li>
                 </ul>
 

@@ -12,6 +12,10 @@
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
 // custom sass pages
+.show > .dropdown-menu {
+  display: block;
+}
+
 @import "overrides";
 @import "helpers";
 @import "styles";
