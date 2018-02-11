@@ -42,20 +42,15 @@ class ProjectController extends Controller
         $subjects=Subject::where('project', 1)->get();
         $tags=Tag::all();
 
-        if(Auth::user()->hasRole(['superadministrator', 'administrator']))
+        //if(Auth::user()->hasRole(['superadministrator', 'administrator']))
          return view('manage.projects.create', ['subjects'=>$subjects,
                                                'tags'=>$tags ]);
-         else
-            return view('user.projects.create', ['subjects'=>$subjects,
-                                               'tags'=>$tags ]);
+         //else
+           // return view('user.projects.create', ['subjects'=>$subjects,
+               //                                'tags'=>$tags ]);
     }
 
-    public function test(){
 
-            
-        
-       
-    }
 
      /*
       publish the uploads via ajax request  

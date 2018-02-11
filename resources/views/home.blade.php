@@ -9,11 +9,11 @@
     <div class="row" style="margin: 2% 1%;">
       <div class="col-md-12" {{--style="border:1px solid green;"--}}>
 
-           <div class="row m-t-20 " style="height:170px"{{--"border:1px solid purple;"--}}>
-              <div class="col-md-6" style="min-height:170px">
+           <div class="row " {{--"border:1px solid purple;"--}}>
+              <div class="col-md-6 m-t-20" style="min-height:170px">
                 
                    <div class="section_box1" ><p>
-                      <i class="fa fa-download fa-5x "  style="color:#228AE6; height: 150px; width:80%"></i>Lorem ipsum
+                      <i class="fas fa-download fa-7x "  style="color:#228AE6;" ></i>Lorem ipsum
                   </p>
                    </div>
                    <div class="section_box2"  >
@@ -25,7 +25,7 @@
                    </div>
                 
                </div>
-               <div class="col-md-6 ">
+               <div class="col-md-6 m-t-20">
                  
                    <div class="section_box1">
                        
@@ -36,9 +36,9 @@
                
                </div>
            </div> 
-           <div class="row m-t-20" {{--"border:1px solid purple;"--}}>
+           <div class="row " >
 
-               <div class="col-md-6" >
+               <div class="col-md-6 m-t-20" >
                 
                    <div class="section_box1" >
                       
@@ -48,7 +48,7 @@
                    </div>
                 
                </div>
-               <div class="col-md-6 ">
+               <div class="col-md-6 m-t-20">
                  
                    <div class="section_box1">
                        
@@ -59,9 +59,9 @@
                
                </div>
 
-            </div> <div class="row m-t-20" {{--"border:1px solid purple;"--}}>
+            </div> <div class="row " >
 
-               <div class="col-md-6" >
+               <div class="col-md-6 m-t-20" >
                 
                    <div class="section_box1" >
                       
@@ -71,7 +71,7 @@
                    </div>
                 
                </div>
-               <div class="col-md-6 ">
+               <div class="col-md-6 m-t-20">
                  
                    <div class="section_box1">
                        
