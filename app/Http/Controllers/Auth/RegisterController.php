@@ -49,6 +49,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
+            'roll_no'=>'required|string|max:12|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -61,11 +62,15 @@ class RegisterController extends Controller
      * @return \App\User
      */
     protected function create(array $data)
-    {
+    {   
+        
+
         return User::create([
             'name' => $data['name'],
+            'roll_no' => $data['roll_no'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'api_token'=>bin2hex(openssl_random_pseudo_bytes(30))
         ]);
     }
 }

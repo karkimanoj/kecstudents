@@ -6,9 +6,11 @@
 
 @section('content')
 <div class="main-container">
+  <div class="container-fluid" id="top_header" >
+          <h2 class="text-center">Edit project</h2>
+      </div>
     <div class="row ">
         <div class="col-md-11 col-md-offset-1 ">
-        	<h2><center>Edit project</center></h2>
               <div class="panel panel-default m-t-25">
                     <div class="panel-body">
                         <form method="POST" action="{{route('user.projects.update', $project->id)}} " enctype="multipart/form-data">
@@ -46,7 +48,7 @@
                                      <div class="col-md-8">
                                          <textarea class="form-control" required rows="14" name="abstract" >{{ $project->abstract or old('abstract')}}</textarea>
                                        
-                                            <span class="help-block" ">
+                                            <span class="help-block" >
                                                  @if($errors->has('abstract'))
                                                 <strong>{{ $errors->first('abstract') }}</strong>
                                                 @else
@@ -75,13 +77,18 @@
                                         <label class="right m-r-20">github link:</label>
                                     </div>    
                                      <div class="col-md-8">
-                                        <div class="input-group">
-                                          <i class="fa fa-link input-group-addon"></i>
-                                          <input type="url" name="link" class="form-control" value="{{$project->url_link or old('link')}}" maxlength="255" aria-describedby="basic-addon1">
-                                        </div>
-    
-                                         <span class="help-block" ">
-                                                @if($errors->has('link'))
+
+                                       <div class="input-group">
+                                           <span class="input-group-btn" id="basic-addon2">
+                                            <button class="btn btn-default">
+                                                <i class="fas fa-link" style="color:#228AE6"></i>
+                                              </button> 
+                                            </span>
+                                            <input type="url" name="link" class="form-control" value="{{$project->url_link or old('link')}}" aria-describedby="basic-addon2" maxlength="255" >
+                                        </div>  
+                                     
+                                         <span class="help-block">
+                                               @if($errors->has('link'))
                                                   <strong>{{ $errors->first('link') }}</strong>
                                                 @else
                                                     <small class="form-text text-muted">Example: https://github.com/karkimanoj/kecstudents</small>
@@ -101,7 +108,7 @@
 
                                 <div class="row m-t-20">
                                     <div class="col-md-3">
-                                         <label class="m-t-20">project members ( max 6):</label> 
+                                         <label class="m-t-20 right">project members ( max 6):</label> 
                                     </div>
                                      <div class="col-md-8">
                                          <label class=" m-t-20 m-l-20"><span class="form-text text-muted">Hint: tick checkbox to add members</span> </label> 

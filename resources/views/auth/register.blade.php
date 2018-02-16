@@ -1,74 +1,152 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-5 col-md-offset-3 mtop-5 ">
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-          <div class="panel panel-default">
-            <div class="panel-body">
-            <form method="POST" action="{{ route('login') }}">
-                {{csrf_field()}}
-                <h2><center>Register here</center></h2>
+    <title>Devmarketer</title>
+     
+      <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+      @yield('styles')
+  
 
-                <div class="form-group {{ $errors->has('username')?'has-error':'' }} mtop-5">
-                    <label >Name</label>
-                    <input type="text" name="name" value="{{ old('name') }}" class="form-control" required maxlength="100">
-                    @if($errors->has('name'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('name') }}</strong>
-                        </span>
-                    @endif
-                </div>
+</head>
+<body>
+<div id="app">
 
-                <div class="form-group {{ $errors->has('email')?'has-error':'' }} mtop-5">
-                    <label >Email address</label>
-                    <input type="email" name="email" value="{{ old('email') }}" class="form-control" required maxlength="100">
-                    @if($errors->has('email'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('email') }}</strong>
-                        </span>
-                    @endif
-                </div>
+    <nav class="navbar navbar-default mbottom-0 ">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#colapsable_navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand " style="display: flex;" href="{{ route('home') }}"><i class="fas fa-graduation-cap fa-5x "  data-fa-transform="shrink-8 up-6" style="color:#228AE6"></i> <span style="font-size: 2.3rem; margin-left: 4px" id="brand_name"> Kecstudents</span></a>
+        </div>
 
-                <div class="row mtop-5">
-                    <div class="col-md-6">
-                        <div class="form-group {{ $errors->has('password')?'has-error':'' }} ">
-                            <label >Password</label>
-                            <input type="password" name="password" class="form-control" required minlength="8">
-                            @if($errors->has('password'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('password') }}</strong>
-                                </span>
-                            @endif
-                        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="colapsable_navbar">
+          
+          
+          <ul class="nav navbar-nav navbar-right">
+            @if(Auth::guest())
+              <li><a href="{{ route('login') }}">login</a></li>
+              <li><a href="{{ route('register') }}">Join the community</a></li>
+            @else
+            <li class="dropdown ">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <span>hy {{Auth::user()->name}} <span> 
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="#">profile</a></li>
+                <li><a href="#">Notification</a></li>
+                <li><a href="{{ route('manage.dashboard') }}">Manage</a></li>
+                <li role="separator" class="divider"></li>
+                <li><form method="POST" action="{{ route('logout') }}" id="logoutForm">
+                    {{csrf_field()}}
+                    <a href='#' class="m-l-20" onclick="document.getElementById('logoutForm').submit();" name="logout" >logout</a>
+                    </form>
+                </li>
+              </ul>
+            </li>
+            @endif
+          </ul>
+
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+
+    <div class="container m-b-40">
+        <div class="row m-t-40 ">
+            <div class="col-md-5 col-md-offset-3 mtop-5 ">
+
+              <div class="panel panel-default">
+                <div class="panel-body">
+
+                <form method="POST" action="{{ route('register') }}">
+                    {{csrf_field()}}
+                    <h2><center>Register here</center></h2>
+
+                    <div class="form-group {{ $errors->has('username')?'has-error':'' }} mtop-5">
+                        <label >Name</label>
+                        <input type="text" name="name" value="{{ old('name') }}" class="form-control" required maxlength="100">
+                        @if($errors->has('name'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('name') }}</strong>
+                            </span>
+                        @endif
                     </div>
 
-                    <div class="col-md-6 ">
-                        <div class="form-group {{ $errors->has('password_confirmation')?'has-error':'' }} ">
-                            <label >Confirm password</label>
-                            <input type="password" name="password_confirmation" class="form-control" required minlength="8">
-                            @if($errors->has('password_confirmation'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('password_confirmation') }}</strong>
-                                </span>
-                            @endif
+                    <div class="form-group {{ $errors->has('roll_no')?'has-error':'' }} mtop-5">
+                        <label >Roll no</label>
+                        <input type="text" name="roll_no" value="{{ old('roll_no') }}" class="form-control" placeholder="eg: 002/BCT/2071" required maxlength="12" >
+                        @if($errors->has('roll_no'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('roll_no') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                    
+                    <div class="form-group {{ $errors->has('email')?'has-error':'' }} mtop-5">
+                        <label >Email address</label>
+                        <input type="email" name="email" value="{{ old('email') }}" class="form-control" required maxlength="100">
+                        @if($errors->has('email'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('email') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                    
+                    <div class="row mtop-5">
+                        <div class="col-md-6">
+                            <div class="form-group {{ $errors->has('password')?'has-error':'' }} ">
+                                <label >Password</label>
+                                <input type="password" name="password" class="form-control" required minlength="8">
+                                @if($errors->has('password'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('password') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ">
+                            <div class="form-group {{ $errors->has('password_confirmation')?'has-error':'' }} ">
+                                <label >Confirm password</label>
+                                <input type="password" name="password_confirmation" class="form-control" required minlength="8">
+                                @if($errors->has('password_confirmation'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('password_confirmation') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
-                        
-                 <div class="form-group mtop-5">
-                    <input type="submit" name="register" class="btn btn-primary btn-block">
-                </div>
+                            
+                     <div class="form-group mtop-5">
+                        <input type="submit" name="register" class="btn btn-primary btn-block">
+                    </div>
 
-                
-            </form>    
-           </div>
-           
-        </div>   
-            <center><a class="text-muted" href="{{ route('login') }}">Already have an account?</a></center>
-        
+                    
+                </form> 
+                   
+               </div>
+               
+            </div>   
+                <center><a class="text-muted" href="{{ route('login') }}">Already have an account?</a></center>
+            
+            </div>
         </div>
     </div>
 </div>
-@endsection
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+</body>
+

@@ -7,9 +7,18 @@ use Illuminate\Http\Request;
 use App\Role;
 use App\Permission;
 use Session;
+use Auth;
 
 class RoleController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:create-roles', [ 'only' => ['create', 'store'] ]);
+        $this->middleware('permission:update-roles', [ 'only' => ['edit', 'update'] ]);
+         $this->middleware('permission:destroy-roles', [ 'only' => ['destroy',] ]);
+        
+    }
     /**
      * Display a listing of the resource.
      *

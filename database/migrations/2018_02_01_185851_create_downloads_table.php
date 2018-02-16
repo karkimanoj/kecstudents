@@ -29,7 +29,8 @@ class CreateDownloadsTable extends Migration
             $table->foreign('category_id')->references('id')->on('download_categories')->onUpdate('cascade')
                                     ->onDelete('cascade');
             
-            $table->foreign('uploader_id')->references('id')->on('users');
+            $table->foreign('uploader_id')->references('id')->on('users')
+                  ->onUpdate('cascade')->onDelete('cascade');;
 
         });
     }

@@ -154,11 +154,15 @@ class DownloadController extends Controller
                 }
                 //echo $sub;
                 $filename=$sub.'_'.time().rand(0, 99).'.'.$ext;
+                $upload_dir='/file_uploads/'.$sub;
             } 
-            else
-                 $filename=$request->faculty.'_'.$request->semester.'_'.time().rand(0, 999).'.'.$ext;
+            else{
+                $fac=Faculty::findOrFail($request->faculty);
+                 $filename=$fac->name.'_'.$request->semester.'_'.time().rand(0, 999).'.'.$ext;
+                  $upload_dir='/file_uploads/'.$fac->name.'/'.$request->semester;
+                }
 
-             $upload_dir='/file_uploads/'.$sub;
+            
              $dir=Storage::makeDirectory($upload_dir,0775, true);
              $path=$file->storeAs($upload_dir, $filename);
             /* saving Downlaod model
@@ -169,6 +173,9 @@ class DownloadController extends Controller
             $download->category_id=$request->category;
             $download->uploader_id=Auth::user()->id;
             $download->description=$request->description;
+            if(Auth::user()->hasRole(['superadministrator', 'administrator']))
+                    $download->published_at=Carbon::now();
+
           
 
             $download->save();

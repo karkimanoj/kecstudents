@@ -3,6 +3,9 @@
 
 @section('content')
 	<div class="main-container">
+		  <div class="container-fluid" id="top_header" >
+	          <h2 class="text-center">view project</h2>
+	      </div>
 		<div class="row m-b-20">
 
 			{{--<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">delete</button>

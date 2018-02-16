@@ -21,6 +21,10 @@
 							<span>{{$user->name}}</span>
 						</p>
 						<p>
+							<label>Roll no</label>
+							<span>{{$user->roll_no}}</span>
+						</p>
+						<p>
 							<label>Email</label>
 							<span>{{$user->email}}</span>
 						</p>

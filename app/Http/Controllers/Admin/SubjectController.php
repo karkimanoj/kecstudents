@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Subject;
 use App\Faculty;
 use Session;
+use Auth;
 
 class SubjectController extends Controller
 {
@@ -28,9 +29,12 @@ class SubjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {   
-        $faculties=Faculty::all();
-        return view('manage.subjects.create', ['faculties'=>$faculties]);
+    {   if(Auth::user()->hasPermission(['create-subjects']))
+        { 
+            $faculties=Faculty::all();
+            return view('manage.subjects.create', ['faculties'=>$faculties]);
+        }else
+            return back()->withErrors('you dont have permission for this activity');    
     }
 
     /**
@@ -41,33 +45,36 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['name'=>'required|max:255|unique:subjects,name',
-                                    'faculty'=>'required']);
+        if(Auth::user()->hasPermission(['create-subjects']))
+        {   
+            $this->validate($request, ['name'=>'required|max:255|unique:subjects,name',
+                                        'faculty'=>'required']);
 
-        $subject=new Subject;
-        $subject->name=$request->name;
-        $subject->project=$request->project_check;
+            $subject=new Subject;
+            $subject->name=$request->name;
+            $subject->project=$request->project_check;
 
-        /*syncing with inserting additional values  in additional column of pivot table
-        */
-        $semester_array=[];
-        $faculty_array=[];
-        foreach ($request->faculty as $faculty) {
-            array_push($faculty_array, $faculty);
-           array_push($semester_array, array('semester'=>$request->get('semester'.'_'.$faculty)) );
+            /*syncing with inserting additional values  in additional column of pivot table
+            */
+            $semester_array=[];
+            $faculty_array=[];
+            foreach ($request->faculty as $faculty) {
+                array_push($faculty_array, $faculty);
+               array_push($semester_array, array('semester'=>$request->get('semester'.'_'.$faculty)) );
 
-        }
+            }
 
-        $syncData=array_combine($faculty_array, $semester_array);
+            $syncData=array_combine($faculty_array, $semester_array);
 
-        $subject->save();
+            $subject->save();
 
-        if($subject->faculties()->sync($syncData, false))
-        {
-            Session::flash('success','new subject added successfully');
-            return redirect()->route('subjects.index');
-        }
-
+            if($subject->faculties()->sync($syncData, false))
+            {
+                Session::flash('success','new subject added successfully');
+                return redirect()->route('subjects.index');
+            }
+        }else
+            return back()->withErrors('you dont have permission for this activity');      
 /*
         foreach ($request->faculty as $faculty) {
             array_push($pivot_array,
@@ -99,11 +106,15 @@ class SubjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        $subject=Subject::findOrFail($id);
-        $faculties=Faculty::all();
-        return view('manage.subjects.edit', ['subject'=>$subject,
-                                      'faculties'=>$faculties]);
+    {   
+        if(Auth::user()->hasPermission(['update-subjects']))
+        {
+            $subject=Subject::findOrFail($id);
+            $faculties=Faculty::all();
+            return view('manage.subjects.edit', ['subject'=>$subject,
+                                          'faculties'=>$faculties]);
+        }else
+            return back()->withErrors('you dont have permission for this activity');    
     }
 
     /**
@@ -115,32 +126,36 @@ class SubjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, ['name'=>'required|max:255|unique:subjects,name,'.$id,
-                                    'faculty'=>'required']);
-
-        $subject=Subject::findOrFail($id);
-        $subject->name=$request->name;
-        $subject->project=$request->project_check;
-
-        /*syncing with inserting additional values  in additional column of pivot table
-        */
-        $semester_array=[];
-        $faculty_array=[];
-        foreach ($request->faculty as $faculty) {
-            array_push($faculty_array, $faculty);
-           array_push($semester_array, array('semester'=>$request->get('semester'.'_'.$faculty)) );
-
-        }
-
-        $syncData=array_combine($faculty_array, $semester_array);
-
-        $subject->save();
-
-        if($subject->faculties()->sync($syncData, true))
+        if(Auth::user()->hasPermission(['update-subjects']))
         {
-            Session::flash('success', $subject->name.' subject was updated successfully');
-            return redirect()->route('subjects.show', $subject->id);
-        }
+            $this->validate($request, ['name'=>'required|max:255|unique:subjects,name,'.$id,
+                                        'faculty'=>'required']);
+
+            $subject=Subject::findOrFail($id);
+            $subject->name=$request->name;
+            $subject->project=$request->project_check;
+
+            /*syncing with inserting additional values  in additional column of pivot table
+            */
+            $semester_array=[];
+            $faculty_array=[];
+            foreach ($request->faculty as $faculty) {
+                array_push($faculty_array, $faculty);
+               array_push($semester_array, array('semester'=>$request->get('semester'.'_'.$faculty)) );
+
+            }
+
+            $syncData=array_combine($faculty_array, $semester_array);
+
+            $subject->save();
+
+            if($subject->faculties()->sync($syncData, true))
+            {
+                Session::flash('success', $subject->name.' subject was updated successfully');
+                return redirect()->route('subjects.show', $subject->id);
+            }
+        }else
+            return back()->withErrors('you dont have permission for this activity');    
     }
 
     /**
@@ -151,9 +166,13 @@ class SubjectController extends Controller
      */
     public function destroy($id)
     {
-        $subject=Subject::findOrFail($id);
-        if($subject->delete())
-            Session::flash('success', $subject->display_name.' subject was successfully deleted');
-        return redirect()->route('subjects.index');
+        if(Auth::user()->hasPermission(['destroy-subjects']))
+        {
+            $subject=Subject::findOrFail($id);
+            if($subject->delete())
+                Session::flash('success', $subject->display_name.' subject was successfully deleted');
+            return redirect()->route('subjects.index');
+        }else
+            return back()->withErrors('you dont have permission for this activity');        
     }
 }

@@ -17,7 +17,15 @@
                                         <input type="text" name="name"  class="form-control" required  maxlength="100">
                                        
                                     </div>
-
+                                    <div class="form-group {{ $errors->has('roll_no')?'has-error':'' }} mtop-5">
+                                        <label >Roll no</label>
+                                        <input type="text" name="roll_no" value="{{ old('roll_no') }}" class="form-control" placeholder="eg: 002/BCT/2071" required maxlength="12" >
+                                        @if($errors->has('roll_no'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('roll_no') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
                                     <div class="form-group {{ $errors->has('email')?'has-error':'' }} mtop-5">
                                         <label >Email address</label>
                                         <input type="email" name="email"  class="form-control" required maxlength="100">

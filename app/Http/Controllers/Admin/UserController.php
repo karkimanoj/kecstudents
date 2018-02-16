@@ -8,6 +8,7 @@ use App\User;
 use App\Role;
 use Session;
 use Hash;
+use Auth;
 
 class UserController extends Controller
 {
@@ -21,6 +22,14 @@ class UserController extends Controller
         }
     */
 
+    public function __construct()
+    {
+        $this->middleware('permission:create-users', [ 'only' => ['create', 'store'] ]);
+        $this->middleware('permission:update-users', [ 'only' => ['edit', 'update'] ]);
+         $this->middleware('permission:destroy-users', [ 'only' => ['destroy',] ]);
+        
+    }
+        
     /**
      * Display a listing of the resource.
      *
@@ -53,6 +62,7 @@ class UserController extends Controller
     {
         $this->validate($request, [
             'name'=>'required|max:100',
+            'roll_no'=>'required|string|max:12|unique:users',
             'email'=>'required|email|max:100|unique:users,email'
         ]);
 
@@ -74,7 +84,9 @@ class UserController extends Controller
         $user=new User;
         $user->name=$request->name;
         $user->email=$request->email;
+        $user->roll_no=$request->roll_no;
         $user->password=Hash::make($password);
+        $user->api_token=bin2hex(openssl_random_pseudo_bytes(30));
 
         if($user->save())
         {

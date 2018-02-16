@@ -76,10 +76,14 @@
                                     </div>    
                                      <div class="col-md-8">
                                         <div class="input-group">
-                                          <i class="fa fa-link input-group-addon"></i>
-                                          <input type="url" name="link" class="form-control" value="{{$project->url_link or old('link')}}" maxlength="255" aria-describedby="basic-addon1">
-                                        </div>
-    
+                                             <span class="input-group-btn" id="basic-addon2">
+                                              <button class="btn btn-default">
+                                                  <i class="fas fa-link" style="color:#228AE6"></i>
+                                                </button> 
+                                              </span>
+                                              <input type="url" name="link" class="form-control" value="{{$project->url_link or old('link')}}" aria-describedby="basic-addon2" maxlength="255" >
+                                        </div>  
+
                                          <span class="help-block">
                                                 @if($errors->has('link'))
                                                   <strong>{{ $errors->first('link') }}</strong>

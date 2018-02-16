@@ -4,8 +4,8 @@
 
 	<div class="main-container">
 		<div class="container-fluid" id="top_header" >
-        <h2 class="text-center">All Projects</h2>
-    </div>
+	        <h2 class="text-center">All Projects</h2>
+	    </div>
 		<div class="row m-t-30">
 			<div class="col-md-6">
 				
@@ -102,7 +102,7 @@
 					</tbody>
 				</table>
 				<center>
-				{{ $projects->links()}}
+				
 				</center>
 				</div>
 			</div>

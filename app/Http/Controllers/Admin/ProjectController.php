@@ -28,8 +28,7 @@ class ProjectController extends Controller
 
          if(Auth::user()->hasRole(['superadministrator', 'administrator']))
             return view('manage.projects.index', ['projects'=>$projects]);
-        else
-            return view('user.projects.index', ['projects'=>$projects]);
+      
     }
 
     /**
@@ -42,12 +41,10 @@ class ProjectController extends Controller
         $subjects=Subject::where('project', 1)->get();
         $tags=Tag::all();
 
-        //if(Auth::user()->hasRole(['superadministrator', 'administrator']))
+        if(Auth::user()->hasRole(['superadministrator', 'administrator']))
          return view('manage.projects.create', ['subjects'=>$subjects,
                                                'tags'=>$tags ]);
-         //else
-           // return view('user.projects.create', ['subjects'=>$subjects,
-               //                                'tags'=>$tags ]);
+         
     }
 
 
@@ -250,8 +247,7 @@ class ProjectController extends Controller
 
         if(Auth::user()->hasRole(['superadministrator', 'administrator']))
             return view('manage.projects.show', ['project'=>$project]);
-            else
-                return view('user.projects.show', ['project'=>$project]);
+            
     }
 
     /**
@@ -267,8 +263,7 @@ class ProjectController extends Controller
 
          if(Auth::user()->hasRole(['superadministrator', 'administrator']))
             return view('manage.projects.edit', ['project'=>$project, 'tags'=>$tags]);
-         else
-              return view('user.projects.edit', ['project'=>$project, 'tags'=>$tags]); 
+   
     }
 
     /**

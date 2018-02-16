@@ -35,9 +35,9 @@
             <li><a href="{{ route('manage.dashboard') }}">Manage</a></li>
             <li role="separator" class="divider"></li>
             <li><form method="POST" action="{{ route('logout') }}" id="logoutForm">
-              {{csrf_field()}}
-              <a href='#' onclick="document.getElementById('logoutForm').submit();" name="logout" >logout</a>
-              </form>
+                {{csrf_field()}}
+                <a href='#' class="m-l-20" onclick="document.getElementById('logoutForm').submit();" name="logout" >logout</a>
+                </form>
             </li>
           </ul>
         </li>

@@ -15,6 +15,9 @@
         <!--      not needed because we installed bootstrap via npm from bash -->
      
       <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto+Condensed" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
       @yield('styles')
   
 
@@ -32,10 +35,9 @@
 
   
 
-
-
     <script src="{{ asset('js/app.js') }}"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
-    @yield('script')
+    @yield('scripts')
+    
 </body>
 </html>

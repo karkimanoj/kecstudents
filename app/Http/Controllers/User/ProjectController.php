@@ -1,9 +1,7 @@
 <?php
 namespace App\Http\Controllers\User;
+
 use App\Http\Controllers\Controller;
-
-
-
 use Illuminate\Http\Request;
 use App\Tag;
 use App\Project;
@@ -17,25 +15,31 @@ use Storage;
 
 class ProjectController extends Controller
 {
-    private $user;
 
-    public function __construct()
-    {
-        $user=Auth::user();
-    } 
-
+     public function __construct()
+     {
+        $this->middleware('role:student', ['except' => ['index', 'show']]);
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-         $projects=Project::paginate(20);
+    {   
+        $user_rollno=Auth::user()->roll_no;
 
-         if(Auth::user()->hasRole(['superadministrator', 'administrator']))
-            return view('manage.projects.index', ['projects'=>$projects]);
-        else
+         $projects=Project::whereIn('id', function ($query) use($user_rollno)
+         {
+            $query->select('project_id')
+                  ->from('project_members')  
+                  ->where('roll_no', $user_rollno);
+         })->with('project_members')
+          ->get();
+
+         //if(Auth::user()->hasRole(['superadministrator', 'administrator']))
+            //return view('manage.projects.index', ['projects'=>$projects]);
+       
             return view('user.projects.index', ['projects'=>$projects]);
     }
 
@@ -49,10 +53,10 @@ class ProjectController extends Controller
         $subjects=Subject::where('project', 1)->get();
         $tags=Tag::all();
 
-        if(Auth::user()->hasRole(['superadministrator', 'administrator']))
-         return view('manage.projects.create', ['subjects'=>$subjects,
-                                               'tags'=>$tags ]);
-         else
+        //if(Auth::user()->hasRole(['superadministrator', 'administrator']))
+        // return view('manage.projects.create', ['subjects'=>$subjects,
+          //                                     'tags'=>$tags ]);
+         //else
             return view('user.projects.create', ['subjects'=>$subjects,
                                                'tags'=>$tags ]);
     }
@@ -64,23 +68,6 @@ class ProjectController extends Controller
        
     }
 
-     /*
-      publish the uploads via ajax request  
-    */
-      public function publish(Request $request)
-      {
-        $id=$request->id;
-        if($request->status=='publish')
-            $date=Carbon::now();
-        else if($request->status=='unpublish')
-            $date=NULL;
-
-        $project=Project::findOrFail($id);
-        $project->published_at=$date;
-
-        if($project->save())
-        return $date;
-      }
 
 
     /**
@@ -238,12 +225,12 @@ class ProjectController extends Controller
                         Session::flash('success',$project->name.' has been succesfully uploaded');
 
 
-                        return redirect()->route('projects.index');
+                        return redirect()->route('user.projects.show', $project->id);
                    }else
-                    echo 'fuckkkkkkkmembers';
+                    return back()->withErrors('error in saving project members');
                    
                 } else
-                    echo 'fuckkkkkkkprojects table  save';
+                    return back()->withErrors('error occured during saving project');
              }
 
 
@@ -260,9 +247,9 @@ class ProjectController extends Controller
     {
         $project=Project::findOrFail($id);
 
-        if(Auth::user()->hasRole(['superadministrator', 'administrator']))
-            return view('manage.projects.show', ['project'=>$project]);
-            else
+        //if(Auth::user()->hasRole(['superadministrator', 'administrator']))
+           // return view('manage.projects.show', ['project'=>$project]);
+           // else
                 return view('user.projects.show', ['project'=>$project]);
     }
 
@@ -273,14 +260,21 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
+    {   
+        $project_member=ProjectMember::where('project_id', $id)->where('roll_no', Auth::user()->roll_no)->first();    
+        if($project_member)
+        {
         $project=Project::findOrFail($id);
         $tags=Tag::all();
 
-         if(Auth::user()->hasRole(['superadministrator', 'administrator']))
-            return view('manage.projects.edit', ['project'=>$project, 'tags'=>$tags]);
-         else
-              return view('user.projects.edit', ['project'=>$project, 'tags'=>$tags]); 
+         //if(Auth::user()->hasRole(['superadministrator', 'administrator']))
+           // return view('manage.projects.edit', ['project'=>$project, 'tags'=>$tags]);
+         //else
+              return view('user.projects.edit', ['project'=>$project, 'tags'=>$tags]);
+              }  
+              else
+            return back()->withErrors('Access denied. not member of this project');
+
     }
 
     /**
@@ -293,117 +287,120 @@ class ProjectController extends Controller
     public function update(Request $request, $id)
     {
         include(app_path() . '\helpers.php');
-       
-        $this->validate($request, [
-                'name'=>'required|min:4|max:255',
-                'abstract'=>'required|max:2000',
-                'link'=>'sometimes|url|max:255|unique:projects,url_link,'.$id,
-                'tags'=>'required|max:60',
-                'member_rollno.*'=>'distinct|required|max:15',
-                'member_name'=>'required_with:member_rollno|max:255',
-
-
-        ]);
         
-
-        
-            $project=Project::findOrFail($id);
-
-        foreach($request->member_rollno as $roll_no)
+        $project_member=ProjectMember::where('project_id', $id)->where('roll_no', Auth::user()->roll_no)->first();    
+        if($project_member)
         {
-            
-             $subject_id=$project->subject_id;
+            $this->validate($request, [
+                    'name'=>'required|min:4|max:255',
+                    'abstract'=>'required|max:2000',
+                    'link'=>'sometimes|url|max:255|unique:projects,url_link,'.$id,
+                    'tags'=>'required|max:60',
+                    'member_rollno.*'=>'distinct|required|max:15',
+                    'member_name'=>'required_with:member_rollno|max:255',
 
-             $project_1=Project::where('subject_id', $subject_id)
-                    ->where('id','!=', $id)
-                    ->whereIn('id', function($query) use($roll_no) {
-                            $query->select('project_id')
-                                  ->from('project_members')
-                                  ->where('roll_no','=', $roll_no);
-                                    })->first();
+
+            ]);
             
-            if($project_1)
+
+            
+                $project=Project::findOrFail($id);
+
+            foreach($request->member_rollno as $roll_no)
             {
-                Session::flash('error', $roll_no.' is already a project member of '.$project_1->name);
-                return redirect()->route('projects.create');
-                die(1);
-            }
-        }
-
-          
-                $project->name=$request->name;
-                $project->abstract=$request->abstract;
-                $project->url_link=$request->link;
-
-
-                if($project->save())
-                {   
-                    //creating array of ProjectMember objects to insert in project_members table in single saveMany command
-
-                   
-                   
-
-                    $tag_ids=[]; 
-                   //inserting new tags created by user
-                    foreach($request->tags as $tag)
-                    {   
-                        $string=str_split($tag);
-                        if($string[0]=='@')
-                        {   
-                            $string=array_slice($string, 1);
-                            $ntag=implode($string);
-                            $new_tag=new Tag;
-                            $new_tag->name=$ntag;
-                            $new_tag->created_by=Auth::user()->id;
-                            $new_tag->save();
-
-                            array_push($tag_ids,  $new_tag->id);
-                        }
-                        else
-                            array_push($tag_ids,  $tag);
-                    }//end inserting new tags
-
-                   $members_changed=0;
-
-
-                   $members=[];
-                   $member_rollnos=$request->member_rollno;
-                   $member_names=$request->member_name;
-
-                   for ($i=0; $i < count($request->member_rollno) ; $i++) 
-                   {   
-                        $member_rollnos[$i]=trim($member_rollnos[$i]);
-                        $member_names[$i]=trim($member_names[$i]);
-
-                      if($project->project_members()->count()!=count($request->member_rollno)) 
-                        $members_changed=1;
-                    else if($project->project_members()->where('roll_no', $member_rollnos[$i])->where('name', $member_names[$i])->first()==null)
-                           $members_changed=1;
-
-                       $members[$i]=new ProjectMember([ 'roll_no'=>$member_rollnos[$i] ,
-                                                         'name'=>$member_names[$i]  ]);
-                   }
-
-                   if($members_changed==1) 
-                   {
-                      //$project->project_members()->project()->dissociate($project);
-
-                      ProjectMember::where('project_id', '=', $project->id)->delete();
-
-
-                        $inserting_members=$project->project_members()->saveMany($members);
-                   }
                 
+                 $subject_id=$project->subject_id;
+
+                 $project_1=Project::where('subject_id', $subject_id)
+                        ->where('id','!=', $id)
+                        ->whereIn('id', function($query) use($roll_no) {
+                                $query->select('project_id')
+                                      ->from('project_members')
+                                      ->where('roll_no','=', $roll_no);
+                                        })->first();
+                
+                if($project_1)
+                {
+                    Session::flash('error', $roll_no.' is already a project member of '.$project_1->name);
+                    return redirect()->route('projects.create');
+                    die(1);
+                }
+            }
+
+              
+                    $project->name=$request->name;
+                    $project->abstract=$request->abstract;
+                    $project->url_link=$request->link;
 
 
-                        $project->tags()->sync($tag_ids, true);
-                        Session::flash('success',$project->name.' has been succesfully edited');
-                        return redirect()->route('projects.index');
-                   
-                   
-                } else
-                    echo 'fuckkkkkkkprojects table  save';
-    
+                    if($project->save())
+                    {   
+                        //creating array of ProjectMember objects to insert in project_members table in single saveMany command
+
+                       
+                       
+
+                        $tag_ids=[]; 
+                       //inserting new tags created by user
+                        foreach($request->tags as $tag)
+                        {   
+                            $string=str_split($tag);
+                            if($string[0]=='@')
+                            {   
+                                $string=array_slice($string, 1);
+                                $ntag=implode($string);
+                                $new_tag=new Tag;
+                                $new_tag->name=$ntag;
+                                $new_tag->created_by=Auth::user()->id;
+                                $new_tag->save();
+
+                                array_push($tag_ids,  $new_tag->id);
+                            }
+                            else
+                                array_push($tag_ids,  $tag);
+                        }//end inserting new tags
+
+                       $members_changed=0;
+
+
+                       $members=[];
+                       $member_rollnos=$request->member_rollno;
+                       $member_names=$request->member_name;
+
+                       for ($i=0; $i < count($request->member_rollno) ; $i++) 
+                       {   
+                            $member_rollnos[$i]=trim($member_rollnos[$i]);
+                            $member_names[$i]=trim($member_names[$i]);
+
+                          if($project->project_members()->count()!=count($request->member_rollno)) 
+                            $members_changed=1;
+                        else if($project->project_members()->where('roll_no', $member_rollnos[$i])->where('name', $member_names[$i])->first()==null)
+                               $members_changed=1;
+
+                           $members[$i]=new ProjectMember([ 'roll_no'=>$member_rollnos[$i] ,
+                                                             'name'=>$member_names[$i]  ]);
+                       }
+
+                       if($members_changed==1) 
+                       {
+                          //$project->project_members()->project()->dissociate($project);
+
+                          ProjectMember::where('project_id', '=', $project->id)->delete();
+
+
+                            $inserting_members=$project->project_members()->saveMany($members);
+                       }
+                    
+
+
+                            $project->tags()->sync($tag_ids, true);
+                            Session::flash('success',$project->name.' has been succesfully edited');
+                            return redirect()->route('projects.index');
+                       
+                       
+                    } 
+        } else
+            return back()->withErrors('Access denied. not member of this project');
     }
 
     /**
@@ -413,13 +410,26 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
+    {  
+      $project_member=ProjectMember::where('project_id', $id)->where('roll_no', Auth::user()->roll_no)->with('projects')->first(); 
+
+      if($project_member)
+      {
          $project=Project::findOrFail($id);
-        if($project->delete()){
+      
+        if($project->delete())
+        {
             $project->tags()->detach();
             Session::flash('success', 'file '.$project->filepath.' was successfully deleted');
-        }
+        } 
+     } 
+     else
+         return back()->withErrors('you dont have access to delete this project');
 
-            return redirect()->route('projects.index');
+
+        return redirect()->route('projects.index');
     }
+
+
+    
 }

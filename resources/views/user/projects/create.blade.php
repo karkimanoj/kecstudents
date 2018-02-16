@@ -6,9 +6,9 @@
 
 @section('content')
 <div class="main-container">
-    <div class="container-fluid" id="top_header" >
-        <h2 class="text-center">upload a project</h2>
-    </div>
+      <div class="container-fluid" id="top_header" >
+          <h2 class="text-center">upload project</h2>
+      </div>
     <div class="row ">
         <div class="col-md-10 col-md-offset-1 ">
         	
@@ -79,10 +79,14 @@
                                         <label class="right m-r-20">github link:</label>
                                     </div>    
                                      <div class="col-md-8">
-                                        <div class="input-group">
-                                          <i class="fa fa-link input-group-addon"></i>
-                                          <input type="url" name="link" class="form-control" value="{{old('link')}}" maxlength="255" aria-describedby="basic-addon1">
-                                        </div>
+                                         <div class="input-group">
+                                             <span class="input-group-btn" id="basic-addon2">
+                                              <button class="btn btn-default">
+                                                  <i class="fas fa-link" style="color:#228AE6"></i>
+                                                </button> 
+                                              </span>
+                                              <input type="url" name="link" class="form-control" value="{{ old('link')}}" aria-describedby="basic-addon2" maxlength="255" >
+                                        </div>  
     
                                          <span class="help-block" >
                                                 @if($errors->has('link'))

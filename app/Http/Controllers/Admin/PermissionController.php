@@ -6,9 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Permission;
 use Session;
+use Auth;
 
 class PermissionController extends Controller
-{
+{   
+
+    public function __construct()
+    {
+        $this->middleware('permission:create-acl', [ 'only' => ['create', 'store'] ]);
+        $this->middleware('permission:update-acl', [ 'only' => ['edit', 'update'] ]);
+         $this->middleware('permission:destroy-acl', [ 'only' => ['destroy',] ]);
+        
+    }
     /**
      * Display a listing of the resource.ffdg
      *

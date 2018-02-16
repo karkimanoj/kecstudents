@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Faculty;
 use Session;
+use Auth;
 
 class FacultyController extends Controller
-{
+{   
+  
     /**
      * Display a listin of the resource.
      *
@@ -26,9 +28,13 @@ class FacultyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        $faculties=Faculty::all();
-        return view('manage.faculties.create');
+    {   
+        if(Auth::user()->hasPermission(['create-faculties']))
+        { 
+            $faculties=Faculty::all();
+            return view('manage.faculties.create');
+        }else
+            return back()->withErrors('you dont have permission for this activity');    
     }
 
     /**
@@ -38,23 +44,31 @@ class FacultyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $this->validate($request, ['name'=>'required|max:100|unique:faculties,name',
-            'display_name'=>'required|max:255']);
+    {   
+        if(Auth::user()->hasPermission(['create-faculties']))
+        { 
+            $this->validate($request, ['name'=>'required|max:100|unique:faculties,name',
+                'display_name'=>'required|max:255']);
 
-        $faculty=new Faculty;
-        $faculty->name=$request->name;
-        $faculty->display_name=$request->display_name;
+            $faculty=new Faculty;
+            $faculty->name=$request->name;
+            $faculty->display_name=$request->display_name;
 
-        if($faculty->save()){
-            Session::flash('success', $request->name.' faculty has been created successfully');
-            return redirect()->route('faculties.show', $faculty->id);
-        }
+            if($faculty->save()){
+                Session::flash('success', $request->name.' faculty has been created successfully');
+                return redirect()->route('faculties.show', $faculty->id);
+            }
+         }else
+            return back()->withErrors('you dont have permission for this activity');    
     }
 
     public function edit($id){
-        $faculty=Faculty::findOrFail($id);
-        return view('manage.faculties.edit', ['faculty'=>$faculty]);
+        if(Auth::user()->hasPermission(['update-faculties']))
+        { 
+            $faculty=Faculty::findOrFail($id);
+            return view('manage.faculties.edit', ['faculty'=>$faculty]);
+        }else
+            return back()->withErrors('you dont have permission for this activity');    
     }
 
     /**
@@ -76,25 +90,34 @@ class FacultyController extends Controller
      * @return \Illuminate\Http\Response
      */
      public function update(Request $request, $id)
-    {
-        $this->validate($request, ['name'=>'required|max:100|unique:faculties,name,'.$id,
-            'display_name'=>'required|max:255']);
+    {   
+        if(Auth::user()->hasPermission(['update-faculties']))
+        { 
+            $this->validate($request, ['name'=>'required|max:100|unique:faculties,name,'.$id,
+                'display_name'=>'required|max:255']);
 
-        $faculty=Faculty::findOrFail($id);
-        $faculty->name=$request->name;
-        $faculty->display_name=$request->display_name;
+            $faculty=Faculty::findOrFail($id);
+            $faculty->name=$request->name;
+            $faculty->display_name=$request->display_name;
 
-        if($faculty->save()){
-            Session::flash('success', $request->name.' faculty has been edited successfully');
-            return redirect()->route('faculties.show', $faculty->id);
-        }
+            if($faculty->save()){
+                Session::flash('success', $request->name.' faculty has been edited successfully');
+                return redirect()->route('faculties.show', $faculty->id);
+            }
+        }else
+            return back()->withErrors('you dont have permission for this activity');    
     }
     
     public function destroy($id)
-    {
-        $faculty=Faculty::findOrFail($id);
-        if($faculty->delete())
-            Session::flash('success', $faculty->display_name.' faculty was successfully deleted');
-        return redirect()->route('faculties.index');
+    {   
+        if(Auth::user()->hasPermission(['destroy-faculties']))
+        {
+            $faculty=Faculty::findOrFail($id);
+            if($faculty->delete())
+                Session::flash('success', $faculty->display_name.' faculty was successfully deleted');
+
+            return redirect()->route('faculties.index');
+        }else
+            return back()->withErrors('you dont have permission for this activity');    
     }
 }

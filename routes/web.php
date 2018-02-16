@@ -13,6 +13,9 @@
 
 Route::middleware('role:superadministrator|administrator|teacher|student|staff')->group(function(){
 	Route::resource('/user/projects', 'User\ProjectController', ['as'=>'user']);
+
+	Route::get('/projects/{category}/index', 'PageController@projectIndex')->name('projects.home');
+	Route::get('/projects/{id}', 'PageController@projectShow')->name('projects.view');
 });
 
 
@@ -51,9 +54,7 @@ Route::prefix('manage')->middleware('role:superadministrator|administrator')->gr
 		Route::get('/dashboard',  ['as'=>'manage.dashboard', 'uses'=>'Admin\ManageController@dashboard']);
 });
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index');
 	
 Auth::routes();
 

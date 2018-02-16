@@ -8362,6 +8362,11 @@ label {
   font-weight: 650;
 }
 
+.btn-nobg-color {
+  background-color: white;
+  color: #2a88bd;
+}
+
 #brand_name:hover {
   color: #228AE6;
 }
@@ -8793,6 +8798,7 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
   min-height: 120px;
   background-color: #5FCF80;
   padding: 40px;
+  color: white;
 }
 
 .section_box1 {
@@ -8802,13 +8808,22 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
   display: inline-block;
   position: relative;
   float: left;
+  vertical-align: middle;
   -webkit-box-shadow: 0 0.25rem 0.125rem 0 rgba(0, 0, 0, 0.05);
   box-shadow: 0 0.25rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+}
+
+.margin_center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
 }
 
 .section_box2 {
   width: 68%;
   height: 170px;
+  padding: 0px 20px 20px 20px;
   background-color: white;
   display: inline-block;
   position: relative;
@@ -8816,6 +8831,17 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
   margin-left: 4px;
   -webkit-box-shadow: 0 0.25rem 0.125rem 0 rgba(0, 0, 0, 0.05);
   box-shadow: 0 0.25rem 0.125rem 0 rgba(0, 0, 0, 0.05);
+}
+
+.section_box2:hover {
+  background-color: #228AE6;
+  color: white;
+  cursor: pointer;
+}
+
+.section_header {
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
 }
 
 #footer .li_header {
@@ -8838,6 +8864,19 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
 
 #footer a:hover {
   color: white;
+}
+
+.bg_grey {
+  background-color: #FAFAFA;
+}
+
+#project_name {
+  font-size: 1.5em;
+}
+
+#project_box a:hover {
+  text-decoration: underline;
+  color: #228AE6;
 }
 
 /*
