@@ -10,7 +10,7 @@
 				</div>
 			</div>			
 			<div class="col-md-2">
-				<a href="{{ route('faculties.index') }}" class="btn  btn-primary btn-block pull-right"> view all</a>
+				<a href="{{ route('faculties.index') }}" class="btn  btn-primary btn-block float-right"> view all</a>
 			</div>
 		</div>
 

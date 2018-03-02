@@ -3,12 +3,16 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Tag;
 use App\Project;
 use App\Subject;
 use App\ProjectMember;
+use App\Img;
 use Carbon\Carbon;
 use Auth;
+use Image;
+use Validator;
 use Session;
 use Storage;
 
@@ -76,21 +80,38 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+   public function store(Request $request)
     { 
         include(app_path() . '\helpers.php');
-       
-        $this->validate($request, [
-                'name'=>'required|min:4|max:255',
-                'abstract'=>'required|max:2000',
-                'link'=>'sometimes|url|max:255|unique:projects,url_link',
-                'file'=>'required|file||max:31000|mimetypes:application/pdf,application/msword',
-                'tags'=>'required|max:60',
-                'member_rollno.*'=>'distinct|required|max:15',
-                'member_name'=>'required_with:member_rollno|max:255',
-                'subject'=>'integer|required'
 
-        ]);
+       $subject_id=$request->subject;
+
+        Validator::make($request->all() , [
+                'name'=>'required|min:4|max:255',
+                'abstract'=>'required|max:4000',
+                'link'=>'sometimes|url|max:255|unique:projects,url_link',
+                'file'=>'required|file|max:31000||mimetypes:application/pdf,application/msword',
+                'tags'=>'required|max:60',
+                'subject'=>'integer|required',
+                'images'=>'sometimes|array|max:4',
+                'images.*'=>'required|file|image|max:4000',
+                'member_rollno'=>'required|array|max:5',
+                'member_rollno.*'=>
+                    ['distinct','required','max:15',
+                        Rule::unique('project_members', 'roll_no')
+                            ->where( function($query) use( $subject_id){
+                               return $query->whereIn('project_id', function($query) use($subject_id) 
+                               {
+                                $query->select('id')
+                                      ->from('projects')
+                                      ->where('subject_id', $subject_id);
+                               });
+                            })
+                    ],
+                'member_name'=>'required_with:member_rollno|max:255'
+                
+
+        ])->validate();
         
 
         
@@ -103,15 +124,6 @@ class ProjectController extends Controller
         //checking if inputed roll no of member is already member of other projects 
         foreach($request->member_rollno as $roll_no)
         {   
-            $roll_no=trim($roll_no);
-            $project= check_members(1, $roll_no);
-            
-            if($project)
-            {
-                Session::flash('error', $roll_no.' is already a project member of '.$project->name);
-                return redirect()->route('projects.create');
-                die(1);
-            }
 
             if(!Auth::user()->hasRole(['superadministrator', 'administrator']))
             {
@@ -125,12 +137,11 @@ class ProjectController extends Controller
 
         if($user_flag==false)
         {
-             Session::flash('error', Auth::user()->roll_no.' is not present in group member in '.$project->name);
-                return redirect()->route('projects.create');
-                die(1);
+            return back()->withErrors( Auth::user()->roll_no.' is not present in group member in '.$project->name);
+            die(1);
         }
 
-         if($request->hasFile('file') && $request->file('file')->isvalid())
+         if($request->hasFile('file') && $request->file('file')->isvalid() )
         {
             $file=$request->file('file');
             $ext=$file->extension();
@@ -219,13 +230,35 @@ class ProjectController extends Controller
 
                    if($project->project_members()->saveMany($members))
                    {
-
-
+                        //syncing tags to project
                         $project->tags()->sync($tag_ids, false);
+
+                        //insertin screenshots or photos for project
+                        $images=[];
+                        if($request->hasFile('images'))
+                        {   
+                            for($i=0; $i<count($request->file('images')) ;$i++)
+                            {
+                                $img=$request->file('images')[$i];
+                                $ext=$img->extension();
+                                $img_name=time().rand(0,999).'.'.$ext;
+                                $path='images/projects/'.$img_name;
+
+                                Image::make($img)->resize(600, 350,
+                                    function ($constraint) {
+                                        $constraint->upsize();
+                                    })->save(public_path($path));
+
+                                $images[$i]=new Img(['filepath'=>$path]);
+                            }
+
+                            $project->imgs()->saveMany($images);
+                        }
+
                         Session::flash('success',$project->name.' has been succesfully uploaded');
 
 
-                        return redirect()->route('user.projects.show', $project->id);
+                         return redirect()->route('user.projects.show', $project->id);
                    }else
                     return back()->withErrors('error in saving project members');
                    
@@ -290,115 +323,129 @@ class ProjectController extends Controller
         
         $project_member=ProjectMember::where('project_id', $id)->where('roll_no', Auth::user()->roll_no)->first();    
         if($project_member)
-        {
-            $this->validate($request, [
-                    'name'=>'required|min:4|max:255',
-                    'abstract'=>'required|max:2000',
-                    'link'=>'sometimes|url|max:255|unique:projects,url_link,'.$id,
-                    'tags'=>'required|max:60',
-                    'member_rollno.*'=>'distinct|required|max:15',
-                    'member_name'=>'required_with:member_rollno|max:255',
+        {   
+            $project=Project::findOrFail($id);
+             $subject_id=$project->subject_id;
+
+            Validator::make($request->all() , 
+            [
+                'name'=>'required|min:4|max:255',
+                'abstract'=>'required|max:4000',
+                'link'=>'sometimes|url|max:255|unique:projects,url_link,'.$id,
+                'tags'=>'required|max:60',
+                'member_rollno'=>'required|array|max:5',
+                'member_rollno.*'=>['distinct','required','max:15',
+                    Rule::unique('project_members', 'roll_no')
+                        ->where( function($query) use( $subject_id, $id)
+                        {
+                           return $query->where('project_id','!=', $id)
+                           ->whereIn('project_id', function($query) use($subject_id, $id) 
+                           {
+                            $query->select('id')
+                                  ->from('projects')
+                                  ->where('subject_id', $subject_id);
+                           });
+                        })
+                        ],
+                'member_name'=>'required_with:member_rollno|max:255',
+            ])->validate();
+          
+                $project->name=$request->name;
+                $project->abstract=$request->abstract;
+                $project->url_link=$request->link;
 
 
-            ]);
-            
+                if($project->save())
+                {   
+                    //creating array of ProjectMember objects to insert in project_members table in single saveMany command
 
-            
-                $project=Project::findOrFail($id);
+                   
+                   
 
-            foreach($request->member_rollno as $roll_no)
-            {
-                
-                 $subject_id=$project->subject_id;
-
-                 $project_1=Project::where('subject_id', $subject_id)
-                        ->where('id','!=', $id)
-                        ->whereIn('id', function($query) use($roll_no) {
-                                $query->select('project_id')
-                                      ->from('project_members')
-                                      ->where('roll_no','=', $roll_no);
-                                        })->first();
-                
-                if($project_1)
-                {
-                    Session::flash('error', $roll_no.' is already a project member of '.$project_1->name);
-                    return redirect()->route('projects.create');
-                    die(1);
-                }
-            }
-
-              
-                    $project->name=$request->name;
-                    $project->abstract=$request->abstract;
-                    $project->url_link=$request->link;
-
-
-                    if($project->save())
+                    $tag_ids=[]; 
+                   //inserting new tags created by user
+                    foreach($request->tags as $tag)
                     {   
-                        //creating array of ProjectMember objects to insert in project_members table in single saveMany command
-
-                       
-                       
-
-                        $tag_ids=[]; 
-                       //inserting new tags created by user
-                        foreach($request->tags as $tag)
+                        $string=str_split($tag);
+                        if($string[0]=='@')
                         {   
-                            $string=str_split($tag);
-                            if($string[0]=='@')
-                            {   
-                                $string=array_slice($string, 1);
-                                $ntag=implode($string);
-                                $new_tag=new Tag;
-                                $new_tag->name=$ntag;
-                                $new_tag->created_by=Auth::user()->id;
-                                $new_tag->save();
+                            $string=array_slice($string, 1);
+                            $ntag=implode($string);
+                            $new_tag=new Tag;
+                            $new_tag->name=$ntag;
+                            $new_tag->created_by=Auth::user()->id;
+                            $new_tag->save();
 
-                                array_push($tag_ids,  $new_tag->id);
+                            array_push($tag_ids,  $new_tag->id);
+                        }
+                        else
+                            array_push($tag_ids,  $tag);
+                    }//end inserting new tags
+
+                   $members_changed=0;
+
+
+                   $members=[];
+                   $member_rollnos=$request->member_rollno;
+                   $member_names=$request->member_name;
+
+                   for ($i=0; $i < count($request->member_rollno) ; $i++) 
+                   {   
+                        $member_rollnos[$i]=trim($member_rollnos[$i]);
+                        $member_names[$i]=trim($member_names[$i]);
+
+                      if($project->project_members()->count()!=count($request->member_rollno)) 
+                        $members_changed=1;
+                    else if($project->project_members()->where('roll_no', $member_rollnos[$i])->where('name', $member_names[$i])->first()==null)
+                           $members_changed=1;
+
+                       $members[$i]=new ProjectMember([ 'roll_no'=>$member_rollnos[$i] ,
+                                                         'name'=>$member_names[$i]  ]);
+                   }
+
+                   if($members_changed==1) 
+                   {
+                      //$project->project_members()->project()->dissociate($project);
+
+                      ProjectMember::where('project_id', '=', $project->id)->delete();
+
+
+                        $inserting_members=$project->project_members()->saveMany($members);
+                   }
+                
+
+
+                        $project->tags()->sync($tag_ids, true);
+
+                        $images=[];
+                        if($request->hasFile('images'))
+                        {       
+                            Img::where('imagable_id', $id)->where('imagable_type', 'App\Project')->delete();
+
+                            for($i=0; $i<count($request->file('images')) ;$i++)
+                            {
+                                $img=$request->file('images')[$i];
+                                $ext=$img->extension();
+                                $img_name=time().rand(0,999).'.'.$ext;
+                                $path='images/projects/'.$img_name;
+
+                                Image::make($img)->resize(600, 350,
+                                    function ($constraint) {
+                                        $constraint->upsize();
+                                    })->save(public_path($path));
+
+                                $images[$i]=new Img(['filepath'=>$path]);
                             }
-                            else
-                                array_push($tag_ids,  $tag);
-                        }//end inserting new tags
 
-                       $members_changed=0;
+                            $project->imgs()->saveMany($images);
+                        }
 
-
-                       $members=[];
-                       $member_rollnos=$request->member_rollno;
-                       $member_names=$request->member_name;
-
-                       for ($i=0; $i < count($request->member_rollno) ; $i++) 
-                       {   
-                            $member_rollnos[$i]=trim($member_rollnos[$i]);
-                            $member_names[$i]=trim($member_names[$i]);
-
-                          if($project->project_members()->count()!=count($request->member_rollno)) 
-                            $members_changed=1;
-                        else if($project->project_members()->where('roll_no', $member_rollnos[$i])->where('name', $member_names[$i])->first()==null)
-                               $members_changed=1;
-
-                           $members[$i]=new ProjectMember([ 'roll_no'=>$member_rollnos[$i] ,
-                                                             'name'=>$member_names[$i]  ]);
-                       }
-
-                       if($members_changed==1) 
-                       {
-                          //$project->project_members()->project()->dissociate($project);
-
-                          ProjectMember::where('project_id', '=', $project->id)->delete();
-
-
-                            $inserting_members=$project->project_members()->saveMany($members);
-                       }
-                    
-
-
-                            $project->tags()->sync($tag_ids, true);
-                            Session::flash('success',$project->name.' has been succesfully edited');
-                            return redirect()->route('projects.index');
-                       
-                       
-                    } 
+                        Session::flash('success',$project->name.' has been succesfully edited');
+                        return redirect()->route('projects.index');
+                   
+                   
+                } else
+                return back()->withErrors('error occured in saving project');
         } else
             return back()->withErrors('Access denied. not member of this project');
     }
@@ -422,9 +469,9 @@ class ProjectController extends Controller
             $project->tags()->detach();
             Session::flash('success', 'file '.$project->filepath.' was successfully deleted');
         } 
-     } 
-     else
-         return back()->withErrors('you dont have access to delete this project');
+      } 
+         else
+             return back()->withErrors('you dont have access to delete this project');
 
 
         return redirect()->route('projects.index');

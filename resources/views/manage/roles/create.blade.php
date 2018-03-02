@@ -13,7 +13,7 @@
 				  <h1>Create new Role</h1>
 				</div>
 			</div>			
-			<div class="col-md-4 col-md-offset-2 ">
+			<div class="col-md-4 offset-md-2 ">
 				<a href="{{ route('roles.index') }}" class="btn  btn-primary pull-right"> View all roles</a>
 			</div>
 		</div>

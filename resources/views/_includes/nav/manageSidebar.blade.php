@@ -3,7 +3,7 @@
             <!-- Sidebar Holder -->
             <nav id="sidebar">
                 <div class="sidebar-header">
-                    <h3>Kecstudents admin</h3>
+                    <h4>Admin</h4>
                 </div>
 
                 <ul class="list-unstyled components">
@@ -19,7 +19,7 @@
                       <a href="{{route('manage.dashboard')}}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                     </li>
                     <li>
-                        <a href="#pageSubmenu" class="{{Nav::hasSegment(['users','roles','permissions'], 2)}}" data-toggle="collapse" aria-expanded="false">Administration</a>
+                        <a href="#pageSubmenu" class="{{Nav::hasSegment(['users','roles','permissions'], 2)}}" data-toggle="collapse" aria-expanded="false">Administration  <span class="caret"></span></a>
                         <ul class="collapse list-unstyled col_ul" id="pageSubmenu" >
                             <li class="{{Nav::isResource('users')}}"><a href="{{route('users.index')}}"><i class="fa fa-users m-r-5" aria-hidden="true"></i> Manage users</a></li>
                             <li class="{{Nav::isResource('roles')}}"><a href="{{route('roles.index')}}"><i class="fa fa-user-secret" aria-hidden="true"></i> Manage Roles</a></li>

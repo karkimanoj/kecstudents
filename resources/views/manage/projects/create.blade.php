@@ -9,7 +9,7 @@
     
 
     <div class="row ">
-        <div class="col-md-11 col-md-offset-1 ">
+        <div class="col-md-11 offset-md-1 ">
         	<h2><center>upload a project</center></h2>
               <div class="panel panel-default m-t-25">
                     <div class="panel-body">
@@ -55,7 +55,7 @@
                                             @if($errors->has('abstract'))
                                                 <strong>{{ $errors->first('abstract') }}</strong>
                                                 @else
-                                                <small class="form-text text-muted"> bhint: you can copy and paste abstract from your project documentation file</small>
+                                                <small class="form-text text-muted"> hint: you can copy and paste abstract from your project documentation file</small>
                                             @endif
                                         </span>
                                         
@@ -95,7 +95,7 @@
                                             </span>
                                      </div>                 
                                 </div>
-                                <div class=" row form-group m-t-20">
+                                <div class=" row form-group m-t-20 {{ $errors->has('file')?'has-error':'' }}">
                                     <div class="col-md-3">               
                                        <label class="right m-r-20">file</label>
                                     </div>
@@ -111,6 +111,23 @@
                                     </div>
                                 </div>
 
+                                <div class=" row form-group m-t-20 {{ $errors->has('images')?'has-error':'' }}">
+                                    <div class="col-md-3" >               
+                                       <label class="float-right m-r-20" >screenshots/photos
+                                       </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="file" name="images[]" multiple class="form-control" accept="image/*"   >
+                                        @if($errors->has('images'))
+                                        <strong>{{ $errors->first('images') }}</strong>
+                                        @else
+                                        <small class="form-text text-muted">
+                                        optional. max 2. Image format must be either jpeg, png or gif
+                                        </small>
+                                        @endif
+                                    </div>
+                                </div>
+
                                     <div class="row m-t-20">
                                         <div class="col-md-3">
                                              <label class="m-t-20">project members ( max 6):</label> 
@@ -121,147 +138,81 @@
                                          
                                     </div>
                                            
-                                 <div class="row form-group  ">
+                                <div class="row form-group  {{ $errors->has('member_rollno[0]')?'has-error':'' }}">
                                     @if(Auth::user()->hasRole('superadministrator') || Auth::user()->hasRole('administrator'))
-                                         <div class="col-md-3 col-md-offset-3" >
-                                            <input type="checkbox" checked class="pull-left" style="width: 15%" >
+                                         <div class="col-md-3 offset-md-3" >
+                                          
                                             
-                                             <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{old('member_rollno[]')}}"  required maxlength="15" placeholder="roll no">
+                                             <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{old('member_rollno[0]')}}"  required maxlength="15" placeholder="roll no">
 
-                                            @if($errors->has('member_rollno[]'))
+                                            @if($errors->has('member_rollno[0]'))
                                                 <span class="help-block">
                                                     <strong>{{ $errors->first('member_rollno[]') }}</strong>
                                                 </span>
                                             @endif
                                           </div> 
                                           <div class="col-md-5">
-                                             <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[]')}}" required maxlength="255" placeholder="name">
+                                             <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[0]')}}" required maxlength="255" placeholder="name">
 
-                                            @if($errors->has('member_name[]'))
+                                            @if($errors->has('member_name[0]'))
                                                 <span class="help-block">
                                                     <strong>{{ $errors->first('member_name[]') }}</strong>
                                                 </span>
                                             @endif
                                            </div> 
                                     @else
-                                            <div class="col-md-3 col-md-offset-3" style="display: none;">
-                                            <input type="checkbox" class="pull-left" style="width: 15%" >
+                                            <div class="col-md-3 offset-md-3" style="display: none;">
                                             
-                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{Auth::user()->roll_no}}" required maxlength="15" placeholder="roll no">
+                                            
+                                             <input type="hidden" style="width: 85%" name="member_rollno[0]"  class="form-control float-float-right" value="{{Auth::user()->roll_no or old('member_rollno[0]') }}" required maxlength="15" placeholder="roll no">
 
-                                            @if($errors->has('member_rollno[]'))
+                                            @if($errors->has('member_rollno[0]'))
                                                 <span class="help-block">
-                                                    <strong>{{ $errors->first('member_rollno[]') }}</strong>
+                                                    <strong>{{ $errors->first('member_rollno[0]') }}</strong>
                                                 </span>
                                             @endif
                                           </div> 
                                           <div class="col-md-5">
-                                             <input type="hidden" name="member_name[]" minlength="4" class="form-control" value="{{Auth::user()->name}}" required maxlength="255" placeholder="name">
+                                             <input type="hidden" name="member_name[0]" minlength="4" class="form-control" value="{{Auth::user()->name old('member_name[0]')}}" required maxlength="255" placeholder="name">
 
-                                            @if($errors->has('member_name[]'))
+                                            @if($errors->has('member_name[0]'))
                                                 <span class="help-block">
-                                                    <strong>{{ $errors->first('member_name[]') }}</strong>
+                                                    <strong>{{ $errors->first('member_name[0]') }}</strong>
                                                 </span>
                                             @endif
                                            </div> 
                                     @endif                    
                                 </div>
-                                <div class="row form-group m-t-20 ">
-                                       
-                                     <div class="col-md-3 col-md-offset-3">
-                                        
-                                        <input type="checkbox" class="pull-left" style="width: 15%" >
-                                        
-                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
 
-                                        @if($errors->has('member_rollno[]'))
+
+
+
+                               @for($i=0; $i<4 ;$i++) 
+                                <div class="row form-group m-t-20 {{ $errors->has('member_rollno[$i]')?'has-error':'' }}">
+                                       
+                                     <div class="col-md-3 offset-md-3">
+                                        
+                                        <input type="checkbox" class="float-left" style="width: 15%" >
+                                        
+                                         <input type="text" style="width: 85%" name="member_rollno[$i]"  class="form-control float-float-right" value="{{old('member_rollno[$i]')}}" required maxlength="15" placeholder="roll no">
+
+                                        @if($errors->has('member_rollno[$i]'))
                                             <span class="help-block">
-                                                <strong>{{ $errors->first('member_rollno[]') }}</strong>
+                                                <strong>{{ $errors->first('member_rollno[$i]') }}</strong>
                                             </span>
                                         @endif
                                      </div> 
                                      <div class="col-md-5">
-                                         <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[]')}}" required maxlength="255" placeholder="name">
+                                         <input type="text" name="member_name[$i]" minlength="4" class="form-control" value="{{old('member_name[$i]')}}" required maxlength="255" placeholder="name">
 
-                                        @if($errors->has('member_name[]'))
+                                        @if($errors->has('member_name[$i]'))
                                             <span class="help-block">
-                                                <strong>{{ $errors->first('member_name[]') }}</strong>
+                                                <strong>{{ $errors->first('member_name[$i]') }}</strong>
                                             </span>
                                         @endif
                                      </div>                     
                                 </div>
-                                <div class="row form-group m-t-20 ">
-                                       
-                                     <div class="col-md-3 col-md-offset-3">
-                                        
-                                        <input type="checkbox" class="pull-left" style="width: 15%" >
-                                        
-                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
-
-                                        @if($errors->has('member_rollno[]'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('member_rollno[]') }}</strong>
-                                            </span>
-                                        @endif
-                                     </div> 
-                                     <div class="col-md-5">
-                                         <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[]')}}" required maxlength="255" placeholder="name">
-
-                                        @if($errors->has('member_name[]'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('member_name[]') }}</strong>
-                                            </span>
-                                        @endif
-                                     </div>                     
-                                </div>
-                                <div class="row form-group m-t-20 ">
-                                       
-                                     <div class="col-md-3 col-md-offset-3">
-                                        
-                                        <input type="checkbox" class="pull-left" style="width: 15%" >
-                                        
-                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
-
-                                        @if($errors->has('member_rollno[]'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('member_rollno[]') }}</strong>
-                                            </span>
-                                        @endif
-                                     </div> 
-                                     <div class="col-md-5">
-                                         <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[]')}}" required maxlength="255" placeholder="name">
-
-                                        @if($errors->has('member_name[]'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('member_name[]') }}</strong>
-                                            </span>
-                                        @endif
-                                     </div>                     
-                                </div>
-                                <div class="row form-group m-t-20 ">
-                                       
-                                     <div class="col-md-3 col-md-offset-3">
-                                        
-                                        <input type="checkbox" class="pull-left" style="width: 15%" >
-                                        
-                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
-
-                                        @if($errors->has('member_rollno[]'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('member_rollno[]') }}</strong>
-                                            </span>
-                                        @endif
-                                     </div> 
-                                     <div class="col-md-5">
-                                         <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[]')}}" required maxlength="255" placeholder="name">
-
-                                        @if($errors->has('member_name[]'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('member_name[]') }}</strong>
-                                            </span>
-                                        @endif
-                                     </div>                     
-                                </div>
+                                @endfor
                                 
                                         <center><input type="submit" name="upload" value="upload" class="btn btn-primary"></center>
                                 

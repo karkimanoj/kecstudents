@@ -43,7 +43,7 @@
 				
 				
 			</div>
-			<div class="col-md-3 col-md-offset-1">
+			<div class="col-md-3 offset-md-1">
 				<h4> Create new category</h4>
 				<form method="POST" action="{{ route('download_categories.store') }}">
 

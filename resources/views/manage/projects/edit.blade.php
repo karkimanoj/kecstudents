@@ -7,7 +7,7 @@
 @section('content')
 <div class="main-container">
     <div class="row ">
-        <div class="col-md-11 col-md-offset-1 ">
+        <div class="col-md-11 offset-md-1 ">
         	<h2><center>Edit project</center></h2>
               <div class="panel panel-default m-t-25">
                     <div class="panel-body">
@@ -103,6 +103,33 @@
                                     </div>
                                 </div>
 
+                                <div class=" row form-group m-t-20 ">
+                                    <div class="col-md-3" >               
+                                       <label class="float-right m-r-20" >screenshots/photos
+                                       </label>
+                                    </div>
+
+                                    <div class="col-md-9">
+                                        @foreach($project->imgs as $image)
+                                          <img src="{{asset($image->filepath)}}" width="46%" style="margin-left:3%">
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                 <div class=" row form-group mt-2 {{ $errors->has('images')?'has-error':'' }}">
+                                    <div class="col-md-8 offset-md-3">
+                                        <input type="file" name="images[]" multiple class="form-control" accept="image/*"   >
+                                        @if($errors->has('images'))
+                                        <strong>{{ $errors->first('images') }}</strong>
+                                        @else
+                                        <small class="form-text text-muted">
+                                        selecting new images will replace previous images, leave empty to keep current images. max 2. image format: jpeg, png, gif
+                                        </small>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                
                                 <div class="row m-t-20">
                                     <div class="col-md-3">
                                          <label class="m-t-20">project members ( max 6):</label> 
@@ -117,10 +144,10 @@
                                  @foreach($project->project_members as $member)
                                  	 <div class="row form-group m-t-20 ">
                                     @if( Auth::user()->roll_no==$member->rollno )
-                                         <div class="col-md-3 col-md-offset-3" style="display: none;">
+                                         <div class="col-md-3 offset-md-3" style="display: none;">
                                             <input type="checkbox" class="pull-left" style="width: 15%" >
                                             
-                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{Auth::user()->roll_no}}" required maxlength="15" placeholder="roll no">
+                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{Auth::user()->roll_no}}" required maxlength="15" placeholder="roll no">
 
                                             @if($errors->has('member_rollno[]'))
                                                 <span class="help-block">
@@ -139,11 +166,11 @@
                                         </div> 
                   
                                     @else
-                                    	<div class="col-md-3 col-md-offset-3">
+                                    	<div class="col-md-3 offset-md-3">
 		                                        
 		                                        <input type="checkbox" class="pull-left" style="width: 15%" checked>
 		                                        
-		                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{$member->roll_no or old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
+		                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{$member->roll_no or old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
 
 		                                        @if($errors->has('member_rollno[]'))
 		                                            <span class="help-block">
@@ -167,11 +194,11 @@
 
                                 @for($i=count($project->project_members); $i<5; $i++)
                                   <div class="row form-group m-t-20 ">
-                                	<div class="col-md-3 col-md-offset-3">
+                                	<div class="col-md-3 offset-md-3">
 		                                        
                                         <input type="checkbox" class="pull-left" style="width: 15%" >
                                         
-                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{ old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
+                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{ old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
 
                                         @if($errors->has('member_rollno[]'))
                                             <span class="help-block">

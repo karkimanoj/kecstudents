@@ -66,7 +66,7 @@
 
         <div class="container">
             <div class="row ">
-                <div class="col-md-4 col-md-offset-4 m-t-40 ">
+                <div class="col-md-4 offset-md-4 m-t-40 ">
                       <div class="panel panel-default">
                             <div class="panel-body">
                                 <form method="POST" action="{{ route('login') }}">

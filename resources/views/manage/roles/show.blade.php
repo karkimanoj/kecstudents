@@ -14,7 +14,7 @@
 				<h4 class="text-muted">{{$role->description}}</h4>
 			</div>			
 			<div class="col-md-2">
-				<a href="{{ route('roles.edit', $role->id) }}" class="btn  btn-primary btn-block pull-right"> Edit role</a>
+				<a href="{{ route('roles.edit', $role->id) }}" class="btn  btn-primary btn-block float-right"> Edit role</a>
 			</div>
 		</div>
 

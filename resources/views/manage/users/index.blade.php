@@ -10,8 +10,8 @@
 			<div class="col-md-4">
 				<h1>Users</h1>
 			</div>
-			<div class="col-md-4 col-md-offset-4 ">
-				<a href="{{ route('users.create') }}" class="btn  btn-primary pull-right"> create new user</a>
+			<div class="col-md-4 offset-md-4 ">
+				<a href="{{ route('users.create') }}" class="btn  btn-primary float-right"> create new user</a>
 			</div>
 
 		</div>
@@ -40,9 +40,9 @@
 						@endforeach
 					</tbody>
 				</table>
-				<center>
-				{{ $users->links()}}
-				</center>
+				
+						{{ $users->links( "pagination::bootstrap-4") }}
+					
 				</div>
 			</div>
 		</div>

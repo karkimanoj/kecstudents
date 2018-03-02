@@ -10,8 +10,8 @@
 			<div class="col-md-4">
 				<h1>Permissions</h1>
 			</div>
-			<div class="col-md-4 col-md-offset-4 ">
-				<a href="{{ route('permissions.create') }}" class="btn  btn-primary pull-right"> create new permissions</a>
+			<div class="col-md-4 offset-md-4 ">
+				<a href="{{ route('permissions.create') }}" class="btn  btn-primary float-right"> create new permissions</a>
 			</div>
 
 		</div>

@@ -3,7 +3,7 @@
 @section('content')
 <div class="main-container">
     <div class="row ">
-        <div class="col-md-10 col-md-offset-1 ">
+        <div class="col-md-10 offset-md-1 ">
         	<h2><center>Edit upload</center></h2>
               <div class="panel panel-default m-t-25">
                     <div class="panel-body">

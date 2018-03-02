@@ -66,7 +66,7 @@
 
     <div class="container m-b-40">
         <div class="row m-t-40 ">
-            <div class="col-md-5 col-md-offset-3 mtop-5 ">
+            <div class="col-md-5 offset-md-3 mtop-5 ">
 
               <div class="panel panel-default">
                 <div class="panel-body">

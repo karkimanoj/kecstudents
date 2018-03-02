@@ -27,7 +27,8 @@
 
       @include('_includes.nav.main')
 
-
+      @include('_includes.messages')
+      
         @yield('content')
 
         @include('_includes.footer')

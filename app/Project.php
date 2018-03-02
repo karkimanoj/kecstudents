@@ -24,4 +24,8 @@ class Project extends Model
         return $this->belongsTo('App\Subject');
     }
 
+    public function imgs(){
+        return $this->morphMany('App\Img', 'imagable');
+    }
+
 }

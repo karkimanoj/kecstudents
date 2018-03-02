@@ -10,8 +10,8 @@
 			<div class="col-md-4">
 				<h1>Subjects</h1>
 			</div>
-			<div class="col-md-4 col-md-offset-4 ">
-				<a href="{{ route('subjects.create') }}" class="btn  btn-primary pull-right"> Add new subject</a>
+			<div class="col-md-4 offset-md-4 ">
+				<a href="{{ route('subjects.create') }}" class="btn  btn-primary float-right"> Add new subject</a>
 			</div>
 
 		</div>
@@ -63,7 +63,7 @@
 							        			<form method="POST" action="{{ route('subjects.destroy', $subject->id) }}" >
 									        		{{method_field("DELETE")}}
 									        		{{csrf_field()}}
-									        		<input type="submit" class="btn btn-danger pull-right" name="delete" value="yes">
+									        		<input type="submit" class="btn btn-danger float-right" name="delete" value="yes">
 												</form>		
 							        		</div>
 							        		<div class="col-md-6">

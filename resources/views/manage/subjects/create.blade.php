@@ -18,8 +18,8 @@
 				  <h1>Add New subject</h1>
 				</div>
 			</div>			
-			<div class="col-md-4 col-md-offset-2 ">
-				<a href="{{ route('subjects.index') }}" class="btn  btn-primary pull-right"> View all subjects</a>
+			<div class="col-md-4 offset-md-2 ">
+				<a href="{{ route('subjects.index') }}" class="btn  btn-primary float-right"> View all subjects</a>
 			</div>
 		</div>
 

@@ -4,7 +4,7 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-4 col-md-offset-4 mtop-5 ">
+        <div class="col-md-4 offset-md-4 mtop-5 ">
               <div class="panel panel-default">
                     <div class="panel-body">
                         @if (session('status'))
@@ -40,7 +40,7 @@
         </div>
 
 
-        <!--<div class="col-md-8 col-md-offset-2">
+        <!--<div class="col-md-8 offset-md-2">
             <div class="panel panel-default">
                 <div class="panel-heading">Reset Password</div>
 
@@ -69,7 +69,7 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
+                            <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     Send Password Reset Link
                                 </button>

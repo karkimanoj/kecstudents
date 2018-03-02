@@ -8,17 +8,20 @@
 
 	<div class="main-container">
 		<!-- heading -->
-		<div class="container-fluid" id="top_header" >
+		<div class="container-fluid w-100" id="top_header" >
 			
 					 <h2 class="text-center">All Projects</h2>
 					 <div class="row">
-					 	<div class="col-md-8 col-md-offset-2">
+					 	<div class="col-md-8 offset-md-2">
 					 		<div class="input-group input-group-lg">
-								  <input type="text" class="form-control" placeholder="search" aria-describedby="basic-addon2">
-								  <span class="input-group-btn" id="basic-addon2"><button class="btn btn-default">
+								  <input type="text" class="form-control" placeholder="search" aria-label="Large" aria-describedby="basic-addon2">
+								  <div class="input-group-prepend"> 
+								  	<button class="btn btn-default" type="button" id="basic-addon2">
 								  	<i class="fas fa-search" style="color:#228AE6"></i> projects
-								  </button> </span>
-							</div>
+								  </button> 
+								</div>
+							</div>								
+
 					 	</div>
 					 </div>
 				
@@ -27,14 +30,14 @@
 	       
 	
 		
-
+	<div class="container-fluid">		
 		<div class="row">
-			<div class="col-md-10 col-md-offset-1 mt-5"  style="background-color: white;">
+			<div class="col-md-10 offset-md-1 "  style="background-color: white;">
 			
-				<div class="row">
+				<div class="row mt-5 mb-5">
 					<div class="col-md-3 m-b-30">
 						<div class="row ">
-							<div class="col-md-11 col-md-offset-1  m-t-30  bg_grey" style=" padding: 10px;">
+							<div class="col-md-11 offset-md-1    bg_grey" style=" padding: 10px;">
 
 									<div class="form-group " >
 									<label> sort by:</label>
@@ -48,32 +51,31 @@
 							</div>
 						</div>
 						<div class="row ">
-							<div class="col-md-11 col-md-offset-1  bg_grey m-t-30 " style=" padding: 10px;">
+							<div class="col-md-11 offset-md-1  bg_grey m-t-30 " style=" padding: 10px;">
 								<a href="{{route('user.projects.index')}}" class="btn btn-primary btn-block btn-nobg-color">view my projects</a>
 							</div>
 						</div>		
 						
 						<div class="row">
-							<div class="col-md-11 col-md-offset-1  bg_grey" >
+							<div class="col-md-11 offset-md-1  bg_grey" >
 								
 
-								<ul class="nav nav-pills nav-stacked">
-									<li role="presentation m-t-10" >
-									  	<a href="{{route('projects.home', 0)}}">All projects
-									  		<span class="badge pull-right">{{App\Project::all()->count()}}</span> </a>
+								 
 
+									<ul class="nav nav-pills flex-column nav-stacked">
+									  <li class="nav-item ">
+									    <a class="nav-link {{ Nav::urlDoesContain('projects/0/index') }}" href="{{route('projects.home', 0)}}">All projects
+									  		<span class="badge badge-light float-right">{{App\Project::all()->count()}}</span> </a>
 									  </li>
-									@foreach($categories as $project_category)
 
-									  <li role="presentation m-t-10"  style="font-weight: 400" class=" @if($active_category)
-											  	{{$project_category->id==$active_category->id?'active':''}}
-											  	@endif">
-									  	<a href="{{route('projects.home', $project_category->id)}}" >
-									  	{{$project_category->name}} <span class="badge pull-right">{{$project_category->projects->count()}}</span></a>
+									 @foreach($categories as $project_category)
 
+									  <li style="font-weight: 400" class="nav-item ">
+									  	<a class="nav-link {{ Nav::urlDoesContain('projects/'.$project_category->id.'/index') }}" href="{{route('projects.home', $project_category->id)}}" >
+									  	{{$project_category->name}} <span class="badge badge-light float-right">{{$project_category->projects->count()}}</span></a>
 									  </li>
-								
-									 @endforeach
+
+									@endforeach
 								</ul>
 						
 							</div>
@@ -82,13 +84,13 @@
 
 					<div class="col-md-9 " style="padding: 20px" >
 						<div class="row">
-							<div class="col-md-8 m-t-30">
-								<h3> displaying {{$projects->count()}} results  {{
-									isset($active_category->name)?'for '.$active_category->name:''}}</h3>
+							<div class="col-md-8 ">
+								<h4 class="text-muted"> displaying {{$projects->count()}} results  {{
+									isset($active_category->name)?'for '.$active_category->name:''}}</h4>
 							</div>
-							<div class="col-md-3 col-md-offset-1  m-t-30">
+							<div class="col-md-3 offset-md-1  ">
 							
-								<a href="{{route('user.projects.create')}}" class="btn btn-primary btn-block  pull-right"> upload new project</a>
+								<a href="{{route('user.projects.create')}}" class="btn btn-primary btn-block  float-right"> upload new project</a>
 								
 							</div>
 						</div>
@@ -97,13 +99,13 @@
 							<div class="col-md-12 m-t-30">
 								@foreach($projects as $project)
 								<div class="row m-t-30" id="project_box">
-								  <div class="col-md-8 col-md-offset-2  bg_grey" style=" padding: 0px 20px 15px 20px;" >
+								  <div class="col-md-8 offset-md-2  bg_grey" style=" padding: 0px 20px 15px 20px;" >
 									
 									    
 
 									    	<div class="row m-t-10">
 									    		<div class="col-md-12" >
-									    			<a href="" id="project_name" 
+									    			<a href="{{route('user.projects.show', $project->id)}}" id="project_name" 
     											>{{$project->name}}</a>
 									    		</div>
 									    	</div> 
@@ -139,7 +141,7 @@
 		    											>view</a>
 											    		</div>
 											    		<div class="col-md-6 " >
-											    			<a href="{{route('user.projects.edit', $project->id)}}"  class="btn btn-primary btn-sm btn-nobg-color"
+											    			<a href="{{route('user.projects.edit', $project->id)}}"  class="btn btn-outline-primary btn-sm "
 		    											>edit</a>
 											    		</div>
 											    	</div>
@@ -164,12 +166,12 @@
 				{{--{{ substr(strip_tags($project->filepath),0,38) }} <span style="color: blue"> {{ strlen(strip_tags($project->filepath))>38?'....':'' }} </span>--}}
 				
 				<center>
-				{{ $projects->links()}}
+				{{ $projects->links("pagination::bootstrap-4")}}
 				</center>
 				</div>
 			</div>
 		</div>
-
+	 </div>
 	</div>
 @endsection
 

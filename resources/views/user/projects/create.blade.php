@@ -2,24 +2,36 @@
 
 @section('styles')
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+
+  <script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+    <script>
+      tinymce.init({ selector:'textarea',
+              menubar:'false',
+              plugins:'code link' });
+  </script>
+
 @endsection
 
 @section('content')
 <div class="main-container">
-      <div class="container-fluid" id="top_header" >
-          <h2 class="text-center">upload project</h2>
-      </div>
+     <div class="row">
+      <div class="col-md-12" id="top_header" >        
+         <h2 class="text-center">All Projects</h2>          
+      </div>    
+    </div>
+
+  <div class="container">
     <div class="row ">
-        <div class="col-md-10 col-md-offset-1 ">
+        <div class="col-md-9  bg-white mb-3">
         	
               <div class="panel panel-default   borderless">
                     <div class="panel-body">
-                        <form method="POST" action="{{route('user.projects.store')}} " enctype="multipart/form-data" class="m-t-40">
+                        <form method="POST" id="projectForm" action="{{route('user.projects.store')}} " enctype="multipart/form-data" class="m-t-40">
                                 {{csrf_field()}}    
                                         
                                 <div class="row form-group m-t-20{{ $errors->has('name')?'has-error':'' }} ">
                                     <div class="col-md-3">    
-                                        <label class="right m-r-20">Name of the project:</label>
+                                        <label class="float-right m-r-20">Name of the project:</label>
                                     </div>    
                                      <div class="col-md-8">
                                          <input type="text" name="name" minlength="4" class="form-control" value="{{old('name')}}" required maxlength="255">
@@ -34,7 +46,7 @@
 
                                 <div class=" row form-group m-t-20" id="subject_div">
                                     <div class="col-md-3">               
-                                       <label class="right m-r-20">choose project category</label>
+                                       <label class="float-right ">choose project category</label>
                                     </div>
                                     <div class="col-md-8">
                                         <select class="form-control" id="subject_select" name="subject" required>
@@ -47,7 +59,7 @@
 
                                 <div class="row form-group m-t-20{{ $errors->has('abstract')?'has-error':'' }} ">
                                     <div class="col-md-3">    
-                                        <label class="right m-r-20">Abstract:</label>
+                                        <label class="float-right m-r-20">Abstract:</label>
                                     </div>    
                                      <div class="col-md-8">
                                          <textarea class="form-control" required rows="14" name="abstract" >{{old('abstract')}}</textarea>
@@ -62,21 +74,24 @@
                                         
                                      </div>                 
                                 </div>
+
                                 <div class=" row form-group m-t-20" >
                                     <div class="col-md-3">               
-                                       <label class="right m-r-20">tags:</label>
+                                       <label class="float-right m-r-20">tags:</label>
                                     </div>
                                     <div class="col-md-8">
                                         <select class="form-control" id="tag_select" multiple="multiple" name="tags[]" required> 
+
                                         </select>
                                         <small class="form-text text-muted">
                                         select up to 20 tags. you can create your own tag by typing the tagname and hitting enter.
                                         </small>
                                     </div>
                                 </div>
+
                                 <div class="row form-group m-t-20{{ $errors->has('link')?'has-error':'' }} ">
                                     <div class="col-md-3">    
-                                        <label class="right m-r-20">github link:</label>
+                                        <label class="float-right m-r-20">github link:</label>
                                     </div>    
                                      <div class="col-md-8">
                                          <div class="input-group">
@@ -99,7 +114,7 @@
                                 </div>
                                 <div class=" row form-group m-t-20">
                                     <div class="col-md-3">               
-                                       <label class="right m-r-20">file</label>
+                                       <label class="float-right m-r-20">file</label>
                                     </div>
                                     <div class="col-md-8">
                                         <input type="file" name="file" placeholder="aaaaaaa" class="form-control" accept=".pdf,.docx" required value="{{old('file')}}">
@@ -113,9 +128,27 @@
                                     </div>
                                 </div>
 
+                                <div class=" row form-group m-t-20 {{ $errors->has('images')?'has-error':'' }}">
+                                    <div class="col-md-3" >               
+                                       <label class="float-right m-r-20" >screenshots/photos
+                                       </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="file" name="images[]" multiple class="form-control" accept="image/*"   >
+                                        @if($errors->has('images'))
+                                        <strong>{{ $errors->first('images') }}</strong>
+                                        @else
+                                        <small class="form-text text-muted">
+                                        optional. max 2. Image format must be either jpeg, png or gif
+                                        </small>
+                                        @endif
+                                    </div>
+                                </div>
+
                                     <div class="row m-t-20">
                                         <div class="col-md-3">
-                                             <label class="m-t-20 right">project members ( max 6):</label> 
+                                             <label class="m-t-20 float-right"> members (max 6):
+                                             </label> 
                                         </div>
                                          <div class="col-md-8">
                                              <label class=" m-t-20 m-l-20"><span class="form-text text-muted">Hint: tick checkbox to add members</span> </label> 
@@ -124,32 +157,11 @@
                                     </div>
                                            
                                  <div class="row form-group  ">
-                                    @if(Auth::user()->hasRole('superadministrator') || Auth::user()->hasRole('administrator'))
-                                         <div class="col-md-3 col-md-offset-3" >
-                                            <input type="checkbox" checked class="pull-left" style="width: 15%" >
+                                    @if(Auth::user()->hasRole('student'))
+                                            <div class="col-md-3 offset-md-3" style="display: none;">
+                                           
                                             
-                                             <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{old('member_rollno[]')}}"  required maxlength="15" placeholder="roll no">
-
-                                            @if($errors->has('member_rollno[]'))
-                                                <span class="help-block">
-                                                    <strong>{{ $errors->first('member_rollno[]') }}</strong>
-                                                </span>
-                                            @endif
-                                          </div> 
-                                          <div class="col-md-5">
-                                             <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[]')}}" required maxlength="255" placeholder="name">
-
-                                            @if($errors->has('member_name[]'))
-                                                <span class="help-block">
-                                                    <strong>{{ $errors->first('member_name[]') }}</strong>
-                                                </span>
-                                            @endif
-                                           </div> 
-                                    @else
-                                            <div class="col-md-3 col-md-offset-3" style="display: none;">
-                                            <input type="checkbox" class="pull-left" style="width: 15%" >
-                                            
-                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{Auth::user()->roll_no}}" required maxlength="15" placeholder="roll no">
+                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{Auth::user()->roll_no}}" required maxlength="15" placeholder="roll no">
 
                                             @if($errors->has('member_rollno[]'))
                                                 <span class="help-block">
@@ -166,6 +178,29 @@
                                                 </span>
                                             @endif
                                            </div> 
+                                         
+                                     @elseif(Auth::user()->hasRole('superadministrator') || Auth::user()->hasRole('administrator'))
+                                         <div class="col-md-3 offset-md-3" >
+                                           
+                                            
+                                             <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{old('member_rollno[]')}}"  required maxlength="15" placeholder="roll no">
+
+                                            @if($errors->has('member_rollno[]'))
+                                                <span class="help-block">
+                                                    <strong>{{ $errors->first('member_rollno[]') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div> 
+                                          <div class="col-md-5">
+                                             <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[]')}}" required maxlength="255" placeholder="name">
+
+                                            @if($errors->has('member_name[]'))
+                                                <span class="help-block">
+                                                    <strong>{{ $errors->first('member_name[]') }}</strong>
+                                                </span>
+                                            @endif
+                                           </div> 
+                                  
                                     @endif                    
                                 </div>
 
@@ -175,11 +210,11 @@
                                @for($i=0; $i<4 ;$i++) 
                                 <div class="row form-group m-t-20 ">
                                        
-                                     <div class="col-md-3 col-md-offset-3">
+                                     <div class="col-md-3 offset-md-3">
                                         
-                                        <input type="checkbox" class="pull-left" style="width: 15%" >
+                                        <input type="checkbox" class="float-left" style="width: 15%" >
                                         
-                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control pull-right" value="{{old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
+                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{old('member_rollno[$i]')}}" required maxlength="15" placeholder="roll no">
 
                                         @if($errors->has('member_rollno[]'))
                                             <span class="help-block">
@@ -188,7 +223,7 @@
                                         @endif
                                      </div> 
                                      <div class="col-md-5">
-                                         <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[]')}}" required maxlength="255" placeholder="name">
+                                         <input type="text" name="member_name[]" minlength="4" class="form-control" value="{{old('member_name[$i]')}}" required maxlength="255" placeholder="name">
 
                                         @if($errors->has('member_name[]'))
                                             <span class="help-block">
@@ -199,19 +234,77 @@
                                 </div>
                                 @endfor
                                 
-                                        <center><input type="submit" name="upload" value="upload" class="btn btn-primary btn-lg m-t-20"></center>
-                                
+                                        
                         </form>    
                     </div>
                 </div>
             </div>
+            <div class="col-md-3 mt-3 mb-3">
+                <div class="card  card_shadow w-100 borderless" id="user_widget">
+                    <div class="card-header  " style="background-color: #F39C12">
+                      <div id="card_img">
+                        <img class="card-img img-circle bg-primary" src="/images/test-image.jpg" alt="Card image cap">
+                      </div>
+                      <div class="card_user_detail">
+                         <span style="font-size: 1.2em">{{Auth::user()->name}}</span><br>
+                           <span >{{Auth::user()->roles->first()->name}}</span><br>
+                           <span >{{Auth::user()->roll_no}}</span><br>
+                      </div>
+                   
+               </div>             
+                <div class="card-body ">
+                 
+                    <ul class="nav flex-column text-center text-muted">
+                    <li class="nav-item">
+                      <span class="badge ">{{Auth::user()->projects->count()}}</span><br>
+                      <a class="nav-link active" href="{{route('user.projects.index')}}"><h7>Projects<h7> </a>
+                    </li>
+                    <li class="nav-item">
+                       <span class=" badge badge-light">31</span><br>
+                      <a class="nav-link" href="#">Events</a>
+                    </li>
+                    <li class="nav-item">
+                      <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
+                      <a class="nav-link" href="#">Downloads </a>
+                    </li>
+                    <li class="nav-item">
+                      <span class="badge badge-light">31</span><br>
+                      <a class="nav-link" href="#">posts </a>
+                    </li>
+                  </ul>
+                    
+                      
+                </div>
+                
+                <div class="card-footer bg-white borderless">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <button class="btn btn-primary btn-sm btn-block" onclick="document.getElementById('projectForm').submit();" >upload </button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-outline-primary btn-sm btn-block">reset</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card w-100 mt-3 borderless" >
+                <div class="card-body">                       
+              dxfxfg
+                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
+                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new note</a>
+                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new event</a>
+                   <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
+                </div>
+              </div>
+            </div>
         </div>
     </div>
-
+</div>
 @endsection
 
 @section('scripts')
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
   <script type="text/javascript">
       $(document).ready(function(){
 

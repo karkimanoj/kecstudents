@@ -12,8 +12,8 @@
 			<div class="col-md-6">
 				<h1>Faculties</h1>
 			</div>
-			<div class="col-md-4 col-md-offset-2 ">
-				<a href="{{ route('faculties.create') }}" class="btn  btn-primary pull-right"> create new Faculty</a>
+			<div class="col-md-4 offset-md-2 ">
+				<a href="{{ route('faculties.create') }}" class="btn  btn-primary float-right"> create new Faculty</a>
 			</div>
 
 		</div>
@@ -62,7 +62,7 @@
 							        			<form method="POST" action="{{ route('faculties.destroy', $faculty->id) }}" >
 									        		{{method_field("DELETE")}}
 									        		{{csrf_field()}}
-									        		<input type="submit" class="btn btn-danger pull-right" name="delete" value="yes">
+									        		<input type="submit" class="btn btn-danger float-right" name="delete" value="yes">
 												</form>		
 							        		</div>
 							        		<div class="col-md-6">
@@ -81,7 +81,7 @@
 					</tbody>
 				</table>
 				<center>
-				{{ $faculties->links()}}
+				{{ $faculties->links( "pagination::bootstrap-4")}}
 				</center>
 				</div>
 			</div>

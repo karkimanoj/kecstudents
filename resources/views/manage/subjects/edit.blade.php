@@ -18,8 +18,8 @@
 				  <h1>Edit subject</h1>
 				</div>
 			</div>			
-			<div class="col-md-4 col-md-offset-2 ">
-				<a href="{{ route('subjects.index') }}" class="btn  btn-primary pull-right"> delete this subject</a>
+			<div class="col-md-4 offset-md-2 ">
+				<a href="{{ route('subjects.index') }}" class="btn  btn-primary float-right"> delete this subject</a>
 			</div>
 		</div>
 

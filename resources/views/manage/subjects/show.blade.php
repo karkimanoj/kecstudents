@@ -7,8 +7,8 @@
 			<div class="col-md-4">
 				<h1>subjects</h1>
 			</div>
-			<div class="col-md-4 col-md-offset-4 ">
-				<a href="{{ route('subjects.edit', $subject->id) }}" class="btn  btn-primary pull-right"> Edit subject</a>
+			<div class="col-md-4 offset-md-4 ">
+				<a href="{{ route('subjects.edit', $subject->id) }}" class="btn  btn-primary float-right"> Edit subject</a>
 			</div>
 		</div> <!--end of ro-->
 

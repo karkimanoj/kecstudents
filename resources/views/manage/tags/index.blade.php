@@ -60,7 +60,7 @@
 							        			<form method="POST" action="{{ route('tags.destroy', $tag->id) }}" >
 									        		{{method_field("DELETE")}}
 									        		{{csrf_field()}}
-									        		<input type="submit" class="btn btn-danger pull-right" name="delete" value="yes">
+									        		<input type="submit" class="btn btn-danger float-right" name="delete" value="yes">
 												</form>		
 							        		</div>
 							        		<div class="col-md-6">
@@ -80,7 +80,7 @@
 				</table>
 				
 				<center>
-				{{ $tags->links()}}
+				{{ $tags->links("pagination::bootstrap-4")}}
 				</center>
 			 </div>
 			
