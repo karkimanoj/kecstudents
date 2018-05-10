@@ -129,7 +129,7 @@
      
       $('#project_div').click(function(){
 
-        window.open('{{route('projects.home', 0)}}');
+        window.open('{{ route('projects.home', ['category'=>'subject', 'cat_id'=>0]) }}');
         
       });
     });

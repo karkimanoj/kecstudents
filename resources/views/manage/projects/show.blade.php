@@ -103,10 +103,11 @@
 				    </p>
 				    <p>
 					<label> Astract: </label><br>		 
-				    	{{$project->abstract}}
+				    	{!!$project->abstract!!}
 				    </p>
 				    <p>
-				    	<ul>
+				    	<label>Members</label><br>
+				    	<ul>				    		
 				    	@foreach($project->project_members as $member)
 				    		<li>{{ $member->name }} <i>[ {{$member->roll_no}} ]</i></li> 
 				    	@endforeach

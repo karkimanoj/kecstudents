@@ -6,7 +6,7 @@
 
 @section('content')
 
-	<div class="main-container">
+<div class="main-container">
 		<!-- heading -->
 		<div class="container-fluid w-100" id="top_header" >
 			
@@ -26,7 +26,7 @@
 					 </div>
 				
 				
-			</div>
+		</div>
 	       
 	
 		
@@ -39,11 +39,13 @@
 						<div class="row ">
 							<div class="col-md-11 offset-md-1    bg_grey" style=" padding: 10px;">
 
-									<div class="form-group " >
+								<div class="form-group " >
 									<label> sort by:</label>
-									<select class="form-control select-lg">
-										<option>date </option>
-										<option>likes</option>
+									<select class="form-control select-lg" id="sort-by">
+										<option value="relevance">relevance</option>
+										<option value="date">date </option>
+										<option value="view count">view count</option>
+										<option value="comments">comments</option>
 									</select>
 								</div>
 								
@@ -53,40 +55,55 @@
 						<div class="row ">
 							<div class="col-md-11 offset-md-1  bg_grey m-t-30 " style=" padding: 10px;">
 								<a href="{{route('user.projects.index')}}" class="btn btn-primary btn-block btn-nobg-color">view my projects</a>
+
 							</div>
 						</div>		
 						
 						<div class="row">
 							<div class="col-md-11 offset-md-1  bg_grey" >
-								
+								<div class="nav flex-column nav-pills" id="v-pills-subject" role="tablist" aria-orientation="vertical">
+									<a class="nav-link "  data-toggle="pill" href="#" role="tab" aria-controls="v-pills-home" aria-selected="true">
+									  	All projects
+								  		<span class="badge badge-light float-right">{{App\Project::all()->count()}}</span>
+									</a>
+									<input type="hidden"  value="subject">
+									  <input type="hidden"  value="0">
 
-								 
-
-									<ul class="nav nav-pills flex-column nav-stacked">
-									  <li class="nav-item ">
-									    <a class="nav-link {{ Nav::urlDoesContain('projects/0/index') }}" href="{{route('projects.home', 0)}}">All projects
-									  		<span class="badge badge-light float-right">{{App\Project::all()->count()}}</span> </a>
-									  </li>
-
-									 @foreach($categories as $project_category)
-
-									  <li style="font-weight: 400" class="nav-item ">
-									  	<a class="nav-link {{ Nav::urlDoesContain('projects/'.$project_category->id.'/index') }}" href="{{route('projects.home', $project_category->id)}}" >
-									  	{{$project_category->name}} <span class="badge badge-light float-right">{{$project_category->projects->count()}}</span></a>
-									  </li>
-
+									@foreach($categories as $project_category)
+									  <a class="nav-link "  data-toggle="pill" href="#" role="tab" aria-controls="v-pills-home" aria-selected="true">
+									  	{{$project_category->name}} <span class="badge badge-secondary float-right"> {{$project_category->projects->count()}}</span>
+									  </a>
+									  <input type="hidden"  value="subject">
+									  <input type="hidden"  value="{{$project_category->id}}">
 									@endforeach
-								</ul>
+								</div>
 						
 							</div>
 						</div>
+
+								
+						<div class="row">
+							<div class="col-md-11 offset-md-1 mt-3 bg_grey" >
+								<span>popular tags</span>
+								<hr>
+								<div class="nav flex-column nav-pills" id="v-pills-tag" role="tablist" aria-orientation="vertical">
+									@foreach($popular_tags as $popular_tag)	
+									  <a class="nav-link "  data-toggle="pill" href="#" role="tab" aria-controls="v-pills-home" aria-selected="true">
+									  	{{$popular_tag->name}} <span class="badge badge-secondary float-right">{{$popular_tag->tagcounts}}</span>
+									  </a>
+									  <input type="hidden" value="tag">
+									   <input type="hidden"  value="{{$popular_tag->tag_id}}">
+									@endforeach
+								</div>
+							</div>
+						</div>		
+
 					</div>
 
 					<div class="col-md-9 " style="padding: 20px" >
 						<div class="row">
 							<div class="col-md-8 ">
-								<h4 class="text-muted"> displaying {{$projects->count()}} results  {{
-									isset($active_category->name)?'for '.$active_category->name:''}}</h4>
+								<h4 class="text-muted" id="projects_head"></h4>
 							</div>
 							<div class="col-md-3 offset-md-1  ">
 							
@@ -96,78 +113,49 @@
 						</div>
 
 						<div class="row ">
-							<div class="col-md-12 m-t-30">
-								@foreach($projects as $project)
-								<div class="row m-t-30" id="project_box">
-								  <div class="col-md-8 offset-md-2  bg_grey" style=" padding: 0px 20px 15px 20px;" >
-									
-									    
+							<div class="col-md-12 m-t-30" id="project_mainbox" >
 
-									    	<div class="row m-t-10">
-									    		<div class="col-md-12" >
-									    			<a href="{{route('user.projects.show', $project->id)}}" id="project_name" 
-    											>{{$project->name}}</a>
-									    		</div>
-									    	</div> 
-									    	<div class="row m-t-10">
-									    		<div class="col-md-6" >
-									    			<i class="fas fa-user"></i> 
-									    			{{ $project->user->name }}
-									    		</div>
-									    		<div class="col-md-6" >
-									    			<i class="fab fa-cuttlefish"></i>
-									    			{{$project->subject->name}}
-									    		</div>
-									    	</div>
-									    	<div class="row m-t-10">
-									    		<div class="col-md-6" >
-									    			<i class="fas fa-tags"></i>
-									    			@foreach($project->tags as $tag)
-									    			<span class="label label-success">
-									    				{{$tag->name}}</span>
-									    				
-									    			@endforeach
-									    		</div>
-									    		<div class="col-md-6" >
-									    			<i class="far fa-clock"></i>
-									    			{{ $project->created_at->toFormattedDateString() }}
-									    		</div>
-									    	</div>
-									    	@foreach($project->project_members as $member)
-										    	@if($member->roll_no==Auth::user()->roll_no)
-											    	<div class="row m-t-10">
-											    		<div class="col-md-6 " >
-											    			<a href="{{route('user.projects.show', $project->id)}}" class="btn btn-primary btn-sm btn-nobg-color" 
-		    											>view</a>
-											    		</div>
-											    		<div class="col-md-6 " >
-											    			<a href="{{route('user.projects.edit', $project->id)}}"  class="btn btn-outline-primary btn-sm "
-		    											>edit</a>
-											    		</div>
-											    	</div>
-										    	@endif
-									    	@endforeach
-									    
-									 
-								  </div>
+								<div class="row ">
+									<div class="col-md-6 offset-md-3 m-t-30 text-center"  >
+									 <img src="{{asset('images/infinity-7s-200px.gif')}}" height="300px" width="300px">
+									 <div><h4>loading</h4></div>
+									</div>
 								</div>
-								@endforeach
-							
-									{{--{{ substr(strip_tags(),0,60) }} <span style="color: blue"> {{ strlen(strip_tags($project->name ))>60?'....':'' }}--}}
-							
-
-										
+								
+															{{--{{ substr(strip_tags(),0,60) }} <span style="color: blue"> {{ strlen(strip_tags($project->name ))>60?'....':'' }}--}}
 							</div>
 						</div>
+				
+       
+						
+						<div class="row">
+							<div class="col-md-10 offset-md-1 mt-3">
+							
+								<nav id="pageagination_controls" aria-label="Page navigation" class="text-center invisible">
 
+								  <ul class="pagination justify-content-center">
+								    <li class="page-item"><a href="{{route('projects.ajaxIndex')}}?page=1" class="page-link">1</a></li>
+
+									<li class="page-item disabled" id="prev_page_control"><a href="#" class="page-link"> previous </a></li>
+									    
+									
+									 <li class="page-item" id="next_page_control"><a href="#" class="page-link"> next</a></li>
+									
+
+								     <li class="page-item"><a href="#" class="page-link"></a></li>
+								    
+								  </ul>
+								</nav>
+							</div>
+						</div> 
+						
+					{{-- $projects->links( "pagination::bootstrap-4") --}}
 						
 					</div>
 				</div>
 				{{--{{ substr(strip_tags($project->filepath),0,38) }} <span style="color: blue"> {{ strlen(strip_tags($project->filepath))>38?'....':'' }} </span>--}}
 				
-				<center>
-				{{ $projects->links("pagination::bootstrap-4")}}
-				</center>
+
 				</div>
 			</div>
 		</div>
@@ -175,12 +163,150 @@
 	</div>
 @endsection
 
+
+
 @section('scripts')
-	<script type="text/javascript">
-		$(document).ready(function(){
+<script type="text/javascript">
+	$(document).ready(function ()
+	{
+		var category='{{$cat}}';
+		 var cat_id={{$cat_id}};
+		  var sort_by='relevance';
+	
+		$('#v-pills-'+category+' input[value="'+cat_id+'"]').prev().prev().addClass('active');
+	
+		getprojects(category, cat_id, sort_by);
 
+		$('#v-pills-subject a, #v-pills-tag a').click(function(){
+			category=$(this).next().val();
+			cat_id=$(this).next().next().val();
+			(category=='subject') ? $('#v-pills-tag').children('a.active').removeClass('active') : $('#v-pills-subject').children('a.active').removeClass('active') ;
+			sort_by=$('#sort-by').val();
+			getprojects(category, cat_id, sort_by);
 		});
-	</script>
+
+		$('#sort-by').change(function(){
+			sort_by=$(this).val();
+			getprojects(category, cat_id, sort_by);
+		});
+
+
+		
+		
+
+		
+
+            $('body').on('click', '.pagination a', function(e) {
+            	//prevent default action ,i.e,stop directing to route in a tag's href
+                e.preventDefault();
+                var url = $(this).attr('href');
+               //$active_class=$(this).parent();
+                //host='{{--url('/')--}}';
+               // page=url.split('?')[1];
+               //$deactive_class=$('.pagination').children('li.active');
+                //console.log($deactive_class);
+                //url=host+'/projects/ajaxIndex?'+page;
+               // alert(url);
+               getprojects(category, cat_id, sort_by, url);
+                //window.history.pushState("", "", url);  this will insert the new url with page=no .here we dont need this
+            });
+
+
+			//to change page no's in pagination controls
+			function paginate_cotrols(currentpage, lastpage)
+			{	
+				if(lastpage<=1)
+					$('.pagination').parent().addClass('invisible');
+				else
+				{	
+					$('.pagination').parent().removeClass('invisible');
+
+					$('.pagination li:last a').attr('href','{{route('projects.ajaxIndex')}}?page='+lastpage).text(lastpage);
+
+					if(currentpage<=1)
+						$("#prev_page_control").addClass('disabled');
+					else
+					{
+						$("#prev_page_control").removeClass('disabled').children().attr('href', '{{route('projects.ajaxIndex')}}?page='+(currentpage-1));
+					}
+
+					if(currentpage>=lastpage)
+						$("#next_page_control").addClass('disabled');
+					else
+					{
+						$("#next_page_control").removeClass('disabled').children().attr('href', '{{route('projects.ajaxIndex')}}?page='+(currentpage+1));
+					}
+				}
+			}
+
+
+            userroll='{{Auth::user()->roll_no}}';
+
+
+            function getprojects(category, cat_id, sort_by, url='{{route('projects.ajaxIndex')}}') 
+            {
+
+                $.ajax({
+                    url : url,
+                    data:{ 'category' : category,
+		                   'cat_id' : cat_id,
+		                   'sort_by' : sort_by
+					 },
+                }).done(function (data) {
+
+                    object=JSON.parse(data);
+                    host='{{url('/')}}';
+                    
+                    
+                    $('#project_mainbox').empty();
+                    //console.log(object)
+
+                    if(object.total!=0)
+                    {	
+	                    for (j = 0; j < object.data.length; j++) 
+	                    {
+	                    	project=object.data[j];
+								
+								//project.id
+		                    name_div=' <div class="row m-t-10">  <div class="col-md-12" >  <a href="'+host+'/user/projects/{'+project.id+'}" id="project_name">'+project.name+'</a>																				</div></div> ';
+
+	                    	user_subject_div='<div class="row m-t-10">											<div class="col-md-6" >												<i class="fas fa-user"></i> 									'+project.user.name+'									</div>															<div class="col-md-6" >												<i class="fab fa-cuttlefish"></i>								'+project.subject.name+'										</div>														</div>';
+	                   
+	                    	tags_div='';
+
+	                    	for ( i = 0; i < project.tags.length; i++) 
+	                    	{	
+	                    		tags_div+='<span class="badge badge-success ml-2"> '+project.tags[i].name+' </span>';
+									     				
+	                    	}
+
+	                    	tags_user_div='<div class="row m-t-10"> <div class="col-md-6" >						<i class="fas fa-tags"></i>'+tags_div+'</div>										<div class="col-md-6" ><i class="far fa-clock"></i>'+project.created_at+'</div></div>';
+
+	                    	show_edit_div='';
+	                    	for ( i = 0; i < project.project_members.length; i++) 
+	                    	{
+	                    		if(project.project_members[i].roll_no==userroll)
+	                    		{
+	                    			show_edit_div='<div class="row m-t-10"> <div class="col-md-6 " >					<a href="'+host+'user/projects/{'+project.id+'}" class="btn btn-primary btn-sm btn-nobg-color">view</a>													</div><div class="col-md-6 " >												<a href="'+host+'user/projects/{project}/edit" 					 class="btn btn-outline-primary btn-sm ">edit</a> 									</div></div>';
+	                    		}
+	                    	}
+	                    	   
+	                    	project_main_div='<div class="row m-t-30 " id="project_box">								<div class="col-md-8 offset-md-2   border_purple" style=" padding: 0px 20px 15px 20px;" >    																				'+name_div+user_subject_div+tags_user_div+show_edit_div+ '</div></div>';
+	                    	
+	                        $('#project_mainbox').append(project_main_div); 
+	                    }
+	                }  
+
+	              	$('#projects_head').text('displaying page '+object.current_page+'( of total '+object.last_page+' ) from '+object.total+' results ');
+	                paginate_cotrols(object.current_page, object.last_page) 
+                    //var arr = $.map(object.data[0], function(el) { return el });
+                }).fail(function () {
+                    alert('Articles could not be loaded due to technicle problems.');
+                });
+            }
+        
+  
+
+	});
+</script>
 @endsection
-
-

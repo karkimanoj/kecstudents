@@ -10804,3 +10804,7 @@ for user-widget in users pages
   margin-left: 4%;
 }
 
+.border_purple {
+  border: 0.2mm solid purple;
+}
+

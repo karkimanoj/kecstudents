@@ -12,10 +12,17 @@
 */
 
 Route::middleware('role:superadministrator|administrator|teacher|student|staff')->group(function(){
-	Route::resource('/user/projects', 'User\ProjectController', ['as'=>'user']);
 
-	Route::get('/projects/{category}/index', 'PageController@projectIndex')->name('projects.home');
-	Route::get('/projects/{id}', 'PageController@projectShow')->name('projects.view');
+		Route::resource('/user/projects', 'User\ProjectController', ['as'=>'user']);
+
+		//ajax route for displaying projects as per subjects and tags and for sort too
+		Route::get('/projects/ajaxIndex', 'Page\ProjectController@ajaxIndex')->name('projects.ajaxIndex');
+		
+		Route::get('/projects/{category}/{cat_id}', 'Page\ProjectController@subjectIndex')->name('projects.home');
+		
+		//Route::get('/projects/{tagid}/index', 'Page\ProjectController@tagIndex')->name('projects.home2');
+
+		Route::get('/projects/{id}', 'Page\ProjectController@projectShow')->name('projects.view');
 });
 
 
