@@ -26,10 +26,10 @@
         	
               <div class="panel panel-default   borderless">
                     <div class="panel-body">
-                        <form method="POST" id="projectForm" action="{{route('user.projects.store')}} " enctype="multipart/form-data" class="m-t-40">
+                        <form method="POST" id="projectForm" action="{{route('user.projects.store')}} " enctype="multipart/form-data" class="mt-4">
                                 {{csrf_field()}}    
                                         
-                                <div class="row form-group m-t-20{{ $errors->has('name')?'has-error':'' }} ">
+                                <div class="row form-group mt-2{{ $errors->has('name')?'has-error':'' }} ">
                                     <div class="col-md-3">    
                                         <label class="float-right m-r-20">Name of the project:</label>
                                     </div>    
@@ -240,18 +240,18 @@
                 </div>
             </div>
             <div class="col-md-3 mt-3 mb-3">
-                <div class="card  card_shadow w-100 borderless" id="user_widget">
-                    <div class="card-header  " style="background-color: #F39C12">
-                      <div id="card_img">
-                        <img class="card-img img-circle bg-primary" src="/images/test-image.jpg" alt="Card image cap">
-                      </div>
-                      <div class="card_user_detail">
-                         <span style="font-size: 1.2em">{{Auth::user()->name}}</span><br>
-                           <span >{{Auth::user()->roles->first()->name}}</span><br>
-                           <span >{{Auth::user()->roll_no}}</span><br>
-                      </div>
-                   
-               </div>             
+            <div class="card  card_shadow w-100 borderless" id="user_widget">
+                <div class="card-header  " style="background-color: #F39C12">
+                  <div id="card_img">
+                    <img class="card-img img-circle bg-primary" src="/images/test-image.jpg" alt="Card image cap">
+                  </div>
+                  <div class="card_user_detail">
+                     <span style="font-size: 1.2em">{{Auth::user()->name}}</span><br>
+                       <span >{{Auth::user()->roles->first()->name}}</span><br>
+                       <span >{{Auth::user()->roll_no}}</span><br>
+                  </div>
+               
+                </div>             
                 <div class="card-body ">
                  
                     <ul class="nav flex-column text-center text-muted">
@@ -289,7 +289,7 @@
               </div>
               <div class="card w-100 mt-3 borderless" >
                 <div class="card-body">                       
-              dxfxfg
+    
                   <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
                   <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new note</a>
                   <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new event</a>

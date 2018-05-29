@@ -22,7 +22,7 @@ class ProjectController extends Controller
 
      public function __construct()
      {
-        $this->middleware('role:student', ['except' => ['index', 'show']]);
+        $this->middleware('role:student', ['except' => ['show']]);
     }
     /**
      * Display a listing of the resource.
@@ -237,7 +237,7 @@ class ProjectController extends Controller
                         $images=[];
                         if($request->hasFile('images'))
                         {   
-                            for($i=0; $i<count($request->file('images')) ;$i++)
+                            for($i=0; $i < count($request->file('images')) ; $i++)
                             {
                                 $img=$request->file('images')[$i];
                                 $ext=$img->extension();
@@ -394,9 +394,12 @@ class ProjectController extends Controller
                         $member_rollnos[$i]=trim($member_rollnos[$i]);
                         $member_names[$i]=trim($member_names[$i]);
 
-                      if($project->project_members()->count()!=count($request->member_rollno)) 
+                    if($project->project_members()->count()!=count($request->member_rollno)) 
                         $members_changed=1;
-                    else if($project->project_members()->where('roll_no', $member_rollnos[$i])->where('name', $member_names[$i])->first()==null)
+                    else if($project->project_members()
+                            ->where('roll_no', $member_rollnos[$i])
+                            ->where('name', $member_names[$i])
+                            ->first()==null)
                            $members_changed=1;
 
                        $members[$i]=new ProjectMember([ 'roll_no'=>$member_rollnos[$i] ,

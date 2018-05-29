@@ -10516,8 +10516,9 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
   background-color: #FAFAFA;
 }
 
-#project_name {
-  font-size: 1.5em;
+#project_name,
+#download_name {
+  font-size: 1.25em;
 }
 
 /*

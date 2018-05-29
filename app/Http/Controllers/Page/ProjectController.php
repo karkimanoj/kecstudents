@@ -16,13 +16,11 @@ class ProjectController extends Controller
          $this->middleware('auth');
     }
 
-    public function subjectIndex($category, $cat_id)
+    public function Index($category, $cat_id)
     {   
+       	$categories=Subject::where('project', 1)->get();
 
-
-        	$categories=Subject::where('project', 1)->get();
-
-            $popular_tags=DB::table('taggables')
+        $popular_tags=DB::table('taggables')
                         ->join('tags', 'taggables.tag_id','=','tags.id')
                         ->select(DB::raw('taggables.tag_id, tags.name , count(taggables.tag_id) as tagcounts'))
                         ->where('taggables.taggable_type','App\Project')
@@ -31,22 +29,19 @@ class ProjectController extends Controller
                         ->limit(6)
                         ->get();  
 
-            $active_cat_id=Subject::find($cat_id);
-           // dd($projects);
-           return view('pages.projects.index', [
-        									 'categories'=>$categories,
-                                             'popular_tags'=>$popular_tags,
-                                             'cat'=>$category, 'cat_id'=>$cat_id,
-                                                'active_cat_id'=>$active_cat_id]);
+        $active_cat_id=Subject::find($cat_id);
+       // dd($projects);
+       return view('pages.projects.index', [
+    									 'categories'=>$categories,
+                                         'popular_tags'=>$popular_tags,
+                                         'cat'=>$category, 'cat_id'=>$cat_id,
+                                            'active_cat_id'=>$active_cat_id ]);
     }
 
     
 
 
-    public function projectShow()
-    {
 
-    }
 
      public function ajaxIndex(Request $request)
     {   
@@ -91,18 +86,9 @@ class ProjectController extends Controller
              ->with(['user','subject','tags','project_members'])
              ->orderBy($order, $direction)
              ->paginate(2);;
-                //->projects()
-                //->where('published_at','!=', 'NULL')       
-                //->with(['user','subject','tags','project_members'])
-                //->orderBy($order, $direction)
-                //->paginate(2);
-          }
+         }
 
-         
-
-       // $projects = Project::latest('created_at')->with(['user','subject','tags','project_members'])->paginate(1);
-
-        if ($request->ajax()) //{
+         if ($request->ajax()) //{
             //return view('_includes.projects_load', ['projects' => $projects])->render();  
         //}
             return json_encode($projects);
@@ -111,5 +97,6 @@ class ProjectController extends Controller
        // return view('pages.projects.index', compact('projects'));
     }
 
+   
   
 }

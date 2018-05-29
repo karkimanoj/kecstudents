@@ -119,10 +119,10 @@
                                     <div class="col-md-8">
                                         <input type="file" name="images[]" multiple class="form-control" accept="image/*"   >
                                         @if($errors->has('images'))
-                                        <strong>{{ $errors->first('images') }}</strong>
+                                          <strong>{{ $errors->first('images') }}</strong>
                                         @else
-                                        <small class="form-text text-muted">
-                                        optional. max 2. Image format must be either jpeg, png or gif
+                                          <small class="form-text text-muted">
+                                          optional. max 2. Image format must be either jpeg, png or gif
                                         </small>
                                         @endif
                                     </div>

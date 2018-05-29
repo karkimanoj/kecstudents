@@ -16,7 +16,7 @@
                       <i class="fas fa-download fa-7x margin_center"  style="color:#228AE6;" ></i>
                       
                    </div>
-                   <div class="section_box2"  >
+                   <div class="section_box2"  id="download_div">
                    
                      <div class="row">
                        <div class="col-md-12 section_header">
@@ -132,6 +132,12 @@
         window.open('{{ route('projects.home', ['category'=>'subject', 'cat_id'=>0]) }}');
         
       });
+      $('#download_div').click(function(){
+
+        window.open('{{ route('downloads.home', 9) }}');
+        
+      });
+      
     });
   </script>
 @endsection

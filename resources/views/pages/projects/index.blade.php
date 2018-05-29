@@ -52,29 +52,29 @@
 								
 							</div>
 						</div>
+						@if(Auth::user()->hasRole('student'))
 						<div class="row ">
 							<div class="col-md-11 offset-md-1  bg_grey m-t-30 " style=" padding: 10px;">
 								<a href="{{route('user.projects.index')}}" class="btn btn-primary btn-block btn-nobg-color">view my projects</a>
 
 							</div>
-						</div>		
+						</div>	
+						@endif	
 						
 						<div class="row">
 							<div class="col-md-11 offset-md-1  bg_grey" >
 								<div class="nav flex-column nav-pills" id="v-pills-subject" role="tablist" aria-orientation="vertical">
-									<a class="nav-link "  data-toggle="pill" href="#" role="tab" aria-controls="v-pills-home" aria-selected="true">
+									<a class="nav-link "  data-toggle="pill" href="{{route('projects.home', ['category'=>'subject', 'cat_id'=>0 ] )}}" role="tab" aria-controls="v-pills-home" aria-selected="true">
 									  	All projects
 								  		<span class="badge badge-light float-right">{{App\Project::all()->count()}}</span>
 									</a>
-									<input type="hidden"  value="subject">
-									  <input type="hidden"  value="0">
+
 
 									@foreach($categories as $project_category)
-									  <a class="nav-link "  data-toggle="pill" href="#" role="tab" aria-controls="v-pills-home" aria-selected="true">
+									  <a class="nav-link "  data-toggle="pill" href="{{route('projects.home', ['category'=>'subject', 'cat_id'=>$project_category->id] )}}" role="tab" aria-controls="v-pills-home" aria-selected="true">
 									  	{{$project_category->name}} <span class="badge badge-secondary float-right"> {{$project_category->projects->count()}}</span>
 									  </a>
-									  <input type="hidden"  value="subject">
-									  <input type="hidden"  value="{{$project_category->id}}">
+									
 									@endforeach
 								</div>
 						
@@ -88,11 +88,11 @@
 								<hr>
 								<div class="nav flex-column nav-pills" id="v-pills-tag" role="tablist" aria-orientation="vertical">
 									@foreach($popular_tags as $popular_tag)	
-									  <a class="nav-link "  data-toggle="pill" href="#" role="tab" aria-controls="v-pills-home" aria-selected="true">
+									  <a class="nav-link "  data-toggle="pill" 
+									  href="{{route('projects.home', ['category'=>'tag', 'cat_id'=>$popular_tag->tag_id] )}}" role="tab" aria-controls="v-pills-home" aria-selected="true">
 									  	{{$popular_tag->name}} <span class="badge badge-secondary float-right">{{$popular_tag->tagcounts}}</span>
 									  </a>
-									  <input type="hidden" value="tag">
-									   <input type="hidden"  value="{{$popular_tag->tag_id}}">
+									
 									@endforeach
 								</div>
 							</div>
@@ -172,14 +172,18 @@
 		var category='{{$cat}}';
 		 var cat_id={{$cat_id}};
 		  var sort_by='relevance';
+		  var host='{{url('/')}}';
 	
-		$('#v-pills-'+category+' input[value="'+cat_id+'"]').prev().prev().addClass('active');
-	
+		//$('#v-pills-'+category+' input[value="'+cat_id+'"]').prev().prev().addClass('active');
+		$('a[href="'+host+'/projects/'+category+'/'+cat_id+'"]').addClass('active'); 
 		getprojects(category, cat_id, sort_by);
 
-		$('#v-pills-subject a, #v-pills-tag a').click(function(){
-			category=$(this).next().val();
-			cat_id=$(this).next().next().val();
+		$('#v-pills-subject a, #v-pills-tag a').click(function()
+		{
+			category_array=$(this).attr('href').split('projects/')[1].split('/');
+
+			category=category_array[0];
+			cat_id=category_array[1];
 			(category=='subject') ? $('#v-pills-tag').children('a.active').removeClass('active') : $('#v-pills-subject').children('a.active').removeClass('active') ;
 			sort_by=$('#sort-by').val();
 			getprojects(category, cat_id, sort_by);
@@ -199,7 +203,7 @@
             $('body').on('click', '.pagination a', function(e) {
             	//prevent default action ,i.e,stop directing to route in a tag's href
                 e.preventDefault();
-                var url = $(this).attr('href');
+                 url = $(this).attr('href');
                //$active_class=$(this).parent();
                 //host='{{--url('/')--}}';
                // page=url.split('?')[1];
@@ -255,8 +259,8 @@
                 }).done(function (data) {
 
                     object=JSON.parse(data);
-                    host='{{url('/')}}';
                     
+                    window.history.pushState("", "", host+'/projects/'+category+'/'+cat_id);
                     
                     $('#project_mainbox').empty();
                     //console.log(object)
@@ -267,8 +271,8 @@
 	                    {
 	                    	project=object.data[j];
 								
-								//project.id
-		                    name_div=' <div class="row m-t-10">  <div class="col-md-12" >  <a href="'+host+'/user/projects/{'+project.id+'}" id="project_name">'+project.name+'</a>																				</div></div> ';
+								projectId=project.id
+		                    name_div=' <div class="row m-t-10">  <div class="col-md-12" >  <a href="'+host+'/user/projects/'+projectId+'" id="project_name">'+project.name+'</a>																				</div></div> ';
 
 	                    	user_subject_div='<div class="row m-t-10">											<div class="col-md-6" >												<i class="fas fa-user"></i> 									'+project.user.name+'									</div>															<div class="col-md-6" >												<i class="fab fa-cuttlefish"></i>								'+project.subject.name+'										</div>														</div>';
 	                   
@@ -276,7 +280,7 @@
 
 	                    	for ( i = 0; i < project.tags.length; i++) 
 	                    	{	
-	                    		tags_div+='<span class="badge badge-success ml-2"> '+project.tags[i].name+' </span>';
+	                    		tags_div+='<a href="'+host+'/projects/tag/'+project.tags[i].id+'" > <span class="badge badge-success ml-2"> '+project.tags[i].name+' </span> </a>';
 									     				
 	                    	}
 

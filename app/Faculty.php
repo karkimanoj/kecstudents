@@ -13,7 +13,7 @@ class Faculty extends Model
    		return $this->belongsToMany('App\Subject')->withPivot('semester');
    	}
 
-   	public function download_detail2s(){
-    	return $this->hasMany('App\DownloadDetail2');
+   	public function downloads(){
+    	return $this->hasMany('App\Download');
     }
 }

@@ -1,39 +1,44 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|group(['prefix'=>'manage'],
-*/
+Route::middleware('auth')->group(function(){
+	/*
+		pages routes	
+	*/
+		//download routes
+		Route::get('/downloads/{category_id}', 'Page\DownloadController@Index')->name('downloads.home');
 
-Route::middleware('role:superadministrator|administrator|teacher|student|staff')->group(function(){
+	Route::get('/ajaxCall', 'Page\DownloadController@ajaxCall')->name('page.downloads.ajaxCall');
 
-		Route::resource('/user/projects', 'User\ProjectController', ['as'=>'user']);
-
-		//ajax route for displaying projects as per subjects and tags and for sort too
+	//ajax route for displaying projects as per subjects and tags and for sort too
+		Route::get('/projects/{category}/{cat_id}', 'Page\ProjectController@Index')->name('projects.home');
 		Route::get('/projects/ajaxIndex', 'Page\ProjectController@ajaxIndex')->name('projects.ajaxIndex');
 		
-		Route::get('/projects/{category}/{cat_id}', 'Page\ProjectController@subjectIndex')->name('projects.home');
 		
-		//Route::get('/projects/{tagid}/index', 'Page\ProjectController@tagIndex')->name('projects.home2');
+});
 
-		Route::get('/projects/{id}', 'Page\ProjectController@projectShow')->name('projects.view');
+Route::prefix('user')->middleware('auth')->group(function(){
+		/*
+			user routes
+		*/
+		Route::resource('/projects', 'User\ProjectController', ['as'=>'user']);
+		
+		Route::resource('/downloads', 'User\DownloadController', ['as'=>'user']);
+
 });
 
 
 
 Route::prefix('manage')->middleware('role:superadministrator|administrator')->group( function(){
 
+	/*
+		manage (admin) routes
+	*/
 		//Route::get('/test11', 'ManageController@index');
 		//Route::get('/test', 'Project\ProjectController@test');
 		Route::get('/projects/publish', 'Admin\ProjectController@publish');
 
 		Route::get('/tags', 'Admin\TagController@index')->name('tags.index');
+
 		Route::delete('/tags/{id}', 'Admin\TagController@destroy')->name('tags.destroy');
 
 		Route::resource('/projects', 'Admin\ProjectController');

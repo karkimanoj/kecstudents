@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,18 +15,27 @@ use Session;
 use Storage;
 
 class DownloadController extends Controller
-{
-  
+{   
 
+     public function __construct()
+     {
+        $this->middleware('role:teacher', ['except' => ['show']]);
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
-        $downloads=Download::paginate(20);
-       return view('manage.downloads.index', ['downloads'=>$downloads]);
+    {    
+        $user_rollno=Auth::user()->roll_no;
+        $user=Auth::user();
+       // $downloads=Download::where('uploader_id', $user->id)->get();
+     
+        $user->downloads;
+        
+        return view('user.downloads.index', ['downloads'=>$user->downloads]);
+        
     }
 
     
@@ -49,31 +58,13 @@ class DownloadController extends Controller
 
         //throwing to view as json   
          $facs=json_encode($facs);
-        return view('manage.downloads.create', ['faculties'=>$faculties,
+        return view('user.downloads.create', ['faculties'=>$faculties,
                                          'categories'=>$categories,
                                          'facs'=>$facs ]);
     }
 
-    /*
-      publish the uploads via ajax request  
-    */
-    public function publish(Request $request)
-    {
-        $id=$request->id;
-        if($request->status=='publish')
-            $date=Carbon::now();
-        else if($request->status=='unpublish')
-            $date=NULL;
 
-        $download=Download::findOrFail($id);
-        $download->published_at=$date;
-
-        if($download->save())
-        return $date;
-    }
-
-
-      public function store(Request $request)
+    public function store(Request $request)
     { //  dd($request);
         include(app_path() . '\helpers.php');
 
@@ -81,29 +72,18 @@ class DownloadController extends Controller
       
         if($request->category==$category->id)
         {
-            $this->validate($request, [
-             'title'=>'required|min:4|max:191',   
+                    $this->validate($request, [
+            'title'=>'required|min:4|max:191',   
             'description'=>'required|min:4|max:2000',
             'files1'=>'required|array|max:12',
             'files1.*.file'=>'required|file|max:31000|mimes:pdf,doc,docx,ppt,pps,txt,pptx',
             'files1.*.dname'=>'required_with:files1.*.file|min:3|max:191',
- 
+            
             'faculty'=>'required|integer',
             'semester'=>'required|integer',
             'subject'=>'sometimes|integer'
-        ]);/*
-            'files'=>'required|array|max:12',
-            'files.*'=>'required|file|max:31000|mimes:pdf,doc,docx,ppt,pps,txt,pptx',
-            'display_fname'=>'required|array|min:1|max:12',
-            'display_fname.*'=>'required_with:files.*|min:3|max:191',
-            
-             'files'=>'required|array|max:1',
-            'files.*'=>'required|file|max:31000|mimes:pdf, doc, docx, txt',
-            'display_fname'=>'required|array|min:1|max:12',
-            'display_fname.*'=>'required_with:files.*|min:3|max:191',
-
-           */
-                  
+        ]);
+                   
         } else {
                     $this->validate($request, [
             'title'=>'required|min:4|max:191',   
@@ -111,8 +91,8 @@ class DownloadController extends Controller
             'files1'=>'required|array|max:1',
             'files1.*.file'=>'required|file|max:31000|mimes:pdf,doc,docx,txt',
             'files1.*.dname'=>'required_with:files1.*.file|min:3|max:191',
+
             'faculty'=>'required|integer',
-         
             'semester'=>'required|integer',
             'subject'=>'sometimes|integer'
         ]);
@@ -121,49 +101,47 @@ class DownloadController extends Controller
   
          $category=DownloadCategory::find($request->category);
          $category_type=$category->category_type;
+        
 
-      
-       // if( $request->hasFile('files1[]') )
-       // {  
-            for ($i=0; $i < count($request->file('files1')) ; $i++) 
+
+        for ($i=0; $i < count($request->file('files1')) ; $i++) 
             { 
-                if ($request->file('files1')[$i]['file']->isValid())
+              if ($request->file('files1')[$i]['file']->isValid())
+              {
+                //$request->file('files')->isvalid();
+                $file=$request->file('files1')[$i];
+                $ext=$file->extension();
+                $original_name=$file->getClientOriginalName();
+
+                /*
+                generating filename for acoording to upload type
+                */
+                if($category_type=='subject')
                 {
+                    $subject=Subject::find($request->subject);
 
+                     $sub=remove_space_in_string( $subject->name );
+                    //echo $sub;
+                    $filename=$sub.'_'.time().rand(0, 99).'_'.($i+1).'.'.$ext;
+                    $upload_dir='/file_uploads/'.$sub;
+                } 
+                else
+                {
+                    $fac=Faculty::findOrFail($request->faculty);
+                    $filename=$fac->name.'_'.$request->semester.'_'.time().rand(0, 99).'_'.($i+1).'.'.$ext;
+                    $upload_dir='/file_uploads/'.$fac->name.'/'.$request->semester;
+                }
 
-                    $file=$request->file('files1')[$i]['file'];
-                    $ext=$file->extension();
-                    $original_name=$file->getClientOriginalName();
+            
+                 $dir=Storage::makeDirectory($upload_dir, 0775, true);
+                 $path=$file->storeAs($upload_dir, $filename);
 
-                    /*
-                    generating filename for acoording to upload type
-                    */
-                    if($category_type=='subject')
-                    {
-                        $subject=Subject::find($request->subject);
-
-                         $sub=remove_space_in_string( $subject->name );
-                        //echo $sub;
-                        $filename=$sub.'_'.time().rand(0, 99).'_'.($i+1).'.'.$ext;
-                        $upload_dir='/file_uploads/'.$sub;
-                    } 
-                    else
-                    {
-                        $fac=Faculty::findOrFail($request->faculty);
-                        $filename=$fac->name.'_'.$request->semester.'_'.time().rand(0, 99).'_'.($i+1).'.'.$ext;
-                        $upload_dir='/file_uploads/'.$fac->name.'/'.$request->semester;
-                    }
-
-                     $dir=Storage::makeDirectory($upload_dir, 0775, true);
-                     $path=$file->storeAs($upload_dir, $filename);
-                     $display_name=$request->files1[$i]['dname'];
-                     $files[$i]=new DownloadFile([ 'original_filename' => $original_name, 
-                                                   'display_name' => $display_name,          
-                                                   'filepath' => $path   
-                                                 ]);
+                 $files[$i]=new DownloadFile([ 'original_filename' => $original_name, 
+                                               'filepath' => $path   
+                                             ]);
                 } 
 
-            }       
+            }
          
            /* saving Downlaod model
             */ 
@@ -188,14 +166,14 @@ class DownloadController extends Controller
             if( $download->save() && $download->download_files()->saveMany($files) )
             {
                 Session::flash('success', $i.' file/s uploaded successfully');
-                return redirect()->route('downloads.index');
+                return redirect()->route('user.downloads.index');
             } else
             return back()->withErrors('error in uploading files');
                 
             
 
-        //}else
-            //return back()->withErrors('error: no file is selected');
+       // }else
+         //   return back()->withErrors('error: no file is selected');
         
         
     }
@@ -203,7 +181,7 @@ class DownloadController extends Controller
     public function show($id)
     {
         $download=Download::findOrFail($id);
-        return view('manage.downloads.show', ['download'=>$download]);
+        return view('user.downloads.show', ['download'=>$download]);
     }
     
 /*
@@ -223,14 +201,14 @@ class DownloadController extends Controller
     }*/
 
     public function edit($id)
-    {
-        include(app_path() . '\helpers.php');
-      
-         $download=Download::findOrFail($id);
+    {  
+       $download=Download::findOrFail($id);
         $user=Auth::user();
         //dd($user->roll_no);
         if( $user->owns($download, 'uploader_id') )
         {
+            include(app_path() . '\helpers.php');
+          
             $faculties=Faculty::all();
 
             $facs=subjects_as_facsem($faculties);
@@ -238,13 +216,15 @@ class DownloadController extends Controller
             //throwing to view as json   
              $facs=json_encode($facs);
 
-            return view('manage.downloads.edit', ['download'=>$download,
+            return view('user.downloads.edit', ['download'=>$download,
                                                   'faculties'=>$faculties,
                                                   'facs'=>$facs]);
-        }else
-            return back()->withErrors('you dont have permission to edit.');
-
+       }else
+       return back()->withErrors('you dont have permission to edit.');
     }
+
+
+
 
      public function update(Request $request, $id)
     {   //dd($request);
@@ -262,25 +242,18 @@ class DownloadController extends Controller
                     $this->validate($request, [
             'title'=>'required|min:4|max:191',   
             'description'=>'required|min:4|max:2000',
-            //'files'=>'nullable|array|max:'.$files_count_remaining,
-            //'files.*'=>'nullable|file|max:31000|mimes:pdf,doc,docx,txt,ppt,pps,pptx',
-
             'files1'=>'nullable|array|max:'.$files_count_remaining,
             'files1.*.file'=>'nullable|file|max:31000|mimes:pdf,doc,docx,ppt,pps,txt,pptx',
             'files1.*.dname'=>'required_with:files1.*.file|min:3|max:191',
 
             'delDownload'=>'sometimes|array|max:'.$files_count_remaining,
-            'delDownload.*'=>'nullable|distinct|max:192',
+            'delDownload.*'=>'nullable|distinct|max:191',
 
             'faculty'=>'required|integer',
             'semester'=>'required|integer',
             'subject'=>'sometimes|integer'
             ]);
-            /*
-               'files1'=>'required|array|max:12',
-            'files1.*.file'=>'required|file|max:31000|mimes:pdf,doc,docx,ppt,pps,txt,pptx',
-            'files1.*.dname'=>'required_with:files1.*.file|min:3|max:191', 
-            */
+            //dd(count($request->file('files')));
             for($i=0; $i < count($request->delDownload); $i++ )
             {
                 DownloadFile::where('filepath','=', trim($request->delDownload[$i]) )->delete();                
@@ -290,7 +263,7 @@ class DownloadController extends Controller
               else 
             {
                     $this->validate($request, [
-            'title'=>'required|min:4|max:191',   
+            'title'=>'required|min:4|max:255',   
             'description'=>'required|min:4|max:2000',
             'faculty'=>'required|integer',
             'semester'=>'required|integer',
@@ -391,27 +364,22 @@ class DownloadController extends Controller
                          $dir=Storage::makeDirectory($upload_dir, 0775, true);
                          $path=$file->storeAs($upload_dir, $filename);
 
-                         $files[$i]=new DownloadFile([ 'original_filename' => $original_name,
-                                                        'display_name'=>$request->files1[$i]['dname'], 
+                         $files[$i]=new DownloadFile([ 'original_filename' => $original_name, 
+                                                        'display_name'=>$request->files1[$i]['dname'],
                                                        'filepath' => $path   
                                                      ]);
-
+                     }
                     }
-                }
                        $files_added=$i.' new files also added .'; 
                        if($download_updated &&  count($request->file('files1')) >=1 )
                           $download->download_files()->saveMany($files);
-
-                    
-                         
-                
-
+             
             }
 
             if($download_updated)
             {
                 Session::flash('success','one download model has been succesfully updated. '.$files_added);
-                return redirect()->route('downloads.show', $download->id);
+                return redirect()->route('user.downloads.show', $download->id);
             } else
             return back()->withErrors('error editing the download');
                 
@@ -427,17 +395,21 @@ class DownloadController extends Controller
     }
 
     public function destroy($id)
-    {
-         $download=Download::findOrFail($id);
-        if($download->delete())
+    {  
+        $download=Download::findOrFail($id);
+        if(Auth::user()->owns($download, 'uploader_id'))
         {
-           // $download->download_files()->detach();
-            Session::flash('success', 'file  was successfully deleted');
-             return redirect()->route('downloads.index');
-        }
-        else
-            return back()->withErrors(' delete failed due to database error ');            
+           if($download->delete())
+            {
+                Session::flash('success', 'file  +was successfully deleted');
+                return redirect()->route('downloads.index');
+            }
+            else
+                return back()->withErrors(' delete failed due to database error ');  
+        } else
+        return back()->withErrors('you dont have permission for this activity');           
     }
+
 
    
 }

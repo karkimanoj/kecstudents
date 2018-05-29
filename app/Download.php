@@ -13,13 +13,19 @@ class Download extends Model
     public function download_category(){
         return $this->belongsTo('App\DownloadCategory','category_id');
     }
+   
 
-    public function download_detail1(){
-    	return $this->hasOne('App\DownloadDetail1');
+     public function subject(){
+        return $this->belongsTo('App\Subject');
     }
 
-    public function download_detail2(){
-    	return $this->hasOne('App\DownloadDetail2');
+    public function faculty(){
+        return $this->belongsTo('App\Faculty');
+    } 
+
+    public function download_files()
+    {
+        return $this->hasMany('App\DownloadFile');
     }
 
 }

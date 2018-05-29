@@ -21,18 +21,18 @@ class DownloadCategoryController extends Controller
     {
         if(Auth::user()->hasPermission(['create-download_categories']))
         {    
-        	$this->validate($request, ['name'=>'required|alpha_dash|max:100']);
+        	$this->validate($request, ['name'=>'required|alpha_dash|max:100',
+                                        'max_files' =>'required|integer|between:1,12'
+                                        ]);
             $category_type=$request->type;
             if($category_type=='subject' || $category_type=='facsem')
             {
             	$category=new DownloadCategory;
                 $category->category_type= $category_type;
             	$category->name= trim($request->name);
-
+                $category->max_no_of_files = $request->max_files;
             	if($category->save())
                 {
-                    
-
                     $resource=$category->name;
                     $cruds=['create', 'read', 'update', 'destroy'];
                      
@@ -50,10 +50,8 @@ class DownloadCategoryController extends Controller
                         }    
                         Session::flash('success','new category '.$category->name.' and its corresponding permissions created successfully ');
                         return redirect()->route('permissions.index');
-                       
-                 //Session::flash('success','new category '.$category->name.' successfully added');
-                   
-                }
+                                          
+                }return back()->withErrors('failed to create new download category');
             	
             }
         }else

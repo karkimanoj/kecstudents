@@ -14,23 +14,52 @@ if (! function_exists('check_members'))
                                     })->first();
            if($project)
            	return $project;
-        //echo 'yecxs'; else echo 'nooooooooo';       
+            
 	}
 }
 
-/*
+if (! function_exists('subjects_as_facsem'))
+{
+   function subjects_as_facsem($faculties)
+    {
+        $facs=[];
+        /*
+        array of subjects with corresponding faculty/semester
+        */
+        foreach ($faculties as $faculty)
+         {
+            $sems=[];
+          for($i=1; $i<=8; $i++)
+            {
+                $subs=[];
+                foreach ( $faculty->subjects()->wherePivot('semester','=',$i)->get() as  $subject)
+                 {
+                     $subs[$subject->id]=$subject->name;
+                 }
+                 $sems[$i]=$subs;
+            }
+            $facs[$faculty->id]=$sems;
 
-'member_rollno.*'=>
-                    ['distinct', 'required', 'max:15' ,
+         }
+         return $facs;
+    }
+}
 
-                        Rule::unique('project_members, roll_no')
-                        ->where( function($query) {
-                           return $query->whereIn('project_id', function($query) use($request->subject){
-                            $query->select('id')
-                                  ->from('projects')
-                                  ->where('subject_id', $request->subject);
-                           });
-                        });
-
-                    ],
-*/
+if (! function_exists('remove_space_in_string'))
+{
+  function remove_space_in_string( $string )
+  {
+    $sub_parts=explode(' ', $string);
+    $length=count($sub_parts);
+    $sub='';
+    
+    for($j=0; $j<$length; $j++)
+    {
+        if($j==($length-1))
+        $sub.=$sub_parts[$j];
+      else
+        $sub.=$sub_parts[$j].'_';
+    }
+    return $sub;
+  }
+}

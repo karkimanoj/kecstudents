@@ -14,24 +14,24 @@
 	
 			</div>
 			<div class="col-md-4 offset-md-2 ">
-				<a href="{{ route('downloads.create') }}" class="btn  btn-primary float-right"> upload</a>
+				<a href="{{ route('downloads.create') }}" class="btn  btn-primary float-right"> Upload</a>
 			</div>
 
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<h4>
-					<span class="text-muted">includes notes, books, tutorials, labmanual, routine, question collection</span>
+					<span class="text-muted">Includes Notes, Books, Tutorials, Lab Manual, Routine, Question Collection</span>
 					</h4>
 				
 				
 				<table class="table m-t-20">
 					<thead>
-						<th>id</th>
-						<th>Filepath</th>
+						<th>ID</th>
+						<th>Title</th>
 						<th>Category</th>
-						<th>Uploaded by</th>
-						<th>published at</th>
+						<th>Uploaded By</th>
+						<th>Published At</th>
 						<th>Date Created</th>
 						<th>Actions</th>
 					</thead>
@@ -39,9 +39,11 @@
 						@foreach($downloads as $download)
 						<tr>
 							<td>{{ $download->id }}</td>
-							<td>
-								{{ substr(strip_tags($download->filepath),0,38) }} <span style="color: blue"> {{ strlen(strip_tags($download->filepath))>38?'....':'' }} </span>
-							</td>
+							<td> {{ $download->title }} </td>
+								
+							<!--<td> 
+								 substr(strip_tags($download->filepath),0,38)  <span style="color: blue"> strlen(strip_tags($download->filepath))>38?'....':''  </span>
+							</td>-->
 							<td>{{$download->download_category->name}}</td>
 							<td>{{ $download->user->name }}</td>
 							<td>{{$download->published_at}}</td>
@@ -50,13 +52,13 @@
 								<div class="input-group-btn">
 							        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></button>
 							        <ul class="dropdown-menu dropdown-menu-right">
-							          <li><a href="{{ route('downloads.show', [$download->id]) }}" > view </a>
+							          <li><a href="{{ route('downloads.show', [$download->id]) }}" > View </a>
 							          </li>
-							          <li><a href="{{ route('downloads.edit', [$download->id]) }}"> edit </a>
+							          <li><a href="{{ route('downloads.edit', [$download->id]) }}"> Edit </a>
 							          </li>
 							         
 							          <li role="separator" class="divider"></li>
-							          <li><a href="#">Separated link</a></li>
+							          <li><a href="#">Separated Link</a></li>
 							        </ul>
 							    </div><!-- /btn-group -->
 
