@@ -5,11 +5,11 @@ if (! function_exists('check_members'))
 {
 	function check_members($subject_id, $roll_no)
 	{
-		
+		  $tenant=session('tenant');
 		  $project=Project::where('subject_id', $subject_id)
-                      ->whereIn('id', function($query) use($roll_no) {
+                      ->whereIn('id', function($query) use($roll_no, $tenant) {
                             $query->select('project_id')
-                                  ->from('project_members')
+                                  ->from($tenant.'_project_members')
                                   ->where('roll_no','=', $roll_no);
                                     })->first();
            if($project)

@@ -10,7 +10,7 @@ use Session;
 
 class DownloadCategoryController extends Controller
 {
-
+      
     public function index()
     {
     	$categories=DownloadCategory::all();
@@ -21,7 +21,7 @@ class DownloadCategoryController extends Controller
     {
         if(Auth::user()->hasPermission(['create-download_categories']))
         {    
-        	$this->validate($request, ['name'=>'required|alpha_dash|max:100',
+        	$this->validate($request, ['name'=>'required|unique:'.session('tenant').'_download_categories,name|alpha_dash|max:100',
                                         'max_files' =>'required|integer|between:1,12'
                                         ]);
             $category_type=$request->type;

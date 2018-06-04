@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
@@ -47,7 +46,7 @@ class FacultyController extends Controller
     {   
         if(Auth::user()->hasPermission(['create-faculties']))
         { 
-            $this->validate($request, ['name'=>'required|max:100|unique:faculties,name',
+            $this->validate($request, ['name'=>'required|max:100|unique:'.session('tenant').'_faculties,name',
                 'display_name'=>'required|max:255']);
 
             $faculty=new Faculty;
@@ -93,7 +92,7 @@ class FacultyController extends Controller
     {   
         if(Auth::user()->hasPermission(['update-faculties']))
         { 
-            $this->validate($request, ['name'=>'required|max:100|unique:faculties,name,'.$id,
+            $this->validate($request, ['name'=>'required|max:100|unique:'.session('tenant').'_faculties,name,'.$id,
                 'display_name'=>'required|max:255']);
 
             $faculty=Faculty::findOrFail($id);

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
@@ -78,7 +77,7 @@ class DownloadController extends Controller
         include(app_path() . '\helpers.php');
 
         $category=DownloadCategory::where('name','=' ,'note')->first();
-      
+        
         if($request->category==$category->id)
         {
             $this->validate($request, [

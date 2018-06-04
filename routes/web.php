@@ -1,8 +1,8 @@
 <?php
 
-Route::middleware('auth')->group(function(){
+Route::middleware('subdomain', 'auth')->group(function(){
 	/*
-		pages routes	
+	  pages routes	
 	*/
 		//download routes
 		Route::get('/downloads/{category_id}', 'Page\DownloadController@Index')->name('downloads.home');
@@ -16,7 +16,7 @@ Route::middleware('auth')->group(function(){
 		
 });
 
-Route::prefix('user')->middleware('auth')->group(function(){
+Route::prefix('user')->middleware('subdomain' ,'auth')->group(function(){
 		/*
 			user routes
 		*/
@@ -28,7 +28,7 @@ Route::prefix('user')->middleware('auth')->group(function(){
 
 
 
-Route::prefix('manage')->middleware('role:superadministrator|administrator')->group( function(){
+Route::prefix('manage')->middleware('subdomain','role:superadministrator|administrator')->group( function(){
 
 	/*
 		manage (admin) routes
@@ -66,8 +66,19 @@ Route::prefix('manage')->middleware('role:superadministrator|administrator')->gr
 		Route::get('/dashboard',  ['as'=>'manage.dashboard', 'uses'=>'Admin\ManageController@dashboard']);
 });
 
-Route::get('/', 'HomeController@index');
-	
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+
+
+        
+ 
+
+Route::group([ 'middleware' => ['subdomain']
+    ], function(){
+    	
+	Auth::routes();
+	Route::get('/subdomainTest', 'HomeController@subdomain');
+	Route::get('/', 'HomeController@index');
+	Route::get('/home', 'HomeController@index')->name('home');
+
+});
+

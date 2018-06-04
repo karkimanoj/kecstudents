@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Page;
 
 use App\Http\Controllers\Controller;
@@ -19,12 +18,12 @@ class ProjectController extends Controller
     public function Index($category, $cat_id)
     {   
        	$categories=Subject::where('project', 1)->get();
-
-        $popular_tags=DB::table('taggables')
-                        ->join('tags', 'taggables.tag_id','=','tags.id')
-                        ->select(DB::raw('taggables.tag_id, tags.name , count(taggables.tag_id) as tagcounts'))
-                        ->where('taggables.taggable_type','App\Project')
-                        ->groupBy('taggables.tag_id')
+        $taggablest = session('tenant').'_taggables';
+        $popular_tags=DB::table($taggablest)
+                        ->join(session('tenant').'_tags', $taggablest.'.tag_id','=', session('tenant').'_tags.id')
+                        ->select(DB::raw($taggablest.'.tag_id, '.session('tenant').'_tags.name , count('.$taggablest.'.tag_id) as tagcounts'))
+                        ->where($taggablest.'.taggable_type','App\Project')
+                        ->groupBy($taggablest.'.tag_id')
                         ->orderBy('tagcounts', 'desc')
                         ->limit(6)
                         ->get();  

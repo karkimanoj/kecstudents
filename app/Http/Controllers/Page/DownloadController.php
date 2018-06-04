@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Page;
 
 use App\Http\Controllers\Controller;
@@ -12,8 +11,6 @@ use DB;
 
 class DownloadController extends Controller
 {
-
-
 
 
     public function Index($category_id)

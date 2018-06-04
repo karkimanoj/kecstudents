@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
@@ -91,13 +90,13 @@ class UserController extends Controller
         if($user->save())
         {
              $user->roles()->sync($request->input('roles'), false);
-             Session::flash('error','sorry new user cannot be created');
+             Session::flash('success',' new user created successfully');
             return redirect()->route('users.show', $user->id);
         }
         else
         {
-            Session::flash('error','sorry new user cannot be created');
-            return redirect()->route('users.create');
+            //Session::flash('error','sorry new user cannot be created');
+            return back()->withErrors('sorry new user cannot be created');
         }
     }
 
@@ -171,8 +170,7 @@ class UserController extends Controller
             return redirect()->route('users.show', $id);
         } else
         {
-            Session::flash('error','Error in updating user credentials');
-            return redirect()->route('users.edit',$id);
+            return back()->withErrors('Error ocurred in updating user credentials. Try again');
         }
     }
 

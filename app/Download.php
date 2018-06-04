@@ -5,7 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class Download extends Model
-{
+{   
+    public function __construct() 
+    {
+        parent::__construct();
+        $this->table = session('tenant').'_downloads';
+    }
+
     public function user(){
         return $this->belongsTo('App\User','uploader_id');
     }

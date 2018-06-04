@@ -304,7 +304,8 @@
 	              	$('#projects_head').text('displaying page '+object.current_page+'( of total '+object.last_page+' ) from '+object.total+' results ');
 	                paginate_cotrols(object.current_page, object.last_page) 
                     //var arr = $.map(object.data[0], function(el) { return el });
-                }).fail(function () {
+                }).fail(function (error1) {
+                	console.log(error1)
                     alert('Articles could not be loaded due to technicle problems.');
                 });
             }

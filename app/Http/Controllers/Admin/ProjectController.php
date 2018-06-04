@@ -28,8 +28,7 @@ class ProjectController extends Controller
     {
          $projects=Project::paginate(20);
 
-         if(Auth::user()->hasRole(['superadministrator', 'administrator']))
-            return view('manage.projects.index', ['projects'=>$projects]);
+        return view('manage.projects.index', ['projects'=>$projects]);
       
     }
 
@@ -42,8 +41,6 @@ class ProjectController extends Controller
     {
         $subjects=Subject::where('project', 1)->get();
         $tags=Tag::all();
-
-        if(Auth::user()->hasRole(['superadministrator', 'administrator']))
          return view('manage.projects.create', ['subjects'=>$subjects,
                                                'tags'=>$tags ]);
          
@@ -81,11 +78,11 @@ class ProjectController extends Controller
         include(app_path() . '\helpers.php');
 
        $subject_id=$request->subject;
-
+       $tenant=session('tenant');
         Validator::make($request->all() , [
                 'name'=>'required|min:4|max:255',
                 'abstract'=>'required|max:4000',
-                'link'=>'sometimes|url|max:255|unique:projects,url_link',
+                'link'=>'sometimes|url|max:255|unique:'.$tenant.'_projects,url_link',
                 'file'=>'required|file|max:31000||mimetypes:application/pdf,application/msword',
                 'tags'=>'required|max:60',
                 'subject'=>'integer|required',
@@ -94,12 +91,12 @@ class ProjectController extends Controller
                 'member_rollno'=>'required|array|max:5',
                 'member_rollno.*'=>
                     ['distinct','required','max:15',
-                        Rule::unique('project_members', 'roll_no')
-                            ->where( function($query) use( $subject_id){
-                               return $query->whereIn('project_id', function($query) use($subject_id) 
+                        Rule::unique($tenant.'_project_members', 'roll_no')
+                            ->where( function($query) use( $subject_id, $tenant){
+                               return $query->whereIn('project_id', function($query) use($subject_id, $tenant) 
                                {
                                 $query->select('id')
-                                      ->from('projects')
+                                      ->from($tenant.'_projects')
                                       ->where('subject_id', $subject_id);
                                });
                             })
@@ -311,22 +308,22 @@ class ProjectController extends Controller
 
        $project=Project::findOrFail($id);
       $subject_id=$project->subject_id;
-
+      $tenant=session('tenant');
         Validator::make($request->all() , [
                 'name'=>'required|min:4|max:255',
                 'abstract'=>'required|max:4000',
-                'link'=>'sometimes|url|max:255|unique:projects,url_link,'.$id,
+                'link'=>'sometimes|url|max:255|unique:'.$tenant.'_projects,url_link,'.$id,
                 'tags'=>'required|max:60',
                 'member_rollno'=>'required|array|max:5',
                 'member_rollno.*'=>['distinct','required','max:15',
-                    Rule::unique('project_members', 'roll_no')
-                        ->where( function($query) use( $subject_id, $id)
+                    Rule::unique($tenant.'_project_members', 'roll_no')
+                        ->where( function($query) use( $subject_id, $id, $tenant)
                         {
                            return $query->where('project_id','!=', $id)
-                           ->whereIn('project_id', function($query) use($subject_id, $id) 
+                           ->whereIn('project_id', function($query) use($subject_id, $id, $tenant) 
                            {
                             $query->select('id')
-                                  ->from('projects')
+                                  ->from($tenant.'_projects')
                                   ->where('subject_id', $subject_id);
                            });
                         })

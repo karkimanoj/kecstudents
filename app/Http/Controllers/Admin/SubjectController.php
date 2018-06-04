@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
@@ -47,8 +46,8 @@ class SubjectController extends Controller
     {
         if(Auth::user()->hasPermission(['create-subjects']))
         {   
-            $this->validate($request, ['name'=>'required|max:255|unique:subjects,name',
-                                        'faculty'=>'required']);
+            $this->validate($request, ['name'=>'required|max:255|unique:'.session('tenant').'_subjects,name',
+                'faculty'=>'required']);
 
             $subject=new Subject;
             $subject->name=$request->name;
@@ -128,7 +127,7 @@ class SubjectController extends Controller
     {
         if(Auth::user()->hasPermission(['update-subjects']))
         {
-            $this->validate($request, ['name'=>'required|max:255|unique:subjects,name,'.$id,
+            $this->validate($request, ['name'=>'required|max:255|unique:'.session('tenant').'_subjects,name,'.$id,
                                         'faculty'=>'required']);
 
             $subject=Subject::findOrFail($id);

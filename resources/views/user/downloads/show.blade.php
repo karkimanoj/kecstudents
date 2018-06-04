@@ -52,16 +52,16 @@
 									<i class="fas fa-user" ></i> <span class="text-primary">{{$download->user->name}} <i>[{{$download->user->roll_no}}]</i></span>
 								</div>
 								<div class="col-md-6">
-									<i class="fab fa-cuttlefish" style="color:#228AE6;"></i> <span class="text-muted">{{$download->download_category->name}}</span>
+									<i class="fab fa-cuttlefish" ></i> <span class="text-muted">{{$download->download_category->name}}</span>
 
 								</div>
 							</div>
 							<div class="row mt-2" style="font-size: 0.9rem">
 								<div class="col-md-6">
-									<i class="far fa-clock" style="color:#228AE6;"></i> <span class="text-muted">{{$download->published_at}}</span>
+									<i class="far fa-clock" ></i> <span class="text-muted">{{$download->published_at}}</span>
 								</div>
 								<div class="col-md-6">
-									<i class="far fa-clock" style="color:#228AE6;"></i> <span class="text-muted">{{$download->created_at->toFormattedDateString()}}</span>
+									<i class="far fa-clock" ></i> <span class="text-muted">{{$download->created_at->toFormattedDateString()}}</span>
 
 								</div>
 							</div>
@@ -90,7 +90,7 @@
 								<div class="col">
 
 									<!--<i class="fab fa-cuttlefish" ></i>-->
-									{!! ($download->download_category->category_type == 'subject') ? '<label> Subject : </label> '.$download->subject->name : '<label> Faculty / stream_filter_register(filtername, classname) : </label>'.$download->faculty->name.' - '.$download->semester!!}
+									{!! ($download->download_category->category_type == 'subject') ? '<label> Subject : </label> '.$download->subject->name : '<label> Faculty / Semester : </label>'.$download->faculty->name.' - '.$download->semester!!}
 									 
 								</div>
 									

@@ -20,6 +20,7 @@ use Storage;
 class ProjectController extends Controller
 {
 
+
      public function __construct()
      {
         $this->middleware('role:student', ['except' => ['show']]);
@@ -32,11 +33,11 @@ class ProjectController extends Controller
     public function index()
     {   
         $user_rollno=Auth::user()->roll_no;
-
-         $projects=Project::whereIn('id', function ($query) use($user_rollno)
+        $tenant = session('tenant');
+         $projects=Project::whereIn('id', function ($query) use($user_rollno, $tenant)
          {
             $query->select('project_id')
-                  ->from('project_members')  
+                  ->from($tenant.'_project_members')  
                   ->where('roll_no', $user_rollno);
          })->with('project_members')
           ->get();
@@ -85,12 +86,13 @@ class ProjectController extends Controller
         include(app_path() . '\helpers.php');
 
        $subject_id=$request->subject;
+       $tenant=session('tenant');
 
         Validator::make($request->all() , [
                 'name'=>'required|min:4|max:255',
                 'abstract'=>'required|max:4000',
-                'link'=>'sometimes|url|max:255|unique:projects,url_link',
-                'file'=>'required|file|max:31000||mimetypes:application/pdf,application/msword',
+                'link'=>'sometimes|url|max:255|unique:'.$tenant.'_projects,url_link',
+                'file'=>'required|file|max:31000|mimetypes:application/pdf,application/msword',
                 'tags'=>'required|max:60',
                 'subject'=>'integer|required',
                 'images'=>'sometimes|array|max:4',
@@ -98,12 +100,12 @@ class ProjectController extends Controller
                 'member_rollno'=>'required|array|max:5',
                 'member_rollno.*'=>
                     ['distinct','required','max:15',
-                        Rule::unique('project_members', 'roll_no')
-                            ->where( function($query) use( $subject_id){
-                               return $query->whereIn('project_id', function($query) use($subject_id) 
+                        Rule::unique($tenant.'_project_members', 'roll_no')
+                            ->where( function($query) use( $subject_id, $tenant){
+                               return $query->whereIn('project_id', function($query) use($subject_id, $tenant) 
                                {
                                 $query->select('id')
-                                      ->from('projects')
+                                      ->from($tenant.'_projects')
                                       ->where('subject_id', $subject_id);
                                });
                             })
@@ -304,8 +306,8 @@ class ProjectController extends Controller
            // return view('manage.projects.edit', ['project'=>$project, 'tags'=>$tags]);
          //else
               return view('user.projects.edit', ['project'=>$project, 'tags'=>$tags]);
-              }  
-              else
+        }  
+        else
             return back()->withErrors('Access denied. not member of this project');
 
     }
@@ -326,23 +328,23 @@ class ProjectController extends Controller
         {   
             $project=Project::findOrFail($id);
              $subject_id=$project->subject_id;
-
+             $tenant=session('tenant');
             Validator::make($request->all() , 
             [
                 'name'=>'required|min:4|max:255',
                 'abstract'=>'required|max:4000',
-                'link'=>'sometimes|url|max:255|unique:projects,url_link,'.$id,
+                'link'=>'sometimes|url|max:255|unique:'.$tenant.'_projects,url_link,'.$id,
                 'tags'=>'required|max:60',
                 'member_rollno'=>'required|array|max:5',
                 'member_rollno.*'=>['distinct','required','max:15',
-                    Rule::unique('project_members', 'roll_no')
-                        ->where( function($query) use( $subject_id, $id)
+                    Rule::unique($tenant.'_project_members', 'roll_no')
+                        ->where( function($query) use( $subject_id, $id ,$tenant)
                         {
                            return $query->where('project_id','!=', $id)
-                           ->whereIn('project_id', function($query) use($subject_id, $id) 
+                           ->whereIn('project_id', function($query) use($subject_id, $id, $tenant) 
                            {
                             $query->select('id')
-                                  ->from('projects')
+                                  ->from($tenant.'_projects')
                                   ->where('subject_id', $subject_id);
                            });
                         })
@@ -444,7 +446,7 @@ class ProjectController extends Controller
                         }
 
                         Session::flash('success',$project->name.' has been succesfully edited');
-                        return redirect()->route('projects.index');
+                        return redirect()->route('user.projects.show', $id);
                    
                    
                 } else

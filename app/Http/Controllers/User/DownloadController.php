@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
@@ -17,8 +16,8 @@ use Storage;
 class DownloadController extends Controller
 {   
 
-     public function __construct()
-     {
+    public function __construct()
+    {
         $this->middleware('role:teacher', ['except' => ['show']]);
     }
     /**
