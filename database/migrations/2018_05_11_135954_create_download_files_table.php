@@ -16,7 +16,7 @@ class CreateDownloadFilesTable extends Migration
         Schema::create('download_files', function (Blueprint $table) {
           
             $table->unsignedInteger('download_id');
-             $table->string('original_filename');
+            $table->string('original_filename');
               $table->string('display_name');
             $table->string('filepath')->unique();
             

@@ -27,6 +27,15 @@ Route::prefix('user')->middleware('subdomain' ,'auth')->group(function(){
 });
 
 
+//tenant routes -only available to superadministrator
+Route::prefix('manage')->middleware('subdomain','role:superadministrator')->group( function(){
+
+	Route::resource('/tenants', 'Admin\TenantController');
+	Route::get('/tenants/softDelete/{id}', 'Admin\TenantController@softDelete')->name('tenants.softDelete');
+
+	//ajax route for migrating tables according to newly registered tenants   
+	Route::get('/migrateTables1', 'Admin\TenantController@migrateTables1');
+});
 
 Route::prefix('manage')->middleware('subdomain','role:superadministrator|administrator')->group( function(){
 

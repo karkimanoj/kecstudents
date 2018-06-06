@@ -58,17 +58,20 @@ class DownloadController extends Controller
     */
     public function publish(Request $request)
     {
-        $id=$request->id;
-        if($request->status=='publish')
-            $date=Carbon::now();
-        else if($request->status=='unpublish')
-            $date=NULL;
+        if($request->ajax())
+        {
+            $id=$request->id;
+            if($request->status=='publish')
+                $date=Carbon::now();
+            else if($request->status=='unpublish')
+                $date=NULL;
 
-        $download=Download::findOrFail($id);
-        $download->published_at=$date;
+            $download=Download::findOrFail($id);
+            $download->published_at=$date;
 
-        if($download->save())
-        return $date;
+            if($download->save())
+            return $date;
+        }
     }
 
 
@@ -435,7 +438,7 @@ class DownloadController extends Controller
              return redirect()->route('downloads.index');
         }
         else
-            return back()->withErrors(' delete failed due to database error ');            
+            return back()->withErrors(' delete failed due to unknown error ');            
     }
 
    

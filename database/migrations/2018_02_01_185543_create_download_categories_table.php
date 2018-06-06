@@ -16,7 +16,8 @@ class CreateDownloadCategoriesTable extends Migration
         Schema::create('download_categories', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
-            
+            $table->string('category_type');
+            $table->unsignedTinyInteger('max_no_of_files');
         });
     }
 

@@ -25,5 +25,22 @@ class HomeController extends Controller
         return view('home');
     }
 
+    public function migrateTables(Request $request)
+    {
+        //$tenant = session('tenant');
+        if($request->ajax())
+        {
+            return 'yes';
+        }
+        /*
+        if($request->ajax())
+        {
+            Schema::connection('mysql')->create('downloads', function(Blueprint $table){
+
+            });
+        
+        }
+        */
+    }
    
 }
