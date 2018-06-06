@@ -186,6 +186,7 @@
 						'action':action
 					 },
 				success: function(data1){
+					console.log(data1);
 					$('.list-group').empty();
 					for (i = 0; i < data1.length; i++) {
 						$('.list-group').append('<li class="list-group-item">'+(i+1)+'. '+data1[i]+'</li>');
