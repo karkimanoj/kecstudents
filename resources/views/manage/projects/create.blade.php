@@ -10,7 +10,7 @@
 
     <div class="row ">
         <div class="col-md-11 offset-md-1 ">
-        	<h2><center>upload a project</center></h2>
+        	<h2><center>UPLOAD NEW PROJECT</center></h2>
               <div class="panel panel-default m-t-25">
                     <div class="panel-body">
                         <form method="POST" action="{{route('projects.store')}} " enctype="multipart/form-data">
@@ -173,7 +173,7 @@
                                             @endif
                                           </div> 
                                           <div class="col-md-5">
-                                             <input type="hidden" name="member_name[0]" minlength="4" class="form-control" value="{{Auth::user()->name old('member_name[0]')}}" required maxlength="255" placeholder="name">
+                                             <input type="hidden" name="member_name[0]" minlength="4" class="form-control" value="{{Auth::user()->name or old('member_name[0]')}}" required maxlength="255" placeholder="name">
 
                                             @if($errors->has('member_name[0]'))
                                                 <span class="help-block">

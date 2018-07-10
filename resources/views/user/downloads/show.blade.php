@@ -141,7 +141,7 @@
 
 				</div>
 				<div class="col-md-3">
-					@if( $download->uploader_id == Auth::user()->id)
+					@if( $download->uploader_id == Auth::user()->id && Auth::user()->hasRole('teacher'))
 						<div class="card  card_shadow w-100 borderless mt-4" id="user_widget">
 		                    <div class="card-header  " style="background-color: #F39C12">
 			                     <div id="card_img">

@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Schema;
-
 use Illuminate\Database\Schema\Blueprint;
 use Artisan;
 use App\Tenant;
 use Session;
 use DB;
+use Carbon\Carbon;
+use Auth;
+use Validator;
+use Storage;
+use Image;
+
 //use Illuminate\Support\Facades\Artisan;
 class TenantController extends Controller
 {
@@ -62,7 +67,49 @@ class TenantController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       // dd($request);
+        Validator::make($request->all(), [
+            'name'=>'required|min:4|max:255',
+            'description'=>'required|max:4000',
+            'subdomain'=>'required|min:3|max:255|alpha_dash|unique:tenants,subdomain',
+            'identifier'=>'required|size:3|alpha|unique:tenants,identifier',
+            'logo'=>'required|file|image|max:5000'
+
+        ])->validate();
+
+        if($request->hasFile('logo') && $request->file('logo')->isvalid())
+        {
+            $img=$request->file('logo');
+            $ext=$img->extension();
+            $img_name=time().rand(0,999).'.'.$ext;
+            $dir='images/logos';
+            $path = 'images/logos/'.$img_name;
+
+            if (!file_exists(public_path($dir))) 
+            {
+                Storage::makeDirectory($dir, 0775, true);
+            }
+
+            Image::make($img)->save(public_path($path));
+
+            $tenant = new Tenant;
+            $tenant->name = trim($request->name);
+            $tenant->subdomain = trim($request->subdomain);
+            $tenant->identifier = trim($request->identifier);
+            $tenant->description = trim($request->description);
+            $tenant->logo = $path;
+            $tenant->deleted_at = Carbon::now();
+
+            if($tenant->save())
+            {
+               Session::flash('success', 'New tenant created succesfully');
+               return redirect()->route('tenants.show',  $tenant->id);
+            } else
+            return back()->withErrors('Errors in saving tenant');
+                
+        } else
+            return back()->withErrors('Errors while uploading logo image');
+
     }
 
     /**
@@ -94,7 +141,7 @@ class TenantController extends Controller
     public function edit($id)
     {
         $tenant = Tenant::withTrashed()->findOrFail($id);
-        return view('manage.tenants.show', [ 'tenant' => $tenant ]);
+        return view('manage.tenants.edit', [ 'tenant' => $tenant ]);
     }
 
     /**
@@ -105,8 +152,48 @@ class TenantController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        //
+    {   //dd($request);
+        Validator::make($request->all(), [
+            'name'=>'required|min:4|max:255',
+            'description'=>'required|max:4000',
+            'subdomain'=>'required|min:3|max:255|alpha_dash|unique:tenants,subdomain,'.$id,
+            'identifier'=>'required|size:3|alpha|unique:tenants,identifier,'.$id,
+            'logo'=>'nullable|file|image|max:5000'
+
+        ])->validate();
+        
+        $tenant = Tenant::withTrashed()->findOrFail($id);
+        
+        if($request->hasFile('logo') && $request->file('logo')->isvalid())
+        {
+
+            $img=$request->file('logo');
+            $ext=$img->extension();
+            $img_name=time().rand(0,999).'.'.$ext;
+
+            $path='images/logos/'.$img_name;
+            
+            if(Image::make($img)->save(public_path($path)))
+            {                  
+                //deleting old logo image
+                $old_logo = $tenant->logo;
+                Storage::delete($old_logo);
+                $tenant->logo = $path;             
+            }    
+        } 
+
+
+        $tenant->name = trim($request->name);
+        $tenant->subdomain = trim($request->subdomain);
+        $tenant->identifier = trim($request->identifier);
+        $tenant->description = trim($request->description);
+
+        if($tenant->save())
+        {
+           Session::flash('success', 'Tenant '.$tenant->identifier.' updated succesfully');
+           return redirect()->route('tenants.show',  $tenant->id);
+        } else
+        return back()->withErrors('Errors in updating tenant '.$tenant->identifier );
     }
 
     /**

@@ -37,4 +37,14 @@ class User extends Authenticatable
         return $this->hasMany('App\Project','uploader_id');
     }
 
+    public function event1s()
+    {
+        return $this->hasMany('App\Event1');
+    }
+
+    public function event1_members()
+    {
+        return $this->hasMany('App\Event1Member');
+    }
+
 }

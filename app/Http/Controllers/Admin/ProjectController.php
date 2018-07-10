@@ -82,7 +82,7 @@ class ProjectController extends Controller
         Validator::make($request->all() , [
                 'name'=>'required|min:4|max:255',
                 'abstract'=>'required|max:4000',
-                'link'=>'sometimes|url|max:255|unique:'.$tenant.'_projects,url_link',
+                'link'=>'nullable|url|max:255|unique:'.$tenant.'_projects,url_link',
                 'file'=>'required|file|max:31000||mimetypes:application/pdf,application/msword',
                 'tags'=>'required|max:60',
                 'subject'=>'integer|required',
@@ -192,8 +192,8 @@ class ProjectController extends Controller
                     //creating array of ProjectMember objects to insert in project_members table in single saveMany command
                    $members=[];
                    
+                   $member_rollnos=$request->member_rollno;
                    $member_names=$request->member_name;
-
                    for ($i=0; $i < count($member_rollnos) ; $i++) 
                    { 
                        $members[$i]=new ProjectMember([ 'roll_no'=>$member_rollnos[$i] ,
@@ -223,8 +223,6 @@ class ProjectController extends Controller
 
                    if($project->project_members()->saveMany($members))
                    {
-
-
                         //syncing tags to project
                         $project->tags()->sync($tag_ids, false);
 
@@ -312,7 +310,7 @@ class ProjectController extends Controller
         Validator::make($request->all() , [
                 'name'=>'required|min:4|max:255',
                 'abstract'=>'required|max:4000',
-                'link'=>'sometimes|url|max:255|unique:'.$tenant.'_projects,url_link,'.$id,
+                'link'=>'nullable|url|max:255|unique:'.$tenant.'_projects,url_link,'.$id,
                 'tags'=>'required|max:60',
                 'member_rollno'=>'required|array|max:5',
                 'member_rollno.*'=>['distinct','required','max:15',
@@ -400,7 +398,7 @@ class ProjectController extends Controller
                           $images=[];
                         if($request->hasFile('images'))
                         {       
-                            Img::where('imagable_id', $id)->where('imagable_type', 'App\Project')->delete();
+                            Img::where(' imagable_id', $id)->where('imagable_type', 'App\Project')->delete();
 
                             for($i=0; $i<count($request->file('images')) ;$i++)
                             {

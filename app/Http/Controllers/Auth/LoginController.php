@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -36,4 +37,14 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+/* modifying credentials function of AuthenticatesUsers trait for additional login validation with  tenant_identifier. custom code 
+*/
+    public function credentials(Request $request)
+    {   
+        $credentials = $request->only($this->username(), 'password');
+         $credentials = array_add($credentials, 'tenant_identifer', session('tenant'));
+        return $credentials;
+    }
+
 }

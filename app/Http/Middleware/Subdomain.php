@@ -34,6 +34,7 @@ class Subdomain
       
         if($tenant)
         { 
+
            session(['tenant' =>  $tenant]);
            //setting laratrust table names according to tenant
            config(['laratrust.tables.roles' => $tenant.'_roles']);
@@ -42,6 +43,7 @@ class Subdomain
            config(['laratrust.tables.role_user' => $tenant.'_role_user' ]);
            config(['laratrust.tables.permission_user' => $tenant.'_permission_user' ]);
            config(['laratrust.tables.permission_role' => $tenant.'_permission_'.$tenant.'_role' ]);
+           
         }else
             abort(404);
       

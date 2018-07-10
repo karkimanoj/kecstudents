@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Devmarketer</title>
+    <title>Students Portal for Engineering Colleges</title>
 
     <!-- Styles -->
 

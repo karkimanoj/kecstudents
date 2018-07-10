@@ -19,6 +19,7 @@ class DownloadController extends Controller
     public function __construct()
     {
         $this->middleware('role:teacher', ['except' => ['show']]);
+
     }
     /**
      * Display a listing of the resource.
@@ -31,7 +32,7 @@ class DownloadController extends Controller
         $user=Auth::user();
        // $downloads=Download::where('uploader_id', $user->id)->get();
      
-        $user->downloads;
+        //$user->downloads;
         
         return view('user.downloads.index', ['downloads'=>$user->downloads]);
         
@@ -178,7 +179,7 @@ class DownloadController extends Controller
     }
         
     public function show($id)
-    {
+    {  
         $download=Download::findOrFail($id);
         return view('user.downloads.show', ['download'=>$download]);
     }

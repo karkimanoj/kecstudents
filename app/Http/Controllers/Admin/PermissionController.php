@@ -45,11 +45,12 @@ class PermissionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
+        $ten = Session('tenant');
         if($request->permission_type=='basic')
         {
             $this->validate($request, ['display_name'=>'required|min:5|max:100',
-                'name'=>'required|min:5|max:100|unique:permissions,name',
+                'name'=>'required|min:5|max:100|unique:'.$ten.'_permissions,name',
                 'description'=>'required|min:8|max:150'
                 ]);    
 
@@ -64,7 +65,7 @@ class PermissionController extends Controller
         }
         elseif ($request->permission_type=='crud') 
         {
-            $this->validate($request, ['resource'=>'required|min:2|max:80|unique:permissions,name']);
+            $this->validate($request, ['resource'=>'required|min:2|max:80|unique:'.$ten.'_permissions,name']);
 
             $resource=trim($request->resource);
             $cruds=$request->crud_checks;

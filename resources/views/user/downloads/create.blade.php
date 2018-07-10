@@ -37,7 +37,7 @@
 
 
 
-                    <form method="POST" action="{{route('downloads.store')}} " enctype="multipart/form-data" id="uploadForm">
+                    <form method="POST" action="{{route('user.downloads.store')}} " enctype="multipart/form-data" id="uploadForm">
                                 {{csrf_field()}}    
                                   
                                 <div class="row form-group mt-3{{ $errors->has('title')?'has-error':'' }} ">

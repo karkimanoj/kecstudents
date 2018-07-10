@@ -10,11 +10,11 @@
 
 		<div class="row">
 			<div class="col-md-6">
-				<h1>All Tenants</h1>
+				<h1>All Events</h1>
 	
 			</div>
 			<div class="col-md-4 offset-md-2 ">
-				<a href="{{ route('tenants.create') }}" class="btn  btn-primary float-right"> Create New Tenants</a>
+				<a href="{{ route('events.create') }}" class="btn  btn-primary float-right"> Add New Event</a>
 			</div>
 
 		</div>
@@ -22,44 +22,38 @@
 			<div class="col-md-12">
 			
 				
-				{{--{{ substr(strip_tags($tenant->filepath),0,38) }} <span style="color: blue"> {{ strlen(strip_tags($tenant->filepath))>38?'....':'' }} </span>--}}
-				<table class="table mt-2">
+				{{--{{ substr(strip_tags($event->filepath),0,38) }} <span style="color: blue"> {{ strlen(strip_tags($event->filepath))>38?'....':'' }} </span>--}}
+				<table class="table m-t-20">
 					<thead>
 						<th>id</th>
-						<th>identifier</th>
-						<th>subdomain</th>
-						<th>Name</th>
+						<th>Title</th>
+						<th>Type</th>
 						
+						<th>Date-Time</th>
 						
-						
+						<th>venue</th>
+						<th>Date Created</th>
 						<th>Deleted At</th>
-						<th>Created At</th>
-						<th>Actions</th>
+						<th>Action</th>
 					</thead>
 					<tbody>
-						@foreach($tenants as $tenant)
+						@foreach($events as $event)
 						<tr>
-							<td>{{ $tenant->id }}</td>
-							<td>{{$tenant->identifier}}</td>
-							<td>{{ $tenant->subdomain }}</td>
+							<td>{{ $event->id }}</td>
 							<td>
-							{{ substr(strip_tags($tenant->name ),0,60) }} <span style="color: blue"> {{ strlen(strip_tags($tenant->name ))>60?'....':'' }}
+							{{ substr(strip_tags($event->title ),0,60) }} <span style="color: blue"> {{ strlen(strip_tags($event->title ))>60?'....':'' }}
 							</td>
-							
-							<td>{{$tenant->deleted_at}}</td>
-							<td>{{ $tenant->created_at }}</td>
+							<td>{{$event->type}}</td>
+							<td>{{$event->start_at.' ~ '.$event->end_at}}</td>
+							<td>{{ $event->venue}}</td>
+						
+							<td>{{ $event->created_at }}</td>
+							<td>{{$event->deleted_at}}</td>
 							<td >
-								<div class="input-group-btn">
-							        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></button>
-							        <ul class="dropdown-menu dropdown-menu-right">
-							          <li><a href="{{ route('tenants.show', $tenant->id) }}" > view </a>
-							          </li>
-							          <li><a href="{{ route('tenants.edit', $tenant->id) }}"> edit </a>
-							          </li>
-							         
-							          <li role="separator" class="divider"></li>
+								
+							      
+							     <a href="{{ route('events.show', [$event->id]) }}" class="btn btn-primary" role="button"> View </a>
 							          
-							        </ul>
 							    </div><!-- /btn-group -->
 
 								<!-- delete with modal-->
@@ -106,7 +100,7 @@
 					</tbody>
 				</table>
 				<center>
-				{{ $tenants->links("pagination::bootstrap-4")}}
+				{{ $events->links("pagination::bootstrap-4")}}
 				</center>
 				</div>
 			</div>

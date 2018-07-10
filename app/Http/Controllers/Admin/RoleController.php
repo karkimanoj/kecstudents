@@ -51,7 +51,7 @@ class RoleController extends Controller
          //dd($request);
         
         $this->validate($request, [
-            'name'=>'required|min:5|max:100|alphadash|unique:roles,name',
+            'name'=>'required|min:5|max:100|alphadash|unique:'.$ten.'_roles,name',
             'display_name'=>'required|min:5|max:100',
             'description'=>'required|min:5|max:190'
           ]);

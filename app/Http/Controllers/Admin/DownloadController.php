@@ -288,8 +288,8 @@ class DownloadController extends Controller
                 DownloadFile::where('filepath','=', trim($request->delDownload[$i]) )->delete();                
             }
 
-            } 
-              else 
+           } 
+            else 
             {
                     $this->validate($request, [
             'title'=>'required|min:4|max:191',   

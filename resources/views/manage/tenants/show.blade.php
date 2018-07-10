@@ -115,7 +115,7 @@
 							
 						    <p>
 							<label>Logo: </label>	 
-						    	{{$tenant->logo}} 
+						    	  <img src="{{asset($tenant->logo)}}" width="150" height="90" alt="{{$tenant->logo}}"> 
 						    </p>
 							
 						    <p>
@@ -139,9 +139,11 @@
 				  		<div class="card-footer">
 				  			<h5>Tables <h5>
 				  			<ul class="list-group">
+				  				{{--
 							  @foreach($table_array as $table_name)
 							  	 <li class="list-group-item">{{$loop->index+1}}.&ensp; {{$table_name}}</li>
 							  @endforeach
+							  --}}
 							</ul>
 				  		</div>
 				  			

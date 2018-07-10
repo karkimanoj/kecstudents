@@ -91,7 +91,7 @@ class ProjectController extends Controller
         Validator::make($request->all() , [
                 'name'=>'required|min:4|max:255',
                 'abstract'=>'required|max:4000',
-                'link'=>'sometimes|url|max:255|unique:'.$tenant.'_projects,url_link',
+                'link'=>'present|nullable|url|max:255|unique:'.$tenant.'_projects,url_link',
                 'file'=>'required|file|max:31000|mimetypes:application/pdf,application/msword',
                 'tags'=>'required|max:60',
                 'subject'=>'integer|required',

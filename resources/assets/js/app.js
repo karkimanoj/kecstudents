@@ -7,9 +7,10 @@
 
 require('./bootstrap');
 
+import 'fullcalendar';
 
 window.Vue = require('vue');
-
+window.moment = require('moment');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -73,12 +73,12 @@
                                         {{csrf_field()}}
                                     <h2><center>Login</center></h2>
 
-                                    <div class="form-group {{ $errors->has('email')?'has-error':'' }} mtop-5">
-                                        <label >Email address</label>
-                                        <input type="email" name="email" value="{{ old('email') }}" class="form-control" required maxlength="100">
-                                        @if($errors->has('email'))
+                                    <div class="form-group {{ $errors->has('roll_no')?'has-error':'' }} mtop-5">
+                                        <label >Username </label>
+                                        <input type="text" name="roll_no" placeholder="Eg: KEC044BCT2071" value="{{ old('roll_no') }}" class="form-control" required maxlength="13">
+                                        @if($errors->has('roll_no'))
                                             <span class="help-block">
-                                                <strong>{{ $errors->first('email') }}</strong>
+                                                <strong>{{ $errors->first('roll_no') }}</strong>
                                             </span>
                                         @endif
                                     </div>
