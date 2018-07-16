@@ -64,7 +64,7 @@
 
 							<div class="row mt-4" >
 								<div class="col">
-									<i class="fas fa-comments fa-3x"></i> <span style="font-size: 2rem;"> 3</span>
+									<i class="fas fa-comments fa-3x"></i> <span style="font-size: 2rem;"><a href="{{Request::url().'#disqus_thread'}}">Second article</a></span>
 								</div>
 							</div>
 							<div class="row mt-4" >
@@ -192,6 +192,27 @@
 						<div class="col-md-12 text-center">
 							<hr>	
 							<h1>Comments</h1>
+							<div id="disqus_thread"></div>
+							<script>
+
+							/**
+							*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+							*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+							
+							var disqus_config = function () {
+							this.page.url = '{{Request::url()}}';  // Replace PAGE_URL with your page's canonical URL variable
+							this.page.identifier = {{$event->id}}; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+							};
+							
+							(function() { // DON'T EDIT BELOW THIS LINE
+							var d = document, s = d.createElement('script');
+							s.src = 'https://studentportal-1.disqus.com/embed.js';
+							s.setAttribute('data-timestamp', +new Date());
+							(d.head || d.body).appendChild(s);
+							})();
+							</script>
+							
+							                            
 						</div>
 					</div>
 
@@ -305,6 +326,7 @@
 
 
 @section('scripts')
+<script id="dsq-count-scr" src="//studentportal-1.disqus.com/count.js" async></script>
 <script type="text/javascript">
 	$(document).ready(function(){
 		eventType = '{{$event->type}}'

@@ -30,23 +30,33 @@ class Subdomain
     public function handle($request, Closure $next)
     {   
         $subdomain = explode('.', $request->getHost())[0] ;
-        $tenant = Tenant::where('subdomain', $subdomain)->value('identifier');
-      
-        if($tenant)
-        { 
 
-           session(['tenant' =>  $tenant]);
-           //setting laratrust table names according to tenant
-           config(['laratrust.tables.roles' => $tenant.'_roles']);
-           config([ 'laratrust.tables.permissions' => $tenant.'_permissions' ]);
-           config(['laratrust.tables.teams' => $tenant.'_teams' ]);
-           config(['laratrust.tables.role_user' => $tenant.'_role_user' ]);
-           config(['laratrust.tables.permission_user' => $tenant.'_permission_user' ]);
-           config(['laratrust.tables.permission_role' => $tenant.'_permission_'.$tenant.'_role' ]);
-           
-        }else
-            abort(404);
-      
-        return $next($request);
+        
+        
+        if($subdomain == 'tenantadmin')
+        {
+          return redirect()->route('tenants.index');
+
+        }
+        else
+        {
+          $tenant = Tenant::where('subdomain', $subdomain)->value('identifier');
+        
+          if($tenant)
+          { 
+             session(['tenant' =>  $tenant]);
+             //setting laratrust table names according to tenant
+             config(['laratrust.tables.roles' => $tenant.'_roles']);
+             config([ 'laratrust.tables.permissions' => $tenant.'_permissions' ]);
+             config(['laratrust.tables.teams' => $tenant.'_teams' ]);
+             config(['laratrust.tables.role_user' => $tenant.'_role_user' ]);
+             config(['laratrust.tables.permission_user' => $tenant.'_permission_user' ]);
+             config(['laratrust.tables.permission_role' => $tenant.'_permission_'.$tenant.'_role' ]);
+             //dd(config('laratrust.tables.roles'));
+          }else 
+              abort(404);
+      }
+
+         return $next($request);
     }
 }

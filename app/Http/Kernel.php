@@ -58,5 +58,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'subdomain' => \App\Http\Middleware\Subdomain::class,
+        'TenantAdmin' => \App\Http\Middleware\TenantAdmin::class,
     ];
 }

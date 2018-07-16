@@ -45,6 +45,17 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+
+        'tenant_admin' => [
+           'driver' => 'session',
+           'provider' => 'tenant_admins',
+        ],
+
+        'tenant_admin_api' => [
+           'driver' => 'token',
+           'provider' => 'tenant_admins',
+        ]
+
     ],
 
     /*
@@ -68,6 +79,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+
+        'tenant_admins' => [
+            'driver' => 'eloquent',
+            'model' => App\TenantAdmin::class,
         ],
 
         // 'users' => [
@@ -96,6 +112,12 @@ return [
             'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
+        ],
+
+        'tenant_admins' => [
+            'provider' => 'tenant_admins',
+            'table' => 'password_resets',
+            'expire' => 15,
         ],
     ],
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Artisan;
 use App\Tenant;
+use App\User;
 use Session;
 use DB;
 use Carbon\Carbon;
@@ -15,10 +16,18 @@ use Auth;
 use Validator;
 use Storage;
 use Image;
+use Hash;
+
 
 //use Illuminate\Support\Facades\Artisan;
 class TenantController extends Controller
 {
+
+    public function __construct()
+    {   
+        //$this->middleware('auth');
+        $this->middleware('auth:tenant_admin');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -128,8 +137,56 @@ class TenantController extends Controller
                 foreach ($table as $value)
                     array_push($table_array, $value);
             }
+        //DB::table($tenant->identifier.'_users')->get();
+            $college =   $tenant->identifier;
+            $superadmins = null;
+
+            if(!($tenant->trashed()))
+        $superadmins =User::where('tenant_identifier', $college)
+                    ->join($college.'_role_user', 'users.id', '=', $college.'_role_user.user_id')
+                    ->join($college.'_roles', $college.'_roles.id', $college.'_role_user.role_id')
+                    ->where($college.'_roles.name', 'superadministrator')
+                    ->select('users.*', $college.'_roles.name as role_name')
+                    ->get(); 
+                    else
+                        $superadmins = null;
+           //dd($superadmins->first());         
+        
         return view('manage.tenants.show', [ 'tenant' => $tenant,
-                                            'table_array' => $table_array]);
+                                            'table_array' => $table_array,
+                                            'superadmins' => $superadmins ]);
+    }
+
+    public function addSuperAdmin(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'roll_no' => 'required|string|max:13|unique:users,roll_no',
+            'email' => 'required|email|max:100|unique:users,email',
+            'password' => 'nullable|string|min:6|confirmed',
+            'tenant_identifier' => 'required|string|size:3'
+        ]);
+
+            $user=new User;
+            $user->name=$request->name;
+            $user->email=$request->email;
+            $user->roll_no=$request->roll_no;
+            $user->tenant_identifier = trim($request->tenant_identifier);
+            $user->password=Hash::make($request->password);
+            $user->api_token=bin2hex(openssl_random_pseudo_bytes(30));
+
+            if($user->save())
+            {
+                $role_id = DB::table($user->tenant_identifier.'_roles')->where('name', 'superadministrator')->value('id');
+                DB::table($user->tenant_identifier.'_role_user')->insert(
+                    ['role_id' => $role_id, 'user_id' => $user->id, 'user_type'=> 'App\User']
+                );
+                 Session::flash('success',' new user created successfully');
+                return back();
+            }
+            else
+                return back()->withErrors('sorry new user cannot be created');
+       
     }
 
     /**
@@ -220,7 +277,7 @@ class TenantController extends Controller
 
     public function migrateTables1(Request $request)   
     {
-        $tenant = Tenant::findOrFail($request->id);
+        $tenant = Tenant::withTrashed()->findOrFail($request->id);
         $ten = $tenant->identifier;
         
         $db_name = config('database.connections.mysql.database');
@@ -229,7 +286,8 @@ class TenantController extends Controller
         if($request->ajax())   
         { 
             if($request->action == 'migrate')
-            {   /*
+            {  
+             /*
                 //config(['database.connections.mysql.prefix' => session('tenant').'_']);
                 Artisan::call('migrate', [
                     '--path' => 'database/migrations/new_tenant_migrations'
@@ -494,10 +552,50 @@ class TenantController extends Controller
                 }
 
                 //tenant download files table    
+
+                if (!Schema::hasTable($ten.'_event1s')) 
+                {
+                    Schema::create($ten.'_event1s', function (Blueprint $table)  
+                    {
+                        $table->increments('id');
+                        $table->string('title');
+                        $table->string('slug')->unique();
+                        $table->enum('type', ['study', 'entertainment', 'miscellaneous']);
+                        $table->dateTime('start_at');
+                        $table->dateTime('end_at');
+                        $table->string('venue');
+                        $table->unsignedInteger('max_members');
+                        $table->text('description');
+                        $table->unsignedInteger('user_id');
+                        $table->softDeletes();
+                        $table->timestamps();
+
+                        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+                        
+                    });
+                }
+//return json_encode($ten);
+                if (!Schema::hasTable($ten.'_event1_members')) 
+                {
+                    Schema::create($ten.'_event1_members', function (Blueprint $table) use($ten)
+                    {
+                        $table->increments('id');
+                        $table->unsignedInteger('event1_id');
+                        $table->unsignedInteger('user_id');
+                        $table->softDeletes();
+                        $table->timestamps();
+
+                        $table->unique(['event1_id', 'user_id']);
+                        $table->foreign('event1_id')->references('id')->on($ten.'_event1s')->onDelete('cascade')->onUpdate('cascade');
+                        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+                    });
+                }
                 
             } 
             else if($request->action == 'drop')
             {
+                Schema::connection('mysql')->dropIfExists( $ten.'_event1_members');
+                Schema::connection('mysql')->dropIfExists( $ten.'_event1s');
                 Schema::connection('mysql')->dropIfExists( $ten.'_images');
                 Schema::connection('mysql')->dropIfExists( $ten.'_taggables');
                 Schema::connection('mysql')->dropIfExists( $ten.'_tags');

@@ -1,31 +1,24 @@
-@extends('layouts.manage')
+@extends('layouts.tenantAdmin')
 
 @section('content')
 <div class="main-container">
     <div class="row ">
         <div class="col-md-11 m-l-20 ">
-        	<h2><center>Create New User</center></h2>
-              <div class="panel panel-default">
-                    <div class="panel-body">
-                        <form method="POST" action="{{route('users.store')}} ">
+        	<h2><center>Create New Admin</center></h2>
+            <div class="row">
+              <div class="col-md-6 offset-md-3">   
+              <div class="card card-default">
+                    <div class="card-body">
+                        <form method="POST" action="{{route('tenantAdmin.store')}} ">
                                 {{csrf_field()}}
 
-                            <div class="row">
-                                <div class="col-md-6">        
+                                 
                                     <div class="form-group {{ $errors->has('email')?'has-error':'' }} mtop-5">
                                         <label >Name</label>
                                         <input type="text" name="name"  class="form-control" required  maxlength="100">
                                        
                                     </div>
-                                    <div class="form-group {{ $errors->has('roll_no')?'has-error':'' }} mtop-5">
-                                        <label >Roll no</label>
-                                        <input type="text" name="roll_no" value="{{ old('roll_no') }}" class="form-control" placeholder="eg: 002/BCT/2071" required maxlength="13" >
-                                        @if($errors->has('roll_no'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('roll_no') }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
+                                    
                                     <div class="form-group {{ $errors->has('email')?'has-error':'' }} mtop-5">
                                         <label >Email address</label>
                                         <input type="email" name="email"  class="form-control" required maxlength="100">
@@ -37,12 +30,12 @@
                                        
                                     </div>
 
-                                    <div class="form-group mtop-5{{ $errors->has('password')?'has-error':'' }} ">
+                                    <div class="form-group mt-2{{ $errors->has('password')?'has-error':'' }} ">
                                         <label >Password</label>
                                         <input type="password" name="password" id="manage_password" disabled class="form-control" required minlength="8" >
                                        
                                     </div>
-                                     <div class="form-group mt-2{{ $errors->has('password_confirmation')?'has-error':'' }} ">
+                                    <div class="form-group mt-2{{ $errors->has('password_confirmation')?'has-error':'' }} ">
                                         <label >password_confirmation</label>
                                         <input type="password" name="password_confirmation" id="password_confirmation" disabled class="form-control" required minlength="8" >
                                        
@@ -51,27 +44,14 @@
                                     <div class="form-group " >
                                         <input type="checkbox"  id="checkbox_auto_password"  checked> Auto generate password
                                     </div>
-
-                               </div>
-                                <div class="col-md-6">
-                                    <ul class="list-group">
-                                        <h4 class="list-group-item-heading">Roles:</h4>
-                                        @foreach($roles as $role)
-                                            <li class="list-group-item borderless">
-                                                <input type="checkbox" name="roles[]" value="{{$role->id}}">
-                                                {{$role->display_name}}
-                                                <i class="text-muted">({{$role->description}})</i>
-                                            </li>
-                                        @endforeach    
-                                    </ul>
-
+                                    <div class="form-group ">
+                                        <input type="submit" name="submit" value="Create" class="btn btn-primary btn-block">
                                 </div>
-                                <div class="form-group col-md-6">
-                                        <input type="submit" name="update" class="btn btn-primary btn-block">
-                                </div>
-                           </div>
+                            
                            
-                        </form>    
+                        </form>   
+                        </div>
+                        </div> 
                     </div>
                 </div>
             </div>
@@ -86,10 +66,14 @@
 
 			function check_checkbox(){
 					if($("#checkbox_auto_password").prop("checked"))
-					   
+					   {
 					   $('#manage_password, #password_confirmation').prop('disabled', true);
+
+                       }
 				    else 
+                    {
 					  $('#manage_password, #password_confirmation').prop('disabled', false);
+                    }
 			}
 
 			$('#checkbox_auto_password').click( function(){

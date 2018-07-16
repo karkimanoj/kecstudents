@@ -33,9 +33,23 @@ class LoginController extends Controller
      *
      * @return void
      */
+
+    /* original constructer
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }*/
+
+    //__construct and userLogout function are added for  multi auth
+    public function __construct()
+    {
+        $this->middleware('guest', ['except' => ['logout', 'userLogout']]);
+    }
+
+    public function userLogout()
+    {
+        Auth::guard('web')->logout();
+        return redirect('/');
     }
 
 /* modifying credentials function of AuthenticatesUsers trait for additional login validation with  tenant_identifier. custom code 
@@ -43,8 +57,9 @@ class LoginController extends Controller
     public function credentials(Request $request)
     {   
         $credentials = $request->only($this->username(), 'password');
-         $credentials = array_add($credentials, 'tenant_identifer', session('tenant'));
+         $credentials = array_add($credentials, 'tenant_identifier', session('tenant'));
         return $credentials;
     }
+
 
 }

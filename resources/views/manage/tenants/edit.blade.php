@@ -1,4 +1,4 @@
-@extends('layouts.manage')
+@extends('layouts.tenantAdmin')
 
 @section('content')
 <div class="main-container">

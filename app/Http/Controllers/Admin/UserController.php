@@ -35,7 +35,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {   
         $users=User::paginate(5);
         return view('manage.users.index', ['users'=>$users]);
     }
@@ -59,45 +59,53 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
         $this->validate($request, [
             'name'=>'required|max:100',
-            'roll_no'=>'required|string|max:12|unique:users',
-            'email'=>'required|email|max:100|unique:users,email'
+            'roll_no'=>'required|string|max:13|unique:users,roll_no',
+            'email'=>'required|email|max:100|unique:users,email',
+            'password' => 'nullable|string|min:6|confirmed'
         ]);
 
+        $college = strtolower( substr( trim($request->roll_no), 0, 3 ) );
 
-        if($request->has('password') && !empty($request->password)){
+        if($college == session('tenant'))
+        {
+            if($request->has('password') && !empty($request->password))
+            {
                 $password=trim($request->password);
-        } else
-        {
-            $length=10;
-            $keys='123456789abcdefghJkLmnpQRSTuVWXYz';
-            $str='';
-            $keylength=mb_strlen($keys,'8bit')-1;
-            for($i=0; $i<$length; $i++)
-                $str.=$keys[random_int(0,$keylength)];
+            } else
+            {
+                $length=10;
+                $keys='123456789abcdefghJkLmnpQRSTuVWXYz';
+                $str='';
+                $keylength=mb_strlen($keys,'8bit')-1;
+                for($i=0; $i<$length; $i++)
+                    $str.=$keys[random_int(0,$keylength)];
 
-            $password=$str;
-        }
+                $password=$str;
+            }
 
-        $user=new User;
-        $user->name=$request->name;
-        $user->email=$request->email;
-        $user->roll_no=$request->roll_no;
-        $user->password=Hash::make($password);
-        $user->api_token=bin2hex(openssl_random_pseudo_bytes(30));
+            $user=new User;
+            $user->name=$request->name;
+            $user->email=$request->email;
+            $user->roll_no=$request->roll_no;
+            $user->tenant_identifer = $college;
+            $user->password=Hash::make($password);
+            $user->api_token=bin2hex(openssl_random_pseudo_bytes(30));
 
-        if($user->save())
-        {
-             $user->roles()->sync($request->input('roles'), false);
-             Session::flash('success',' new user created successfully');
-            return redirect()->route('users.show', $user->id);
-        }
-        else
-        {
-            //Session::flash('error','sorry new user cannot be created');
-            return back()->withErrors('sorry new user cannot be created');
-        }
+            if($user->save())
+            {
+                 $user->roles()->sync($request->input('roles'), false);
+                 Session::flash('success',' new user created successfully');
+                return redirect()->route('users.show', $user->id);
+            }
+            else
+                return back()->withErrors('sorry new user cannot be created');
+        }else
+                return back()->withErrors('Roll no. does not match with college identifier');
+        
+        
     }
 
     /**
@@ -182,6 +190,15 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+        
+        if($user->delete())
+        {
+             
+             Session::flash('success '.$user->name.' ['.$user->roll_no.'] a tenant admin deleted successfully');
+            return redirect()->route('users.index');
+        }
+        else            
+            return back()->withErrors('sorry user'.$user->name.' ['.$user->roll_no.'] cannot be created');
     }
 }

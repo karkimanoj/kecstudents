@@ -5,7 +5,7 @@ Route::middleware('subdomain', 'auth')->group(function(){
 	  pages routes	
 	*/
 		//event routes	  
-	  	Route::get('/events/{type}', 'Page\EventController@Index')->name('events.home');
+	  	//Route::get('/events/{type}', 'Page\EventController@Index')->name('events.home');
 
 
 		//download routes
@@ -21,7 +21,7 @@ Route::middleware('subdomain', 'auth')->group(function(){
 		
 });
 
-Route::prefix('user')->middleware('subdomain')->group(function(){
+Route::prefix('user')->middleware('subdomain', 'auth')->group(function(){
 		/*
 			user routes
 		*/
@@ -44,15 +44,27 @@ Route::prefix('user')->middleware('subdomain')->group(function(){
 
 
 
-//tenant routes -only available to superadministrator
-Route::prefix('manage')->middleware('subdomain','role:superadministrator')->group( function(){
-
+//tenant routes -only available to tennt admin
+Route::middleware('TenantAdmin')->group( function(){
+	
+	//tenants contoller
+	Route::post('/tenants/addSuperAdmin', 'Admin\TenantController@addSuperAdmin')->name('tenants.addSuperAdmin');
 	Route::resource('/tenants', 'Admin\TenantController');
 	Route::get('/tenants/softDelete/{id}', 'Admin\TenantController@softDelete')->name('tenants.softDelete');
 
 	//ajax route for migrating tables according to newly registered tenants   
 	Route::get('/migrateTables1', 'Admin\TenantController@migrateTables1');
+
+	//tenant admin login and logout controller
+	Route::get('adminLogin', 'Auth\TenantAdminLoginController@showLoginForm')->name('tenantadmin.login');
+	Route::post('/adminLogin', 'Auth\TenantAdminLoginController@login')->name('tenantadmin.login.submit');
+	Route::post('/adminLogout', 'Auth\TenantAdminLoginController@tenantAdminLogout')->name('tenantadmin.logout');
+
+	//tenant admin controller
+	Route::resource('/tenantAdmin', 'Admin\TenantAdminController');
+	
 });
+
 
 Route::prefix('manage')->middleware('subdomain','role:superadministrator|administrator')->group( function(){
 

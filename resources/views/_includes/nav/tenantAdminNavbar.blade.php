@@ -75,27 +75,25 @@
     </ul>
 
     <ul class="navbar-nav ml-auto">
-        @if(Auth::guest())
+        @if(Auth::guard('tenant_admin')->guest())
             <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">login</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Register</a></li>
-        
-         @elseif(Auth::check())
+        @elseif(Auth::guard('tenant_admin')->check())
           <li class="nav-item dropdown pull-right">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"  >
-              <span>hy {{Auth::user()->name}} <span> 
+              <span>hy {{Auth::guard('tenant_admin')->user()->name}} <span> 
             </a>
 
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="#">profile</a>
-              <a class="dropdown-item" href="#">Notification </a>
-              <a class="dropdown-item" href="{{ route('manage.dashboard') }}">Manage</a>
-
-              <form method="POST" action="{{ route('logout') }}" id="logoutForm" style="display: none">
+              <form method="POST" action="{{ route('tenantadmin.logout') }}" id="logoutForm" style="display: none">
                 {{csrf_field()}} </form>
                 <a class="dropdown-item" href='#' onclick="document.getElementById('logoutForm').submit();" name="logout" >logout</a>               
             </div>
 
           </li>
+          
+       
         @endif
     </ul> 
     

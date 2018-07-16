@@ -16,11 +16,20 @@ class RedirectIfAuthenticated
      * @return mixed
      */
     public function handle($request, Closure $next, $guard = null)
-    {
-        if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+    {   
+        switch ($guard) 
+        {
+            case 'tenant_admin':
+              if (Auth::guard($guard)->check()) 
+                return redirect()->route('tenants.index');
+        
+                break;
+            
+             default:
+               if (Auth::guard($guard)->check()) 
+                return redirect('/home');
+                break;
         }
-
         return $next($request);
     }
 }

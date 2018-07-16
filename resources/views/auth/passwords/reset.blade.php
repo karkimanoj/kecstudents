@@ -10,7 +10,7 @@
             <div class="panel-body">
               
             <!--
-                @if(session status).....
+                {{--@if(session status)--}}.....
              -->
 
               <h2><center>Reset Password</center></h2>
@@ -71,7 +71,7 @@
 </div>
 @endsection
 
-<!--
+{{--
 @section('content')
 <div class="container">
     <div class="row">
@@ -140,4 +140,4 @@
     </div>
 </div>
 @endsection
--->
+--}}

@@ -59,7 +59,7 @@
                    <div class="section_box1" >
                        <i class="fas fa-calendar-alt fa-7x margin_center" style="color:#228AE6;"></i>
                    </div>
-                   <div class="section_box2">
+                   <div class="section_box2" id="event_div">
                        <div class="row">
                          <div class="col-md-12 section_header">
                            <h2>Events</h2>
@@ -135,6 +135,12 @@
       $('#download_div').click(function(){
 
         window.open('{{ route('downloads.home', 9) }}');
+        
+      });
+  
+       $('#event_div').click(function(){
+
+        window.open('{{ route('user.events.index') }}');
         
       });
       

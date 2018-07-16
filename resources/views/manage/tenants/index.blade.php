@@ -2,7 +2,7 @@
 
 
 
-@extends('layouts.manage')
+@extends('layouts.tenantAdmin')
 
 @section('content')
 
