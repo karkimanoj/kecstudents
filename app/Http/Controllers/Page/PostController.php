@@ -51,14 +51,11 @@ class PostController extends Controller
             break;
         }
 
-
-        if($request->tag_id)
+        
+          if($request->tag_ids)
           {
-            $posts=Tag::find($request->tag_id)
-             ->posts()
-             ->with(['user','tags','imgs'])
-             ->orderBy($order, $direction)
-             ->paginate(2);
+            $posts=Tag::where('id', $request->tag_ids[1])->posts()->get();
+             
           }  
           else 
             
@@ -73,8 +70,8 @@ class PostController extends Controller
             //return view('_includes.projects_load', ['projects' => $projects])->render();  
         //}
             return json_encode($posts);
-           
-
+          
+        
        // return view('pages.projects.index', compact('projects'));
     }
 

@@ -18,7 +18,7 @@ class Post extends Model
 
 	
 	public function imgs(){
-        return $this->morphMany('App\Img', 'imagable');
+        return $this->morphMany('App\Img', 'imagable', 'imagable_type', 'imagable_id');
     }
 
 

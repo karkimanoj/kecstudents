@@ -205,8 +205,9 @@ class ProjectController extends Controller
 
                    for ($i=0; $i < count($member_rollnos) ; $i++) 
                    { 
-                       $members[$i]=new ProjectMember([ 'roll_no'=>$member_rollnos[$i] ,
-                                                         'name'=>$member_names[$i]  ]);
+                       $members[$i]=new ProjectMember;
+                       $members[$i]->roll_no = $member_rollnos[$i];
+                       $members[$i]->name = $member_names[$i] ;
                    }
                    
 
@@ -255,7 +256,8 @@ class ProjectController extends Controller
                                         $constraint->upsize();
                                     })->save(public_path($path));
 
-                                $images[$i]=new Img(['filepath'=>$path]);
+                                $images[$i]=new Img;
+                                 $images[$i]->filepath = $path;
                             }
 
                             $project->imgs()->saveMany($images);
@@ -404,8 +406,9 @@ class ProjectController extends Controller
                             ->first()==null)
                            $members_changed=1;
 
-                       $members[$i]=new ProjectMember([ 'roll_no'=>$member_rollnos[$i] ,
-                                                         'name'=>$member_names[$i]  ]);
+                        $members[$i]=new ProjectMember;
+                       $members[$i]->roll_no = $member_rollnos[$i];
+                       $members[$i]->name = $member_names[$i] ;
                    }
 
                    if($members_changed==1) 
@@ -437,7 +440,8 @@ class ProjectController extends Controller
                                         $constraint->upsize();
                                     })->save(public_path($path));
 
-                                $images[$i]=new Img(['filepath'=>$path]);
+                                $images[$i]=new Img;
+                                 $images[$i]->filepath = $path;
                             }
 
                             $project->imgs()->saveMany($images);

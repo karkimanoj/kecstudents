@@ -66,16 +66,25 @@
 							<div class="col-md-11 offset-md-1 mt-1 bg_grey" >
 								<label class="mt-2">Popular Tags</label>
 								<hr>
-								<div class="nav flex-column nav-pills" id="v-pills-tag" role="tablist" aria-orientation="vertical">
+								<!--end <div class="nav flex-column nav-pills" id="v-pills-tag" role="tablist" aria-orientation="vertical"> -->
+									
 									@foreach($popular_tags as $popular_tag)	
-									  <a class="nav-link "  data-toggle="pill" 
+									 {{-- <a class="nav-link "  data-toggle="pill" 
 									  href="{{route('posts.home')}}" role="tab" aria-controls="v-pills-home" aria-selected="true">
 									  	{{$popular_tag->name}} <span class="badge badge-secondary float-right">{{$popular_tag->tagcounts}}</span>
 									  </a>
-									  <input type="hidden" name="tag_id" value="{{$popular_tag->tag_id}}">
-									
+									  <input type="hidden" name="tag_ids" value="{{$popular_tag->tag_ids}}">--}}
+									  <!--checkboxes-->
+									  <div class="form-check mt-2">
+										  <input class="form-check-input" type="checkbox" value="{{$popular_tag->tag_id}}" class="tag_check" >
+										  <label class="form-check-label ml-3" >
+										    {{$popular_tag->name}}
+										  </label>
+										  <span class="badge badge-secondary float-right">{{$popular_tag->tagcounts}}</span>
+									  </div>	
+									   <!--end checkboxes-->
 									@endforeach
-								</div>
+								
 							</div>
 						</div>		
 
@@ -152,22 +161,23 @@
 	{
 		  var sort_by='relevance';
 		  var host='{{url('/')}}';
-		  var tag_id = null;	
+		  var tag_ids = [];	
 		//$('#v-pills-'+category+' input[value="'+cat_id+'"]').prev().prev().addClass('active');
+			$('input[type=checkbox]').change(function (){
+				 tag_ids = $('input[type=checkbox]:checked').map(function() {
+				    return this.value;
+				}).get()
+				sort_by=$('#sort-by').val();
+				getposts(tag_ids, sort_by);
+			});
+
+		getposts(tag_ids, sort_by);
+
 		
-		getposts(tag_id, sort_by);
-
-		$('#v-pills-tag a').click(function()
-		{
-			tag_id=$(this).next().val();
-
-			sort_by=$('#sort-by').val();
-			getposts(tag_id, sort_by);
-		});
 
 		$('#sort-by').change(function(){
 			sort_by=$(this).val();
-			getposts(tag_id, sort_by);
+			getposts(tag_ids, sort_by);
 		});
 
 
@@ -181,7 +191,7 @@
                 e.preventDefault();
                  url = $(this).attr('href');
            
-               getposts(tag_id, sort_by, url);
+               getposts(tag_ids, sort_by, url);
                 
             });
 
@@ -217,21 +227,21 @@
             user_id='{{Auth::user()->id}}';
 
 
-            function getposts(tag_id, sort_by, url='{{route('posts.ajaxIndex')}}') 
+            function getposts(tag_ids, sort_by, url='{{route('posts.ajaxIndex')}}') 
             {
-				//alert(tag_id+' '+sort_by)
+				
                 $.ajax({
                     url : url,
-                    data:{ 
-		                   'tag_id' : tag_id,
+                    data:{ 'token' : '{{csrf_field()}}',
+		                   'tag_ids' : tag_ids,
 		                   'sort_by' : sort_by
 					 },
 					 dataType: 'json',
                 }).done(function (pdata) {
-
+                	console.log(pdata)
                 	$('#project_mainbox').empty();
                 	//console.log(data)
-                    //window.history.pushState("", "", host+'/projects/'+category+'/'+cat_id);
+              /*      //window.history.pushState("", "", host+'/projects/'+category+'/'+cat_id);
              if(pdata.total!=0)
             {	
                 for (j = 0; j < pdata.data.length; j++) 
@@ -248,7 +258,7 @@
 					col = 'col-md-12'
 					if(post.imgs)
 					{
-						image = '<div class="col-md-4" > <img src="'+post.imgs[0].filepath+'"  class="img-thumbnail"></div>'
+						image = '<div class="col-md-4" > <img src="'+post.imgs[0].filepath+'"  class="img-fluid"></div>'
 						col = 'col-md-8'
 					}								  
 												
@@ -331,7 +341,7 @@
 			}
 			$('#projects_head').text('displaying page '+pdata.current_page+'( of total '+pdata.last_page+' ) from '+pdata.total+' results ');
 	                paginate_cotrols(pdata.current_page, pdata.last_page) 
-
+*/
                 }).fail(function (error1) {
                 	console.log(error1)
                     alert('Articles could not be loaded due to technicle problems.');

@@ -111,7 +111,11 @@ class PostController extends Controller
 
                 //dd($path);
                 //$comment = new App\Comment(['message' => 'A new comment.']);
-               $img=new Img(['filepath'=>$path]);
+                $img=new Img;
+                $img->filepath=$path;
+               
+                //$img->save();          
+               //dd($img);
                  if( !($post->imgs()->save($img)) )
                     $msg = '. Also Error in uploading image.';
             }
@@ -139,8 +143,10 @@ class PostController extends Controller
     public function show($slug)
     {
         $post = Post::where('slug', $slug)->with('tags')->first();
-        dd($post);
-
+        //dd($post);
+        /*
+        $post1 = Post::where('slug', $slug)->get();
+        dd($post1->imgs);*/
             $post->increment('view_count');
         return view('user.posts.show', ['post' => $post]);
     }
