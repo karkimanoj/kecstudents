@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Event1;
+use App\Post;
 use App\Observers\Event1Observer;
+use App\Observers\PostObserver;
 
 class ObserverServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,7 @@ class ObserverServiceProvider extends ServiceProvider
     public function boot()
     {
         Event1::observe(Event1Observer::class);
+        Post::observe(PostObserver::class);
     }
 
     /**

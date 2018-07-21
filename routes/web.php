@@ -4,10 +4,9 @@ Route::middleware('subdomain', 'auth')->group(function(){
 	/*
 	  pages routes	
 	*/
-		//event routes	  
-	  	//Route::get('/events/{type}', 'Page\EventController@Index')->name('events.home');
-
-
+		//post routes
+	  	Route::get('/posts', 'Page\PostController@Index')->name('posts.home');
+	  	Route::get('/posts/ajaxIndex', 'Page\PostController@ajaxIndex')->name('posts.ajaxIndex');
 		//download routes
 		Route::get('/downloads/{category_id}', 'Page\DownloadController@Index')->name('downloads.home');
 		//ajx download route
@@ -25,6 +24,17 @@ Route::prefix('user')->middleware('subdomain', 'auth')->group(function(){
 		/*
 			user routes
 		*/
+
+		//all posts  routes 	
+		Route::get('/posts/create', 'User\PostController@create')->name('user.posts.create');	
+
+		Route::get('/posts', 'User\PostController@index')->name('user.posts.index');
+		Route::get('/posts/{slug}', 'User\PostController@show')->name('user.posts.show');
+		//Route::get('/posts/create','User\PostController@create')->name('user.posts.create');
+		Route::post('/posts', 'User\PostController@store')->name('user.posts.store');
+		Route::get('/posts/{slug}/edit', 'User\PostController@edit')->name('user.posts.edit');
+		Route::put('/posts/{slug}', 'User\PostController@update')->name('user.posts.update');
+		Route::delete('/posts/{slug}', 'User\PostController@destroy')->name('user.posts.destroy');
 
 		Route::resource('/events', 'User\EventController', ['as'=>'user']);
 		//event ajax routes

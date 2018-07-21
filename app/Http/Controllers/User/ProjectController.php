@@ -246,6 +246,10 @@ class ProjectController extends Controller
                                 $img_name=time().rand(0,999).'.'.$ext;
                                 $path='images/projects/'.$img_name;
 
+                                if (!file_exists(public_path('images/projects'))) 
+                                {
+                                    Storage::makeDirectory($dir, 0775, true);
+                                }
                                 Image::make($img)->resize(600, 350,
                                     function ($constraint) {
                                         $constraint->upsize();
@@ -360,10 +364,6 @@ class ProjectController extends Controller
                 if($project->save())
                 {   
                     //creating array of ProjectMember objects to insert in project_members table in single saveMany command
-
-                   
-                   
-
                     $tag_ids=[]; 
                    //inserting new tags created by user
                     foreach($request->tags as $tag)
@@ -417,8 +417,6 @@ class ProjectController extends Controller
 
                         $inserting_members=$project->project_members()->saveMany($members);
                    }
-                
-
 
                         $project->tags()->sync($tag_ids, true);
 

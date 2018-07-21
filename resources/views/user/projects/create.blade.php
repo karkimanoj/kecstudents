@@ -16,7 +16,7 @@
 <div class="main-container">
      <div class="row">
       <div class="col-md-12" id="top_header" >        
-         <h2 class="text-center">All Projects</h2>          
+         <h2 class="text-center">Add New Project</h2>          
       </div>    
     </div>
 

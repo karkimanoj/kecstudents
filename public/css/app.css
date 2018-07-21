@@ -11812,6 +11812,26 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
   font-size: 1.25em;
 }
 
+.v_align_inner_div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.post-header {
+  color: purple !important;
+  font-family: 'Montserrat', sans-serif;
+  font-style: italic !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+
 /*
     DEMO STYLE
 */

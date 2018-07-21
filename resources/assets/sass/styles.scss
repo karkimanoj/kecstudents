@@ -70,7 +70,21 @@
 	font-size: 1.25em;
 }
 
+.v_align_inner_div {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
 
-
-
+.post-header{ 
+   
+    color: purple !important; 
+    font-family: 'Montserrat', sans-serif;
+    
+    font-style: italic !important;
+    font-weight: bold !important;
+    
+    text-decoration: none !important; 
+    
+    }
 

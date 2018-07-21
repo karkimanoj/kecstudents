@@ -94,16 +94,8 @@ class DownloadController extends Controller
         }
            if($request->ajax())
             return json_encode($downloads);
-        
-       
-     
-         
+    
 
     }
 
-
-
-     
-
-  
 }
