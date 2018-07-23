@@ -26,7 +26,7 @@
 			        	<div class="row">
 			        		<div class="col-md-6">
 			        			<form method="POST" action="{{ route('user.posts.destroy', $post->slug) }}" >
-					        		{{--method_field("DELETE")--}}
+					        		{{method_field("DELETE")}}
 					        		{{csrf_field()}}
 					        		<input type="submit" class="btn btn-danger float-right" name="delete" value="yes">
 								</form>		

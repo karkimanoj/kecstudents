@@ -31,14 +31,5 @@ class PostObserver
         //dd('aaaaa');
     }
 
-    /**
-     * Listen to the User deleting event.
-     *
-     * @param  \App\User  $user
-     * @return void
-     */
-    public function deleting(Event1 $event)
-    {
-        //
-    }
+    
 }

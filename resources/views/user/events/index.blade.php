@@ -262,54 +262,7 @@
 	    		$('#add-event-end-time').val(end_time);
 
 	    		$('#add-Event-Modal').modal('show');
-
-/*
-	    		$("#add-event-max-members ").on('change', function (){
-			        alert(moment($('#add-event-start-date').val()+' '+$('#add-event-start-time').val() ))
-			    });*/
-	    		
-	    		
-	    		
-
-
-	    		/*
-	    		var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
-      			var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
-      			
-      			$.ajax({
-      				type:'GET',
-                    url : '{{--route('user.events.eventList')--}}',
-                    dataType:'JSON',
-                    data:{ 'start' : start,
-		                   'end' : end,
-					 },
-
-					success : function(data1){
-						console.log(data1);
-
-						var host='{{--url('/')--}}';
-						$('#project_box').empty();
-
-						for(i=0; i < data1.length; i++)
-						{	
-							eventg = data1[i];
-
-							$cloned = $( "#test_event_box" ).clone(true, true)
-							$cloned.find(".event_title").html('<a href="'+host+'/user/events/'+eventg.id+'">'+eventg.title+'</a>')
-							$cloned.find(".event_venue").text(eventg.venue)
-							$cloned.find(".event_start_at").text(moment(eventg.start_at).format('MMMM Do YYYY, h:mm a'))
-							$cloned.find(".event_end_at").text(moment(eventg.end_at).format('MMMM Do YYYY, h:mm a'))
-							$cloned.find(".event_max_members").text(eventg.event1_members_count)
-							$cloned.find(".event_user_id").text(eventg.user.name)
-							$cloned.show()
-							$cloned.appendTo("#project_box")
-							$("#showing_event").text( moment(start).format('MMMM Do YYYY')+' - '+  moment(end).format('MMMM Do YYYY'));
-							$(document).scrollTop( ($('#events_div').offset().top)-80 );
-							
-						}
-						
-					} 
-                 });     $(&quot;#example&quot;)*/
+	    	
 	    	},
 	    	eventRender: function(event, element){
 	    		element.attr('data-toggle', 'popover');

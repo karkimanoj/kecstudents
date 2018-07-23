@@ -20,7 +20,7 @@ Route::middleware('subdomain', 'auth')->group(function(){
 		
 });
 
-Route::prefix('user')->middleware('subdomain', 'auth')->group(function(){
+Route::prefix('user')->middleware('subdomain', 'auth', 'role:teacher|staff|student')->group(function(){
 		/*
 			user routes
 		*/
@@ -30,7 +30,7 @@ Route::prefix('user')->middleware('subdomain', 'auth')->group(function(){
 
 		Route::get('/posts', 'User\PostController@index')->name('user.posts.index');
 		Route::get('/posts/{slug}', 'User\PostController@show')->name('user.posts.show');
-		//Route::get('/posts/create','User\PostController@create')->name('user.posts.create');
+		
 		Route::post('/posts', 'User\PostController@store')->name('user.posts.store');
 		Route::get('/posts/{slug}/edit', 'User\PostController@edit')->name('user.posts.edit');
 		Route::put('/posts/{slug}', 'User\PostController@update')->name('user.posts.update');
@@ -84,7 +84,16 @@ Route::prefix('manage')->middleware('subdomain','role:superadministrator|adminis
 		//Route::get('/test11', 'ManageController@index');
 		//Route::get('/test', 'Project\ProjectController@test');
 
-		//Route::resource('/events', 'Admin\EventController');	
+		//all posts  routes 	
+		Route::get('/posts/create', 'Admin\PostController@create')->name('posts.create');	
+		Route::get('/posts', 'Admin\PostController@index')->name('posts.index');
+		Route::get('/posts/{slug}', 'Admin\PostController@show')->name('posts.show');
+		Route::post('/posts', 'Admin\PostController@store')->name('posts.store');
+		Route::get('/posts/{slug}/edit', 'Admin\PostController@edit')->name('posts.edit');
+		Route::put('/posts/{slug}', 'Admin\PostController@update')->name('posts.update');
+		Route::delete('/posts/{slug}', 'Admin\PostController@destroy')->name('posts.destroy');
+
+		//event resource route	
 		Route::resource('/events', 'Admin\EventController');
 		//ajax call for softdeleting event
 		Route::get('/eventsSoftDelete', 'Admin\EventController@ajaxSoftDelete')->name('events.softDelete');

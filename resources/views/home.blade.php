@@ -77,7 +77,7 @@
                    <div class="section_box1">
                        <i class="fab fa-forumbee fa-7x margin_center" style="color:#228AE6;"></i>
                    </div>
-                   <div class="section_box2">
+                   <div class="section_box2" id="forum_box">
                        <div class="row">
                          <div class="col-md-12 section_header">
                            <h2>forums</h2>
@@ -141,6 +141,11 @@
        $('#event_div').click(function(){
 
         window.open('{{ route('user.events.index') }}');
+        
+      });
+        $('#forum_box').click(function(){
+
+        window.open('{{ route('posts.home') }}');
         
       });
       

@@ -33,10 +33,10 @@
                     </li>
 
                     <li class="{{Nav::isResource('subjects')}}">
-                        <a href="{{route('subjects.index')}}">subjects</a>
+                        <a href="{{route('subjects.index')}}">Subjects</a>
                     </li>
                     <li class="{{Nav::isRoute('download_categories.index')}}">
-                        <a href="{{route('download_categories.index')}}">Download categories</a>
+                        <a href="{{route('download_categories.index')}}">Download Categories</a>
                     </li>
                     <li class="{{Nav::isRoute('tags.index')}}">
                         <a href="{{route('tags.index')}}">Tags</a>
@@ -46,6 +46,12 @@
                     </li>
                     <li class="{{Nav::isResource('projects')}}">
                         <a href="{{route('projects.index')}}">Projects</a>
+                    </li>
+                    <li class="{{Nav::isResource('events')}}">
+                        <a href="{{route('events.index')}}">Events</a>
+                    </li>
+                    <li class="{{Nav::isResource('posts')}}">
+                        <a href="{{route('posts.index')}}">Posts</a>
                     </li>
                 </ul>
 

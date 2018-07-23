@@ -35,12 +35,45 @@
 		<div class="row">
 			<div class="col-md-9 "  style="background-color: white;">
 			
-				<div class="row mt-5 mb-5">
+				<div class="row mt-2 mb-5">
 
-					<div class="col-md-12 " style="padding: 20px" >
+					<div class="col-md-12 " style="padding: 10px" >
 						<div class="row">
 							<div class="col-md-8 text-center">
 								<h4 class="text-muted"> Displaying {{$posts->count()}} results </h4>
+								<!-- Modal -->
+							  <div class="modal fade " id="myModal" role="dialog">
+							    <div class="modal-dialog modal-sm">
+								<!-- Modal content-->
+							      <div class="modal-content">
+
+							        <div class="modal-header">
+							          <button type="button" class="close" data-dismiss="modal">&times;</button>
+							          <h4 class="modal-title">Confirm deletion</h4>
+							        </div>
+
+							        <div class="modal-body">
+							          <p>Are you sure?</p>
+							        </div>
+
+							        <div class="modal-footer">
+							        	<div class="row">
+							        		<div class="col-md-6">
+							        			<form method="POST" action="22" >
+									        		{{method_field("DELETE")}}
+									        		{{csrf_field()}}
+									        		<input type="submit" class="btn btn-danger float-right" name="delete" value="yes">
+												</form>		
+							        		</div>
+							        		<div class="col-md-6">
+							        			<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+							        		</div>
+							        	</div>	
+							        </div>
+							      </div>
+							      
+						    </div>
+						  </div> <!-- end of modal -->	
 							</div>
 							
 						</div>
@@ -60,7 +93,7 @@
 											</div>
 											<div class="row">
 												<div class="col-md-12 text-center" style=" font-size: 2em;">
-													7
+												<a href="{{route('user.posts.show', $post->slug)}}#disqus_thread" data-disqus-identifier="{{$post->id}}"> 0</a>
 												</div>
 											</div>
 										</div>	
@@ -75,7 +108,7 @@
 									
 											
 									</div>
-								    <div class="col-md-9 card  "  style="border: 1px solid black">
+								    <div class="col-md-9 card "  style="border: 1px solid black">
 									
 								    
 								    	<div class="card-body">
@@ -126,12 +159,13 @@
 							   		</div>
 							    
 							    	<div class="col-md-auto">
-							    		<div class="container">
+							    		<div class="container mt-2">
 							    			<a href="{{route('user.posts.edit', $post->slug)}}">
 							    			<i class="fas fa-edit"></i></a>
 							    		</div>
-							    		<div class="container">
-							    			<i class="fas fa-trash-alt"></i>
+							    		<div class="container mt-2">
+							    			<a id="delete_btn{{($post->id)*2}}"  data-toggle="modal" data-target="#myModal" href="#"> <i class="fas fa-trash-alt" ></i></a>
+							    			<input type="hidden" value="{{route('user.posts.destroy',$post->slug)}}">
 							    		</div>
 							    	</div>
 							    
@@ -220,13 +254,20 @@
 
 	
 @endsection
-
+<script id="dsq-count-scr" src="//studentportal-1.disqus.com/count.js" async></script>
 @section('scripts')
 <script type="text/javascript">
 	$(document).ready(function ()
 	{
 		$(function () {
 		  $('[data-toggle="popover"]').popover();
+		})
+
+		$('#myModal').on('show.bs.modal', function (e) {
+
+		action = $('#'+e.relatedTarget.id).next().val()
+
+		$('#myModal form').attr('action', action);
 		})
 	});
 </script>

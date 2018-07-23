@@ -3,15 +3,12 @@
 namespace App\Observers;
 
 use App\Event1;
+use Notification;
+use App\Notifications\Event1Notification;
 
 class Event1Observer
 {
-    /**
-     * Listen to the User created event.
-     *
-     * @param  \App\User  $user
-     * @return void
-     */
+    
     public function saving(Event1 $event)
     {   
 
@@ -27,14 +24,31 @@ class Event1Observer
         //dd('aaaaa');
     }
 
-    /**
-     * Listen to the User deleting event.
-     *
-     * @param  \App\User  $user
-     * @return void
-     */
-    public function deleting(Event1 $event)
+    public function updated(Event1 $event)
     {
-        //
+        $type = 'updated';
+       foreach ($event->event1_members()->withTrashed()->get() as $member) {
+            $users[] = $member->user;
+        }
+
+        if($users)
+            Notification::send($users, new Event1Notification($event, $type));
+        
+    }
+    
+    public function deleted(Event1 $event)
+    {
+        $type = 'expired';
+        if($event->isForceDeleting() === true) {
+            $type = 'deleted';
+        }
+
+       foreach ($event->event1_members()->withTrashed()->get() as $member) {
+            $users[] = $member->user;
+        }
+        $users[]=$event->user;
+
+        if($users)
+            Notification::send($users, new Event1Notification($event, $type));
     }
 }

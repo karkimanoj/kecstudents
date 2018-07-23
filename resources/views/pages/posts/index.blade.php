@@ -156,6 +156,7 @@
 
 
 @section('scripts')
+<script id="dsq-count-scr" src="//studentportal-1.disqus.com/count.js" async></script>
 <script type="text/javascript">
 	$(document).ready(function ()
 	{
@@ -238,10 +239,10 @@
 					 },
 					 dataType: 'json',
                 }).done(function (pdata) {
-                	console.log(pdata)
+                	//console.log(pdata)
                 	$('#project_mainbox').empty();
                 	//console.log(data)
-              /*      //window.history.pushState("", "", host+'/projects/'+category+'/'+cat_id);
+                  //window.history.pushState("", "", host+'/projects/'+category+'/'+cat_id);
              if(pdata.total!=0)
             {	
                 for (j = 0; j < pdata.data.length; j++) 
@@ -289,7 +290,7 @@
 								'<div class="row">',
 									'<div class="col-md-12 text-center" style=" font-size: 2em;">',
 										
-									'7</div>',
+									'<a href="'+host+'/user/posts/'+post.slug+'#disqus_thread" data-disqus-identifier="'+post.id+'"> 0</a></div>',
 								'</div>',
 							'</div>',		
 						'</div>',
@@ -341,7 +342,7 @@
 			}
 			$('#projects_head').text('displaying page '+pdata.current_page+'( of total '+pdata.last_page+' ) from '+pdata.total+' results ');
 	                paginate_cotrols(pdata.current_page, pdata.last_page) 
-*/
+
                 }).fail(function (error1) {
                 	console.log(error1)
                     alert('Articles could not be loaded due to technicle problems.');

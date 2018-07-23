@@ -54,15 +54,25 @@ class PostController extends Controller
         
           if($request->tag_ids)
           {
-            $posts=Tag::where('id', $request->tag_ids[1])->posts()->get();
-             
+            //$tags=Tag::where('id', $request->tag_ids)->get();
+            $tag_ids = $request->tag_ids;
+            $posts = Post::whereExists(function ($query) use($tag_ids){
+                $query->select(DB::raw(1))
+                      ->from(session('tenant').'_taggables')
+                      ->whereIn(session('tenant').'_taggables.tag_id', $tag_ids)
+                      ->where(session('tenant').'_taggables.taggable_type' , 'App\Post')
+                      ->whereRaw(session('tenant').'_taggables.taggable_id = '.session('tenant').'_posts.id');
+            })->with(['user','tags','imgs'])
+            ->orderBy($order, $direction)->paginate(1);
+            
+
           }  
           else 
             
           {
 	        $posts=Post::with(['user','tags','imgs'])
 	         ->orderBy($order, $direction)
-	         ->paginate(2);
+	         ->paginate(1);
              
          }
 

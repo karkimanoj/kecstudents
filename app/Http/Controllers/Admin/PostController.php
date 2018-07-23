@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,9 +28,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts=Auth::user()->posts()->with('tags')->get();
+        $posts=Post::with('tags')->paginate(1);
         //dd($posts);
-        return view('user.posts.index', [ 'posts' => $posts]);
+        return view('manage.posts.index', [ 'posts' => $posts]);
     }
 
     /**
@@ -41,7 +41,7 @@ class PostController extends Controller
     public function create()
     {  
         $tags = Tag::all();
-        return view('user.posts.create', [
+        return view('manage.posts.create', [
             'tags' => $tags
         ]);
     }
@@ -130,7 +130,7 @@ class PostController extends Controller
             if($post->tags()->sync($tag_ids, false))
             {
                 Session::flash('success', 'successfully added new post to discussions and forums'.$msg);
-                return redirect()->route('user.posts.show', $post->slug);
+                return redirect()->route('posts.show', $post->slug);
             }
             else
                 return back()->withErrors('problem  adding tags to the post '.$msg);
@@ -154,7 +154,7 @@ class PostController extends Controller
         $post1 = Post::where('slug', $slug)->get();
         dd($post1->imgs);*/
             $post->increment('view_count');
-        return view('user.posts.show', ['post' => $post]);
+        return view('manage.posts.show', ['post' => $post]);
     }
 
     /**
@@ -169,7 +169,7 @@ class PostController extends Controller
         if(Auth::user()->owns($post, 'author_id'))
         { 
             $tags = Tag::all();
-            return view('user.posts.edit', ['post' => $post, 'tags' => $tags]);
+            return view('manage.posts.edit', ['post' => $post, 'tags' => $tags]);
         } else
          return back()->withErrors('Permission denied. You are not the owner of this post');   
             
@@ -246,9 +246,10 @@ class PostController extends Controller
                                                 $constraint->upsize();
                                             })->save(public_path($path));
 
-                   $img=new Img;
-                    $img->filepath=$path;
-                   
+                    $img=new Img;
+                	$img->filepath=$path;
+
+         
                      if( !($post->imgs()->save($img)) )
                         $msg = '. Also Error in uploading image.';
                 }
@@ -257,7 +258,7 @@ class PostController extends Controller
                 if($post->tags()->sync($tag_ids, false))
                 {
                     Session::flash('success', 'successfully updated the post to discussions and forums'.$msg);
-                    return redirect()->route('user.posts.show', $post->slug);
+                    return redirect()->route('posts.show', $post->slug);
                 }
                 else
                     return back()->withErrors('Error occured in adding tags to the post '.$msg);
@@ -289,7 +290,7 @@ class PostController extends Controller
                 $post->tags()->detach();
                 $post->imgs()->delete();
                 Session::flash('success', 'file '.$post->slug.' was successfully deleted');
-                return redirect()->route('user.posts.index');
+                return redirect()->route('posts.index');
             } else
                 return back()->withErrors('Error occured in deleting the post ');
 

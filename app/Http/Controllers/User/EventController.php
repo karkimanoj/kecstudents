@@ -21,8 +21,10 @@ class EventController extends Controller
         $this->middleware('permission:destroy-events', [ 'only' => ['destroy',] ]);
 
          $this->middleware(function ($request, $next) 
-         {
+         {  
             $value = $request->session()->get('tenant');
+
+           
             Event1::where('end_at', '<', now())->delete();
             return $next($request);
         });
@@ -37,6 +39,9 @@ class EventController extends Controller
      */
     public function index()
     {   
+
+         
+        
         $events = Auth::user()->event1s;
         
         return view('user.events.index', ['events' => $events]);
@@ -103,7 +108,7 @@ class EventController extends Controller
     public function show($id)
     {
         $event = Event1::withTrashed()->where('id', $id)->with('event1_members.user')->first();
-        //dd($event);
+
         $interested_members = Event1Member::onlyTrashed()->where('event1_id','=', $id)->get();
         return view('user.events.show', ['event' => $event,
                                          'interested_members' => $interested_members]);
@@ -305,7 +310,7 @@ class EventController extends Controller
         }
      
     }
-
+    /*
     public function eventList(Request $request)
     { 
         //$events = Event1::where('start_at','>=',$request->start)->orWhere('end_at','<=',$request->end)->get();
@@ -313,6 +318,6 @@ class EventController extends Controller
         if($request->ajax())
         return json_encode($events);
        
-    }   
+    }   */
 
 }
