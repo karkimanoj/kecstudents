@@ -44,7 +44,36 @@
 		<div class="container">
 			<div class="row mb-4">
 				<div class="col-md-9 p-4" style="background-color: white">
-					<div class="row mt-4">
+					@foreach($project->project_members()->withTrashed()->get() as $member)
+
+						@if( $member->roll_no == Auth::user()->roll_no && $member->trashed()) 
+						
+							<div class="row mt-1">
+								<div class="col">
+									<div class="alert alert-primary" role="alert">
+									  <h5>Are you the member of this project?</h5> 
+									  
+									
+								<form action="{{route('user.projects.confirmMember', $project->id)}}" method="POST" id="confirm_member_form">
+								{{csrf_field()}}  
+									<div class="btn-group-toggle" data-toggle="buttons">
+									  <label class="btn btn-primary" >
+									    <input type="radio" name="confirm"   value="yes"  id="yes_radio"> yes
+									  </label>
+									  <label class="btn btn-primary" >
+									    <input type="radio" name="confirm"   value="no" id="no_radio"> No
+									  </label>
+									</div>
+
+								</form>
+									</div>
+								</div>
+							</div>
+							@break
+						@endif
+					@endforeach
+						
+					<div class="row mt-2">
 						<div class="col">
 							<h4 >{{$project->name}}</h4> 
 							<div class="row" style="font-size: 0.9rem">
@@ -141,14 +170,14 @@
 								/**
 								*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
 								*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-								
+								{{--
 								var disqus_config = function () {
 								this.page.url = '{{Request::url()}}';  // Replace PAGE_URL with your page's canonical URL variable
 								this.page.identifier = {{$project->id}}; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
 								this.callbacks.onNewComment = [function(comment) {
-						              alert(comment.id);
-						              alert(comment.text);
-						        	}];
+								comment_notify(comment.id, comment.text);
+					          
+					        	}];
 								};
 								
 								(function() { // DON'T EDIT BELOW THIS LINE
@@ -157,6 +186,7 @@
 								s.setAttribute('data-timestamp', +new Date());
 								(d.head || d.body).appendChild(s);
 								})();
+								--}}
 								</script>
 								
 								                            
@@ -184,23 +214,23 @@
 			                <div class="card-body ">
 			                 
 			                    <ul class="nav flex-column text-center text-muted">
-			                    <li class="nav-item">
-			                      <span class="badge ">{{Auth::user()->projects->count()}}</span><br>
-			                      <a class="nav-link active" href="{{route('user.projects.index')}}"><h7>Projects<h7> </a>
-			                    </li>
-			                    <li class="nav-item">
-			                       <span class=" badge badge-light">31</span><br>
-			                      <a class="nav-link" href="#">Events</a>
-			                    </li>
-			                    <li class="nav-item">
-			                      <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
-			                      <a class="nav-link" href="#">Downloads </a>
-			                    </li>
-			                    <li class="nav-item">
-			                      <span class="badge badge-light">31</span><br>
-			                      <a class="nav-link" href="#">posts </a>
-			                    </li>
-			                  </ul>		                    
+			                      <li class="nav-item">
+			                        <span class="badge badge-light">{{Auth::user()->projects->count()}}</span><br>
+			                        <a class="nav-link" href="{{route('user.projects.index')}}">Projects </a>
+			                      </li>
+			                      <li class="nav-item">
+			                         <span class=" badge badge-light">{{Auth::user()->event1s()->count()}}</span><br>
+			                        <a class="nav-link" href="{{route('user.events.index')}}">Events</a>
+			                      </li>
+			                      <li class="nav-item">
+			                        <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
+			                        <a class="nav-link" href="{{route('user.downloads.index')}}">Downloads </a>
+			                      </li>                     
+			                      <li class="nav-item">
+			                        <span class="badge ">{{Auth::user()->posts->count()}}</span><br>
+			                        <a class="nav-link active" href="{{route('user.posts.index')}}"><h7>posts<h7> </a>
+			                      </li>
+			                    </ul> 		                    
 			                      
 			                </div>
 		                
@@ -269,4 +299,35 @@
 	</div>
 @endsection
 
+@section('scripts')
+<script type="text/javascript">
+	function comment_notify(comment_id, comment_text)
+		{
+			//comment_notify1(comment_id, comment_text);
+			$.ajax({
+				type :'GET',
+		        url : '{{route('user.comments.notifyComment')}}',
+		       
+		        data:{	'token' : '{{csrf_token()}}',
+		        		'primary_id': '{{$project->id}}',
+		        		'comment_id' : comment_id,
+		               'model' : 'Project'
+					 },
+				success : function(data){
+					console.log(data)
+				},
+				error : function(err){
+					console.log(err);
+				}	 
+			});
+		}
+		
+	$(document).ready(function(){
 
+		$('#yes_radio, #no_radio').on('change', function(){
+			//alert($(this).val())
+			$('#confirm_member_form').submit();
+		});
+	});	
+</script>
+@endsection

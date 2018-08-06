@@ -3,7 +3,7 @@
 
 @section('content')
 	<div class="main-container">
-		<div class="row m-b-20">
+		<div class="row mb-3">
 
 			{{--<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">delete</button>
 			--}}
@@ -71,8 +71,8 @@
 		<div class="row">
 			<div class="col-md-10">
 				
-				<div class="panel panel-default">
-				  <div class="panel-body">
+				<div class="card card-default">
+				  <div class="card-body">
 				  	<p>
 					<label> created at: </label> {{$project->created_at}}<br>		 
 				    	<label> updated at: </label> {{$project->updated_at}}

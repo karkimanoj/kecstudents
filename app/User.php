@@ -47,8 +47,12 @@ class User extends Authenticatable
         return $this->hasMany('App\Event1Member');
     }
 
-     public function posts(){
+    public function posts(){
         return $this->hasMany('App\Post','author_id');
+    }
+
+    public function notices(){
+        return $this->hasMany('App\Notice');
     }
 
 }

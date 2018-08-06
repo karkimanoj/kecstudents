@@ -1,7 +1,11 @@
 
 @extends('layouts.app')
 
+
+
 @section('content')
+
+
 	<div class="main-container bg_grey">
 	    <div class="container-fluid" id="top_header" >
           	<h2 class="text-center">View Event</h2>
@@ -138,7 +142,9 @@
 									</div>
 								
 							</div>
-						
+						<div class="continer">
+							<input type="button" id="buton" value="yes">
+						</div>
 							<div class="row">								
 								<div class="col-md-12 mt-5">
 									<label>Members Interested ({{$interested_members->count()}})</label>
@@ -194,14 +200,14 @@
 							<h1>Comments</h1>
 							<div id="disqus_thread"></div>
 							<script>
-
-							/**
-							*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-							*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
 							
 							var disqus_config = function () {
-							this.page.url = '{{Request::url()}}';  // Replace PAGE_URL with your page's canonical URL variable
-							this.page.identifier = {{$event->id}}; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+							this.page.url = '{{Request::url()}}';  //  page's canonical URL variable
+							this.page.identifier = {{$event->id}}; // unique identifier variable
+							this.callbacks.onNewComment = [function(comment) {
+								comment_notify(comment.id, comment.text);
+					          
+					        }];
 							};
 							
 							(function() { // DON'T EDIT BELOW THIS LINE
@@ -235,24 +241,24 @@
 		               		</div>             
 			                <div class="card-body ">
 			                 
-			                    <ul class="nav flex-column text-center text-muted">
-			                    <li class="nav-item">
-			                      <span class="badge ">{{Auth::user()->projects->count()}}</span><br>
-			                      <a class="nav-link active" href="{{route('user.projects.index')}}">Projects </a>
-			                    </li>
-			                    <li class="nav-item">
-			                       <span class=" badge badge-light">{{Auth::user()->event1s->count()}}</span><br>
-			                      <a class="nav-link" href="{{route('user.events.index')}}">Events</a>
-			                    </li>
-			                    <li class="nav-item">
-			                      <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
-			                      <a class="nav-link" href="#">Downloads </a>
-			                    </li>
-			                    <li class="nav-item">
-			                      <span class="badge badge-light">31</span><br>
-			                      <a class="nav-link" href="#">posts </a>
-			                    </li>
-			                  </ul>		                    
+			                   <ul class="nav flex-column text-center text-muted">
+			                      <li class="nav-item">
+			                        <span class="badge badge-light">{{Auth::user()->projects->count()}}</span><br>
+			                        <a class="nav-link" href="{{route('user.projects.index')}}">Projects </a>
+			                      </li>
+			                      <li class="nav-item">
+			                         <span class=" badge badge-light">{{Auth::user()->event1s()->count()}}</span><br>
+			                        <a class="nav-link" href="{{route('user.events.index')}}">Events</a>
+			                      </li>
+			                      <li class="nav-item">
+			                        <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
+			                        <a class="nav-link" href="{{route('user.downloads.index')}}">Downloads </a>
+			                      </li>                     
+			                      <li class="nav-item">
+			                        <span class="badge ">{{Auth::user()->posts->count()}}</span><br>
+			                        <a class="nav-link active" href="{{route('user.posts.index')}}"><h7>posts<h7> </a>
+			                      </li>
+			                    </ul> 		                    
 			                      
 			                </div>
 		                
@@ -328,7 +334,11 @@
 @section('scripts')
 <script id="dsq-count-scr" src="//studentportal-1.disqus.com/count.js" async></script>
 <script type="text/javascript">
+
 	$(document).ready(function(){
+		
+		
+
 		eventType = '{{$event->type}}'
 
 		if(eventType == 'study')
@@ -392,7 +402,26 @@
 			});
 		});
 	});
-	
+	function comment_notify(comment_id, comment_text)
+		{
+			//comment_notify1(comment_id, comment_text);
+			$.ajax({
+				type :'GET',
+		        url : '{{route('user.comments.notifyComment')}}',
+		       
+		        data:{	'token' : '{{csrf_token()}}',
+		        		'primary_id': '{{$event->id}}',
+		        		'comment_id' : comment_id,
+		               'model' : 'Event1'
+					 },
+				success : function(data){
+					console.log(data)
+				},
+				error : function(err){
+					console.log(err);
+				}	 
+			});
+		}
 
 </script>
 @endsection

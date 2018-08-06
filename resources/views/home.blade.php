@@ -129,23 +129,23 @@
      
       $('#project_div').click(function(){
 
-        window.open('{{ route('projects.home', ['category'=>'subject', 'cat_id'=>0]) }}');
+        window.open('{{ route('projects.home', ['category'=>'subject', 'cat_id'=>0]) }}', "_self");
         
       });
       $('#download_div').click(function(){
 
-        window.open('{{ route('downloads.home', 9) }}');
+        window.open('{{ route('downloads.home', 9) }}',"_self");
         
       });
   
        $('#event_div').click(function(){
 
-        window.open('{{ route('user.events.index') }}');
+        window.open('{{ route('user.events.index') }}',"_self");
         
       });
         $('#forum_box').click(function(){
 
-        window.open('{{ route('posts.home') }}');
+        window.open('{{ route('posts.home') }} ,"_self"');
         
       });
       

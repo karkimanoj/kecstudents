@@ -43,7 +43,8 @@
                       select up to 20 tags. you can create your own tag by typing the tagname and hitting enter.
                       </small>
                     </div>
-
+                    
+                    @if(count($post->imgs))
                     <div class="row">
                       <div class="col">
                          <img src="{{asset($post->imgs()->first()->filepath)}}"  width="40%" class="img-fluid" alt="Responsive image">
@@ -52,6 +53,7 @@
                       </small>
                       </div>
                     </div>
+                    @endif
 
                     <div class="form-group {{ $errors->has('image')?'has-error':'' }} mt-2">
                         <label >Image <span class="text-muted">(optional) </span> : </label>

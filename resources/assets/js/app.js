@@ -21,9 +21,9 @@ window.moment = require('moment');
 //Vue.component('example-component', require('./components/ExampleComponent.vue'));
  
 
-var app = new Vue({
-    el: '#app',
-    data: {}
-});
+//var app = new Vue({
+ //   el: '#app',
+ //   data: {}
+//});
 
    

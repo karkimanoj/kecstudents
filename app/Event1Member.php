@@ -27,7 +27,7 @@ class Event1Member extends Model
 
    	public function event1()
    	{
-   		return $this->belongsTo('App\Event1');
+   		return $this->belongsTo('App\Event1', 'event1_id');
    	}
 
    	public function user()

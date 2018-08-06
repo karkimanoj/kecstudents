@@ -10,6 +10,10 @@ use Auth;
 use Validator;
 use Session; 
 use Carbon\Carbon;
+use App\Faculty;
+use App\User;
+use Notification;
+use App\Notifications\Event1Notification;
 
 class EventController extends Controller
 {   
@@ -23,9 +27,10 @@ class EventController extends Controller
          $this->middleware(function ($request, $next) 
          {  
             $value = $request->session()->get('tenant');
-
            
             Event1::where('end_at', '<', now())->delete();
+            //Event1::where('start_at', '>', now()->toDateString());
+
             return $next($request);
         });
         //
@@ -74,7 +79,18 @@ class EventController extends Controller
             'start_time'=>'required|date_format:H:i',
             'end_time'=>'required|date_format:H:i',
             'max_members'=>'required|integer|min:1|max:10000',
-            'description'=>'required|max:4000'
+            'description'=>'required|max:4000',
+
+            'facultyn' => 'sometimes|required|array|max:12',
+            'facultyn.*' => 'sometimes|required|string',
+            'start_rollno' => 'sometimes|array|max:12',
+            'start_rollno.*' =>'sometimes|required_with:facultyn.*|integer|min:0|max:400',
+            'end_rollno' => 'sometimes|required_with:start_rollno|array|max:12',
+            'end_rollno.*' => 'sometimes|required_with:facultyn.*|integer|min:0|max:400',
+            'year' => 'sometimes|required|array|max:12',
+            'year.*' => 'sometimes|required_with:facultyn.*|integer',
+            'ind_rollno' => 'sometimes|nullable|array|max:40',
+            'ind_rollno.*' => 'sometimes|nullable|alpha_num|size:10'
         ])->validate();
 
         $start_at=new Carbon($request->start_date.' '.$request->start_time);
@@ -93,6 +109,49 @@ class EventController extends Controller
         if($event->save())
         {//dd($event);
             Session::flash('success', $event->title.' succesfully created');
+
+            //Notification Part --start
+                if($request->submit == 'submit and notify')
+                {
+                    $roll_no=[];
+                    $college = strtoupper(session('tenant'));
+                    for($i=0; $i<count($request->facultyn); $i++)
+                    {  
+                        if( $request->end_rollno[$i] < $request->start_rollno[$i] )
+                               $request->end_rollno[$i]= $request->start_rollno[$i];
+                           
+                        $faculties=[]; 
+                        if($request->facultyn[$i] == 'All')
+                            $faculties = Faculty::pluck('name');
+                         else
+                         $faculties[] =  Faculty::findOrFail(2)->value('name');
+                       
+                        for($k=0; $k<count($faculties); $k++)
+                        {
+                            for($j=$request->start_rollno[$i]; $j<=$request->end_rollno[$i]; $j++ )
+                            {   
+                                $no = str_pad($j, 3, '0', STR_PAD_LEFT);
+                                $roll_no[]=$college.$no.$faculties[$k].$request->year[$i];
+                            }
+                        }
+                    }      
+
+                    $users = User::whereIn('roll_no', $roll_no)->get();
+                     
+                     if($request->ind_rollno) 
+                     {  
+                        foreach($request->ind_rollno as $roll) 
+                            $i_rollno[] = $college.$roll;
+                        
+                        if($i_users = User::whereIn('roll_no', $i_rollno)->get())
+                            (count($users)) ? $users->merge($i_users) : $users = $i_users;
+                                           
+                     }
+                    
+                    Notification::send($users->unique(), new Event1Notification($event, 'invite'));              
+                }
+                //Notification Part --end
+
             return back(); 
         }else
         return back()->withErrors('New event failed to be created');
@@ -266,19 +325,20 @@ class EventController extends Controller
 
     public function interest_and_join(Request $request)
     {   
+     
         $event = Event1::findOrFail($request->id);
      
-        if($request->ajax())
+        if($request->ajax()) 
         {   
 
             if(trim($request->action)  == 'unjoin')
             {
-                $event->event1_members()->where('user_id', Auth::user()->id)->forceDelete();
+                $event->event1_members()->where('user_id', Auth::user()->id)->first()->forceDelete();
                  $respnse_text = 'unjoin';
             }
             else if($request->action == 'uninterested')
             {
-                $event->event1_members()->withTrashed()->where('user_id', Auth::user()->id)->forceDelete();
+                $event->event1_members()->withTrashed()->where('user_id', Auth::user()->id)->first()->forceDelete();
                  $respnse_text = 'uninterested';
             }
             else
@@ -288,14 +348,13 @@ class EventController extends Controller
                         if($member)
                         {
                             $member->restore();
-                             $respnse_text = 'uninterested';
+                            $respnse_text = 'uninterested';
                         }
                         else
                         {
                             $member = new Event1Member;
                             if($request->action == 'interested') $member->deleted_at = now() ;
-  
-                            
+
                             $member->event1()->associate($event);
                             $member->user()->associate(Auth::user());
                             $member->save();
@@ -310,6 +369,8 @@ class EventController extends Controller
         }
      
     }
+
+   
     /*
     public function eventList(Request $request)
     { 

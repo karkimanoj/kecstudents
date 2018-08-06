@@ -12,6 +12,9 @@ use Carbon\Carbon;
 use Auth;
 use Session;
 use Storage;
+use App\User;
+use Notification;
+use App\Notifications\DownloadNotification;
 
 class DownloadController extends Controller
 {
@@ -92,7 +95,18 @@ class DownloadController extends Controller
  
             'faculty'=>'required|integer',
             'semester'=>'required|integer',
-            'subject'=>'sometimes|integer'
+            'subject'=>'sometimes|integer',
+
+            'facultyn' => 'sometimes|required|array|max:12',
+            'facultyn.*' => 'sometimes|required|string',
+            'start_rollno' => 'sometimes|array|max:12',
+            'start_rollno.*' =>'sometimes|required_with:facultyn.*|integer|min:0|max:400',
+            'end_rollno' => 'sometimes|required_with:start_rollno|array|max:12',
+            'end_rollno.*' => 'sometimes|required_with:facultyn.*|integer|min:0|max:400',
+            'year' => 'sometimes|required|array|max:12',
+            'year.*' => 'sometimes|required_with:facultyn.*|integer',
+            'ind_rollno' => 'sometimes|nullable|array|max:40',
+            'ind_rollno.*' => 'sometimes|nullable|alpha_num|size:10'
         ]);/*
             'files'=>'required|array|max:12',
             'files.*'=>'required|file|max:31000|mimes:pdf,doc,docx,ppt,pps,txt,pptx',
@@ -116,11 +130,22 @@ class DownloadController extends Controller
             'faculty'=>'required|integer',
          
             'semester'=>'required|integer',
-            'subject'=>'sometimes|integer'
+            'subject'=>'sometimes|integer',
+
+            'facultyn' => 'sometimes|required|array|max:12',
+            'facultyn.*' => 'sometimes|required|string',
+            'start_rollno' => 'sometimes|array|max:12',
+            'start_rollno.*' =>'sometimes|required_with:facultyn.*|integer|min:0|max:400',
+            'end_rollno' => 'sometimes|required_with:start_rollno|array|max:12',
+            'end_rollno.*' => 'sometimes|required_with:facultyn.*|integer|min:0|max:400',
+            'year' => 'sometimes|required|array|max:12',
+            'year.*' => 'sometimes|required_with:facultyn.*|integer',
+            'ind_rollno' => 'sometimes|nullable|array|max:40',
+            'ind_rollno.*' => 'sometimes|nullable|alpha_num|size:10'
         ]);
                                  
         }
-  
+       
          $category=DownloadCategory::find($request->category);
          $category_type=$category->category_type;
 
@@ -159,10 +184,12 @@ class DownloadController extends Controller
                      $dir=Storage::makeDirectory($upload_dir, 0775, true);
                      $path=$file->storeAs($upload_dir, $filename);
                      $display_name=$request->files1[$i]['dname'];
-                     $files[$i]=new DownloadFile([ 'original_filename' => $original_name, 
-                                                   'display_name' => $display_name,          
-                                                   'filepath' => $path   
-                                                 ]);
+                      
+                                               
+                    $files[$i]=new DownloadFile;
+                    $files[$i]->original_filename= $original_name;
+                    $files[$i]->filepath = $path ;
+                    $files[$i]->display_name = $display_name ;
                 } 
 
             }       
@@ -190,6 +217,53 @@ class DownloadController extends Controller
             if( $download->save() && $download->download_files()->saveMany($files) )
             {
                 Session::flash('success', $i.' file/s uploaded successfully');
+
+                //Notification Part --start
+                if($request->submit == 'Yes')
+                {
+                    $roll_no=[];
+                    $college = strtoupper(session('tenant'));
+                    for($i=0; $i<count($request->facultyn); $i++)
+                    {  
+                        if( $request->end_rollno[$i] < $request->start_rollno[$i] )
+                               $request->end_rollno[$i]= $request->start_rollno[$i];
+                           
+                        $faculties=[]; 
+                        if($request->facultyn[$i] == 'All')
+                            $faculties = Faculty::pluck('name');
+                         else
+                         $faculties[] =  Faculty::findOrFail(2)->value('name');
+                       
+                        for($k=0; $k<count($faculties); $k++)
+                        {
+                            for($j=$request->start_rollno[$i]; $j<=$request->end_rollno[$i]; $j++ )
+                            {   
+                                $no = str_pad($j, 3, '0', STR_PAD_LEFT);
+                                $roll_no[]=$college.$no.$faculties[$k].$request->year[$i];
+                            }
+                        }
+                    }      
+
+                    $users = User::whereIn('roll_no', $roll_no)->get();
+                     
+                     if($request->ind_rollno) 
+                     {   
+                        foreach($request->ind_rollno as $roll) 
+                            $i_rollno[] = $college.$roll;
+
+                        if($i_users = User::whereIn('roll_no', $i_rollno)->get())
+                        {
+                            (count($users)) ? $users->merge($i_users) : $users = $i_users;
+                        }
+                        /* if (count($i_users)) $users->merge($i_users); 
+                         dd($users);  */                  
+                     }
+                    
+                    Notification::send($users->unique(), new DownloadNotification($download));
+
+                }
+                //Notification Part --end
+                 dd($request);
                 return redirect()->route('downloads.index');
             } else
             return back()->withErrors('error in uploading files');
@@ -393,10 +467,11 @@ class DownloadController extends Controller
                          $dir=Storage::makeDirectory($upload_dir, 0775, true);
                          $path=$file->storeAs($upload_dir, $filename);
 
-                         $files[$i]=new DownloadFile([ 'original_filename' => $original_name,
-                                                        'display_name'=>$request->files1[$i]['dname'], 
-                                                       'filepath' => $path   
-                                                     ]);
+                         
+                        $files[$i]=new DownloadFile;
+                        $files[$i]->original_filename= $original_name;
+                        $files[$i]->filepath = $path ;
+                        $files[$i]->display_name = $request->files1[$i]['dname'] ; 
 
                     }
                 }

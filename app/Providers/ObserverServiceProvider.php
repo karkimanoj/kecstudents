@@ -4,9 +4,13 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Event1;
+use App\Event1Member;
 use App\Post;
+use App\Project;
 use App\Observers\Event1Observer;
 use App\Observers\PostObserver;
+use App\Observers\Event1MemberObserver;
+use App\Observers\ProjectObserver;
 
 class ObserverServiceProvider extends ServiceProvider
 {
@@ -19,6 +23,8 @@ class ObserverServiceProvider extends ServiceProvider
     {
         Event1::observe(Event1Observer::class);
         Post::observe(PostObserver::class);
+        Event1Member::observe(Event1MemberObserver::class);
+        Project::observe(ProjectObserver::class);
     }
 
     /**

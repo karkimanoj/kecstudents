@@ -16,3 +16,13 @@ $enable-gradients: true;
 #navbar_items a{ font-size:1.3rem; font-weight:100; font-family: 'Cabin', sans-serif;}
 
 #navbar_items  li{ margin-left:20px;}
+
+.table_borderless {
+    border-bottom:0px !important;
+}
+.table_borderless th, .table td {
+    border: 1px !important;
+}
+table_borderless .fixed-table-container {
+    border:0px !important;
+}

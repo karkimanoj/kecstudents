@@ -11322,6 +11322,19 @@ label {
   margin-left: 20px;
 }
 
+.table_borderless {
+  border-bottom: 0px !important;
+}
+
+.table_borderless th,
+.table td {
+  border: 1px !important;
+}
+
+table_borderless .fixed-table-container {
+  border: 0px !important;
+}
+
 /*
 This .scss loop will create "margin helpers" and "padding helpers" for use in your web projects.
 It will generate several classes such as:

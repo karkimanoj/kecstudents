@@ -102,7 +102,7 @@
                                         {{$project->original_filename}}
                                     </div>
                                 </div>
-
+                                @if(count($project->imgs))
                                 <div class=" row form-group m-t-20 ">
                                     <div class="col-md-3" >               
                                        <label class="float-right m-r-20" >screenshots/photos
@@ -115,6 +115,7 @@
                                         @endforeach
                                     </div>
                                 </div>
+                                @endif
 
                                  <div class=" row form-group mt-2 {{ $errors->has('images')?'has-error':'' }}">
                                     <div class="col-md-8 offset-md-3">

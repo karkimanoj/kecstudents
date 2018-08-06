@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProjectMember extends Model
 {	
+    use SoftDeletes;
+
 	public $timestamps=false;
    // protected $table='project_members';
     protected $fillable=['roll_no', 'name'];

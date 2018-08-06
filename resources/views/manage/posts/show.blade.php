@@ -116,11 +116,13 @@
 								<i class="fas fa-eye fa-lg"></i> <span class="text-primary">{{$post->view_count}} 
 							</div>
 						</div>
+						@if(count($post->imgs))
 						<div class="row">
 							<div class="col-md-12 mt-2">
 								 <img src="{{asset($post->imgs()->first()->filepath)}}"  width="100%" class="img-fluid" alt="Responsive image">
 							</div>
 						</div>
+						@endif
 
 					</div>
 				</div>

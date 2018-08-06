@@ -64,13 +64,16 @@
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav"  id="navbar_items">
        <li class="nav-item ">
-          <a class="nav-link" href="#">Learn </a>
+          <a class="nav-link" href="{{route('downloads.home', 9)}}">Download </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Discuss</a>
+          <a class="nav-link" href="{{route('projects.home', ['category'=>'subject', 'cat_id'=>0])}}">Project</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Share</a>
+          <a class="nav-link" href="">Event</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{route('posts.home')}}">Discuss</a>
         </li>
     </ul>
 

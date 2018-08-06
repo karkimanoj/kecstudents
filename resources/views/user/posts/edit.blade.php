@@ -53,7 +53,7 @@
                         @endif
                     </div>
 
-                    <div class="form-group mt-3" >
+                    <div class="form-group mt-3">
                       <label >tags * :</label>
                       <select class="form-control" id="tag_select" multiple="multiple" name="tags[]" required> </select>
                       <small class="form-text text-muted">
@@ -61,6 +61,7 @@
                       </small>
                     </div>
 
+                    @if(count($post->imgs))
                     <div class="row">
                       <div class="col">
                          <img src="{{asset($post->imgs()->first()->filepath)}}"  width="40%" class="img-fluid" alt="Responsive image">
@@ -69,6 +70,7 @@
                       </small>
                       </div>
                     </div>
+                    @endif
 
                     <div class="form-group {{ $errors->has('image')?'has-error':'' }} mt-2">
                         <label >Image <span class="text-muted">(optional) </span> : </label>
@@ -114,20 +116,24 @@
                 </div>             
                 <div class="card-body ">
                    <ul class="nav flex-column text-center text-muted">
-                    
-                    <li class="nav-item">
-                       <span class=" badge badge-light">31</span><br>
-                      <a class="nav-link" href="#">Events</a>
-                    </li>
-                    <li class="nav-item">
-                      <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
-                      <a class="nav-link" href="{{ route('user.downloads.index')}}">Downloads </a>
-                    </li>
-                    <li class="nav-item">
-                      <span class="badge badge-light">31</span><br>
-                      <a class="nav-link" href="#">posts </a>
-                    </li>
-                  </ul>
+                      <li class="nav-item">
+                        <span class="badge badge-light">{{Auth::user()->projects->count()}}</span><br>
+                        <a class="nav-link" href="{{route('user.projects.index')}}">Projects </a>
+                      </li>
+                      <li class="nav-item">
+                         <span class=" badge badge-light">{{Auth::user()->event1s()->count()}}</span><br>
+                        <a class="nav-link" href="{{route('user.events.index')}}">Events</a>
+                      </li>
+                      <li class="nav-item">
+                        <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
+                        <a class="nav-link" href="{{route('user.downloads.index')}}">Downloads </a>
+                      </li>
+                      
+                      <li class="nav-item">
+                        <span class="badge ">{{Auth::user()->posts->count()}}</span><br>
+                        <a class="nav-link active" href="{{route('user.posts.index')}}"><h7>posts<h7> </a>
+                      </li>
+                    </ul> 
                 </div>
                 
                 <div class="card-footer bg-white borderless">

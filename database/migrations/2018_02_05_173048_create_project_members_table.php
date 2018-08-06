@@ -18,6 +18,7 @@ class CreateProjectMembersTable extends Migration
             $table->unsignedInteger('project_id');
             $table->string('roll_no', 15);
             $table->string('name');
+            $table->softDeletes();
 
             $table->unique(['project_id','roll_no']);
             $table->foreign('project_id')->references('id')->on('projects')->onUpdate('cascade')->onDelete('cascade');

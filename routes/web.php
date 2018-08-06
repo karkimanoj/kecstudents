@@ -4,6 +4,10 @@ Route::middleware('subdomain', 'auth')->group(function(){
 	/*
 	  pages routes	
 	*/
+	  	//notice routes
+
+	  	Route::get('/notices', 'Page\NoticeController@index')->name('notices.home');
+	  	Route::get('/notices/{id}', 'Page\NoticeController@show')->name('notice.show');
 		//post routes
 	  	Route::get('/posts', 'Page\PostController@Index')->name('posts.home');
 	  	Route::get('/posts/ajaxIndex', 'Page\PostController@ajaxIndex')->name('posts.ajaxIndex');
@@ -25,6 +29,7 @@ Route::prefix('user')->middleware('subdomain', 'auth', 'role:teacher|staff|stude
 			user routes
 		*/
 
+
 		//all posts  routes 	
 		Route::get('/posts/create', 'User\PostController@create')->name('user.posts.create');	
 
@@ -36,13 +41,17 @@ Route::prefix('user')->middleware('subdomain', 'auth', 'role:teacher|staff|stude
 		Route::put('/posts/{slug}', 'User\PostController@update')->name('user.posts.update');
 		Route::delete('/posts/{slug}', 'User\PostController@destroy')->name('user.posts.destroy');
 
-		Route::resource('/events', 'User\EventController', ['as'=>'user']);
 		//event ajax routes
-		Route::get('/eventsAction', 'User\EventController@interest_and_join')->name('user.events.action');	
+		Route::get('/notifyComment', 'User\CommentController@notifyComment')->name('user.comments.notifyComment');
+		Route::get('/eventsAction', 'User\EventController@interest_and_join')->name('user.events.action');		
+		//end ofevent ajax routes
+		Route::resource('/events', 'User\EventController', ['as'=>'user']);
+		
 
 		Route::get('/eventFeed', 'User\EventController@eventFeed')->name('user.events.feed');
 		Route::get('/eventList', 'User\EventController@eventList')->name('user.events.eventList');
 
+		Route::post('/projects/{project}/confirmMember', 'User\ProjectController@confirmMember')->name('user.projects.confirmMember');
 		Route::resource('/projects', 'User\ProjectController', ['as'=>'user']);
 		
 		Route::resource('/downloads', 'User\DownloadController', ['as'=>'user']);
@@ -83,6 +92,9 @@ Route::prefix('manage')->middleware('subdomain','role:superadministrator|adminis
 	*/
 		//Route::get('/test11', 'ManageController@index');
 		//Route::get('/test', 'Project\ProjectController@test');
+
+		//Notce resource routes
+		Route::resource('/notices', 'Admin\NoticeController');
 
 		//all posts  routes 	
 		Route::get('/posts/create', 'Admin\PostController@create')->name('posts.create');	

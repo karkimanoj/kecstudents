@@ -31,8 +31,6 @@ class Subdomain
     {   
         $subdomain = explode('.', $request->getHost())[0] ;
 
-        
-        
         if($subdomain == 'tenantadmin')
         {
           return redirect()->route('tenants.index');

@@ -25,8 +25,8 @@
 					 	</div>
 					 </div>
 				
-				
-		</div>
+			
+		</div>	
 	       
 	
 		
@@ -239,7 +239,7 @@
 					 },
 					 dataType: 'json',
                 }).done(function (pdata) {
-                	//console.log(pdata)
+                	console.log(pdata)
                 	$('#project_mainbox').empty();
                 	//console.log(data)
                   //window.history.pushState("", "", host+'/projects/'+category+'/'+cat_id);
@@ -257,7 +257,7 @@
 					
 					image=''
 					col = 'col-md-12'
-					if(post.imgs)
+					if((post.imgs).length)
 					{
 						image = '<div class="col-md-4" > <img src="'+post.imgs[0].filepath+'"  class="img-fluid"></div>'
 						col = 'col-md-8'

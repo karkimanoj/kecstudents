@@ -6,10 +6,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage; //for setting up brodacating notifications
 use App\Event1;
 use Auth;
 
-class Event1Notification extends Notification
+class Event1Notification extends Notification implements ShouldQueue
 {
     use Queueable;
     public $event;
@@ -34,7 +35,7 @@ class Event1Notification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['database', 'broadcast', 'mail'];
     }
 
     /**
@@ -44,6 +45,7 @@ class Event1Notification extends Notification
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
+    
     {   
         switch ($this->type) 
         {
@@ -58,7 +60,11 @@ class Event1Notification extends Notification
              case 'expired':
                 $line = 'Event '.$this->event->title.' which you are associated  has ended ';
                 $url = route('user.events.show', $this->event->id);
-                break;        
+                break;
+            case 'invite':
+                $line = Auth::user()->name.' invited you to his Event '.$this->event->title;
+                $url = route('user.events.show', $this->event->id);
+                break;         
         }
        
 
@@ -90,6 +96,10 @@ class Event1Notification extends Notification
                 break;
             case 'expired':
                 $message = '<label>'.$this->event->title.'</label> which you are associated  has ended ';
+                $url = route('user.events.show', $this->event->id);
+                break;
+            case 'invite':
+                $message = '<label>'.Auth::user()->name.'</label> invited you to his Event '.$this->event->title;
                 $url = route('user.events.show', $this->event->id);
                 break;        
         }

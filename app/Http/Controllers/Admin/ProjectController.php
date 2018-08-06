@@ -238,8 +238,9 @@ class ProjectController extends Controller
                                 $img_name=time().rand(0,999).'.'.$ext;
                                 $path='images/projects/'.$img_name;
 
-                                Image::make($img)->resize(600, 350,
+                                Image::make($img)->resize(720, 720,
                                     function ($constraint) {
+                                         $constraint->aspectRatio();
                                         $constraint->upsize();
                                     })->save(public_path($path));
 
@@ -410,8 +411,9 @@ class ProjectController extends Controller
                                 $img_name=time().rand(0,999).'.'.$ext;
                                 $path='images/projects/'.$img_name;
 
-                                Image::make($img)->resize(600, 350,
+                                Image::make($img)->resize(720, 720,
                                     function ($constraint) {
+                                         $constraint->aspectRatio();
                                         $constraint->upsize();
                                     })->save(public_path($path));
 

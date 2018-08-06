@@ -32,7 +32,8 @@ class Event1 extends Model
 
     public function event1_members()
     {
-    	return $this->hasMany('App\Event1Member');
+    	return $this->hasMany('App\Event1Member', 'event1_id');
+
     }
 
     

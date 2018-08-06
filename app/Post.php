@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\DB;
+use Request;
 class Post extends Model
-{
-	public function __construct() 
+{   //public $table = 'kec_posts';
+  	public function __construct() 
     {
 	    parent::__construct();
-	    $this->table = session('tenant').'_posts';
+        $this->table = session('tenant').'_posts';
     }
     
     public function user(){

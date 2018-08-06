@@ -153,13 +153,13 @@
                                 </div>
                                            
                                
-                                 @foreach($project->project_members as $member)
+                                 @foreach($project->project_members()->withTrashed()->get() as $member)
                                  	 <div class="row form-group m-t-20 ">
-                                    @if( Auth::user()->roll_no==$member->roll_no )
-                                         <div class="col-md-3 offset-md-3" style="display: none;">
+                                    @if(Auth::user()->roll_no == $member->roll_no )
+                                         <div class="col-md-3 offset-md-3" >
                                            
                                             
-                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{Auth::user()->roll_no}}" required maxlength="15" placeholder="roll no">
+                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{explode(strtoupper(session('tenant')), $member->roll_no)[1]}}" required maxlength="15" placeholder="roll no">
 
                                             @if($errors->has('member_rollno[]'))
                                                 <span class="help-block">
@@ -181,7 +181,9 @@
                                     	<div class="col-md-3 offset-md-3">
 		                                       
 		                                        <input type="checkbox" class="float-left" style="width: 15%" checked >
-		                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{$member->roll_no or old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
+                                            
+
+		                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{explode(strtoupper(session('tenant')), $member->roll_no)[1]}}" required maxlength="15" placeholder="roll no">
 
 		                                        @if($errors->has('member_rollno[]'))
 		                                            <span class="help-block">
@@ -203,7 +205,7 @@
                                         
                                 @endforeach
 
-                                @for($i=count($project->project_members); $i<5; $i++)
+                                @for($i=$project->project_members()->withTrashed()->count(); $i<5; $i++)
                                   <div class="row form-group m-t-20 ">
                                 	<div class="col-md-3 offset-md-3">
 		                                        
@@ -253,24 +255,24 @@
                </div>             
                 <div class="card-body ">
                  
-                    <ul class="nav flex-column text-center text-muted">
-                    <li class="nav-item">
-                      <span class="badge ">{{Auth::user()->projects->count()}}</span><br>
-                      <a class="nav-link active" href="{{route('user.projects.index')}}"><h7>Projects<h7> </a>
-                    </li>
-                    <li class="nav-item">
-                       <span class=" badge badge-light">31</span><br>
-                      <a class="nav-link" href="#">Events</a>
-                    </li>
-                    <li class="nav-item">
-                      <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
-                      <a class="nav-link" href="#">Downloads </a>
-                    </li>
-                    <li class="nav-item">
-                      <span class="badge badge-light">31</span><br>
-                      <a class="nav-link" href="#">posts </a>
-                    </li>
-                  </ul>
+                  <ul class="nav flex-column text-center text-muted">
+                      <li class="nav-item">
+                        <span class="badge badge-light">{{Auth::user()->projects->count()}}</span><br>
+                        <a class="nav-link" href="{{route('user.projects.index')}}">Projects </a>
+                      </li>
+                      <li class="nav-item">
+                         <span class=" badge badge-light">{{Auth::user()->event1s()->count()}}</span><br>
+                        <a class="nav-link" href="{{route('user.events.index')}}">Events</a>
+                      </li>
+                      <li class="nav-item">
+                        <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
+                        <a class="nav-link" href="{{route('user.downloads.index')}}">Downloads </a>
+                      </li>                     
+                      <li class="nav-item">
+                        <span class="badge ">{{Auth::user()->posts->count()}}</span><br>
+                        <a class="nav-link active" href="{{route('user.posts.index')}}"><h7>posts<h7> </a>
+                      </li>
+                    </ul> 
                     
                       
                 </div>

@@ -138,9 +138,9 @@
 				    <a class="dropdown-item" href="{{ route('tenants.edit', [$tenant->id]) }}"> edit </a>
 				    <a class="dropdown-item" id="activate_btn" data-toggle="modal" data-target="#soft_delete_Modal" href="#">
 			         	@if($tenant->deleted_at)
-			                  Deactivate 
+			                  Activate 
 			               @else
-			              	  Activate
+			              	  Deactivate
 			               @endif
 			           </a>
 				    <!--<a class="dropdown-item" style="color: red;" data-toggle="modal" data-target="#myModal" href="#">delete </a>-->
@@ -190,7 +190,9 @@
 						    
 						    <p>
 							<label> Superadministrators: 
+								@if($tenant->trashed() == false)
 								<input type="button" name="add-user" class="btn btn-info" value="add new superadmin" data-toggle="modal" data-target="#add-user-modal">
+								@endif
 							</label>
 							@if($superadmins)		 
 						    	<table class="table table-bordered">
@@ -221,7 +223,7 @@
 						    </p>
 						    
 				  		</div>
-
+				  		<!--
 				  		<div class="row mb-2">
 				  			<div class="col-md-6">
 				  				<a href="#"  class="btn btn-primary" data-toggle="modal" data-target="#migration_model">Migrate Tables</a>
@@ -232,7 +234,7 @@
 				  				<input type="hidden" value="drop">
 				  			</div>
 				  		</div>
-				  		<!--
+				  		
 				  		<a href="#" id="migrate_tables" class="btn btn-primary">Migrate Tables</a>-->
 				  		<div class="card-footer">
 				  			<h5>Tables <h5>

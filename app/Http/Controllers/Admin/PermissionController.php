@@ -11,10 +11,11 @@ class PermissionController extends Controller
 {   
 
     public function __construct()
-    {
+    {/*
         $this->middleware('permission:create-acl', [ 'only' => ['create', 'store'] ]);
         $this->middleware('permission:update-acl', [ 'only' => ['edit', 'update'] ]);
-         $this->middleware('permission:destroy-acl', [ 'only' => ['destroy',] ]);
+         $this->middleware('permission:destroy-acl', [ 'only' => ['destroy',] ]);*/
+         $this->middleware('role:superadministrator');
         
     }
     /**

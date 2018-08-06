@@ -7,6 +7,8 @@
           	<h2 class="text-center">view post</h2>
         </div>
 
+
+        
         <!-- Modal -->
 			  <div class="modal fade " id="myModal" role="dialog">
 			    <div class="modal-dialog modal-sm">
@@ -47,7 +49,7 @@
 
 					<div class="row">
 						<div class="col-md-12">
-							<div class="card  card_shadow mt-3">
+							<div class="card borderless2 card_shadow mt-3">
 								<div class="card-body">
 
 									<div class="row ">
@@ -96,7 +98,9 @@
 									</div>
 									<div class="row">
 										<div class="col-md-12">
+											@if(count($post->imgs))
 											 <img src="{{asset($post->imgs()->first()->filepath)}}"  width="100%" class="img-fluid" alt="Responsive image">
+											@endif 
 										</div>
 									</div>
 
@@ -111,13 +115,14 @@
 							<div id="disqus_thread">
 								<script>
 
-								/**
-								*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-								*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
 								
 								var disqus_config = function () {
 								this.page.url = '{{Request::url()}}';  // Replace PAGE_URL with your page's canonical URL variable
 								this.page.identifier = {{$post->id}}; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+								this.callbacks.onNewComment = [function(comment) {
+								comment_notify(comment.id, comment.text);
+					          
+					        	}];
 								};
 								
 								(function() { // DON'T EDIT BELOW THIS LINE
@@ -152,18 +157,18 @@
 		               		</div>             
 			                <div class="card-body ">
 			                 
-			                    <ul class="nav flex-column text-center text-muted">
+			                   <ul class="nav flex-column text-center text-muted">
 			                    <li class="nav-item">
 			                      <span class="badge badge-light">{{Auth::user()->projects->count()}}</span><br>
-			                      <a class="nav-link" href="#">Projects </a>
+			                      <a class="nav-link" href="{{route('user.projects.index')}}">Projects </a>
 			                    </li>
 			                    <li class="nav-item">
-			                       <span class=" badge badge-light">31</span><br>
-			                      <a class="nav-link" href="#">Events</a>
+			                       <span class=" badge badge-light">{{Auth::user()->event1s()->count()}}</span><br>
+			                      <a class="nav-link" href="{{route('user.events.index')}}">Events</a>
 			                    </li>
 			                    <li class="nav-item">
 			                      <span class=" badge badge-light">{{Auth::user()->downloads->count()}}</span><br>
-			                      <a class="nav-link" href="#">Downloads </a>
+			                      <a class="nav-link" href="{{route('user.downloads.index')}}">Downloads </a>
 			                    </li>
 			                    
 			                    <li class="nav-item">
@@ -240,6 +245,30 @@
 
 			
 	</div>
+@endsection
+@section('scripts')
+<script type="text/javascript">
+	function comment_notify(comment_id, comment_text)
+		{
+			//comment_notify1(comment_id, comment_text);
+			$.ajax({
+				type :'GET',
+		        url : '{{route('user.comments.notifyComment')}}',
+		       
+		        data:{	'token' : '{{csrf_token()}}',
+		        		'primary_id': '{{$post->id}}',
+		        		'comment_id' : comment_id,
+		               'model' : 'Post'
+					 },
+				success : function(data){
+					console.log(data)
+				},
+				error : function(err){
+					console.log(err);
+				}	 
+			});
+		}
+</script>
 @endsection
 
 

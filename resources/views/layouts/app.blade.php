@@ -7,6 +7,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+  
 
     <title>Students Portal for Engineering Colleges</title>
 
@@ -19,6 +20,8 @@
         <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <script src="{{ asset('js/app.js') }}"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
       @yield('styles')
   
 
@@ -37,9 +40,19 @@
 
   
 
-    <script src="{{ asset('js/app.js') }}"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
-    @yield('scripts')
     
+    @yield('scripts')
+    <script type="text/javascript">
+      $(document).ready(function (){
+
+        var userId = {{Auth::user()->id}};
+        //alert(userId);
+
+        Echo.private('App.User.' + userId)
+        .notification((notification) => {
+        console.log(notification.message); 
+    });
+      });
+    </script>
 </body>
 </html>
