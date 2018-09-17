@@ -51,11 +51,11 @@
 
 
 
-<nav class="navbar navbar-expand-lg navbar-light ">
+<nav class="navbar navbar-expand-lg navbar-light " id="main_navbar">
   <a class="navbar-brand "  href="{{ route('home') }}">
-    {{--<i class="fas fa-graduation-cap fa-lg"  style="color:#228AE6"></i> --}}
-    <img src="{{asset('images/Kecstudentslogo2.jpg')}}" height="50" width="140">
-    {{--<span style="font-size: 1.5rem; margin-left: 4px; font-weight:100;" id="brand_name"> Kecstudents</span>--}}
+   <!-- <img src="{{--asset('images/Kecstudentslogo2.jpg')--}}" height="50" width="140"> -->
+    <img src="{{count(App\Tenant::where('identifier', session('tenant'))->get() ) ? 
+   asset(App\Tenant::where('identifier', session('tenant'))->first()->logo) : ''}}" height="70" width="160" class="img-fluid" alt="logo">
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -70,12 +70,84 @@
           <a class="nav-link" href="{{route('projects.home', ['category'=>'subject', 'cat_id'=>0])}}">Project</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="">Event</a>
+          <a class="nav-link" href="{{route('user.events.index')}}">Event</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{route('posts.home')}}">Discuss</a>
         </li>
     </ul>
+
+    <ul class="navbar-nav  nav-pill ml-auto " id="notify_dropdown">
+        <li class="nav-item dropdown">
+          <a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-bell fa-2x" style="color: grey"></i> 
+           
+              <span class="badge badge-danger">{{Auth::user()->unreadNotifications->count()}}</span>
+            
+          </a>
+            <ul class="dropdown-menu">
+              <li class="head text-light bg-dark">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-12">
+                    <span>Notifications (3)</span>
+                    <a href="{{route('notification.markAll')}}" class="float-right text-light">Mark all as read</a>
+                  </div>
+              </li>
+
+              <!--notifications start $notification->data['url'] -->
+             <li >
+                <ul class="list-group  ul_notification_container">
+                  @foreach(Auth::user()->notifications as $notification)
+                    @if($loop->index >= 30)
+                      @break
+                    @endif
+            
+                    <a href="{{route('notification.markOne', $notification->id)}}" class="notification-box list-group-item list-group-item-action  pl-0 pr-0" style="{{$notification->read_at ? '' : 'background-color: #EDF2FA;'}}">
+                      <div class="row">   
+                        <div class="col-lg col-sm col ">
+                          <div class="container ">
+                            {!!$notification->data['message'] !!}
+                          </div>
+                          <div class="container">
+                          <!-- icon according to notification type -->
+                          @switch($notification->type)
+                              @case('App\Notifications\DownloadNotification') 
+                                  <i class="fas fa-download"></i>
+                                  @break
+                              @case('App\Notifications\Event1MemberNotification')     
+                              @case('App\Notifications\Event1Notification') 
+                                  <i class="fas fa-calendar-alt " ></i>
+                                  @break
+                              @case('App\Notifications\PostNotification') 
+                                  <i class="fab fa-forumbee" ></i>
+                                  @break
+                              @case('App\Notifications\ProjectNotification') 
+                                  <i class="fas fa-project-diagram " ></i>
+                                  @break        
+                              @default
+                                  <i class="fas fa-comment " ></i>
+                          @endswitch
+              
+                            <small class=" text-secondary">{{$notification->created_at->diffForHumans(Carbon\Carbon::now())}}</small>
+                            
+                          </div>
+                        </div>    
+                      </div>
+
+                    </a>
+
+
+                  @endforeach
+                </ul>
+              </li> 
+              <!--notification end-->
+
+              <li class="footer bg-dark text-center">
+                <a href="{{route('notifications.index')}}" class="text-light">View All</a>
+              </li>
+            </ul>
+        </li>
+    </ul>    
 
     <ul class="navbar-nav ml-auto">
         @if(Auth::guest())
@@ -85,14 +157,14 @@
          @elseif(Auth::check())
           <li class="nav-item dropdown pull-right">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"  >
-              <span>hy {{Auth::user()->name}} <span> 
+              <span> {{Auth::user()->name}} <span> 
             </a>
 
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">profile</a>
-              <a class="dropdown-item" href="#">Notification </a>
-              <a class="dropdown-item" href="{{ route('manage.dashboard') }}">Manage</a>
-
+                <a class="dropdown-item" href="{{route('notifications.index')}}">Notification </a>
+               @if(Auth::user()->hasRole(['superadministrator', 'administrator']) )
+              <a class="dropdown-item" href="{{ route('users.index') }}">Manage</a>
+              @endif
               <form method="POST" action="{{ route('logout') }}" id="logoutForm" style="display: none">
                 {{csrf_field()}} </form>
                 <a class="dropdown-item" href='#' onclick="document.getElementById('logoutForm').submit();" name="logout" >logout</a>               
@@ -104,3 +176,4 @@
     
   </div>
 </nav>
+

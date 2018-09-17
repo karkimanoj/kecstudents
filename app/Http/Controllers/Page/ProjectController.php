@@ -12,7 +12,7 @@ class ProjectController extends Controller
 {
     public function construct()
     {
-         $this->middleware('auth');
+        $this->middleware('auth');
     }
 
     public function Index($category, $cat_id)
@@ -54,26 +54,34 @@ class ProjectController extends Controller
                 $order='name';
                 $direction='asc';
              break;  
+             case 'view_count':
+                $order='view_count';
+                $direction='desc';
+             break; 
              default:
                 $order='created_at';
                 $direction='desc';
             break;
         }
 
+        if(!empty($request->search_text))
+            $search_text = '%'.$request->search_text.'%';
+        else
+            $search_text = '%';
 
         if($request->category=='subject')
           {
             if($request->cat_id==0)
-               $projects=Project::where('published_at','!=', 'NULL')
+               $projects=Project::where('published_at','!=', 'NULL')->where('name', 'like', $search_text)
                         ->with(['user','subject','tags','project_members'])
                         ->orderBy($order, $direction)
-                        ->paginate(2);
+                        ->paginate(4);
             else
-                $projects=Project::where('published_at','!=', 'NULL')
+                $projects=Project::where('published_at','!=', 'NULL')->where('name', 'like', $search_text)
                 ->where('subject_id', $request->cat_id)               
                 ->with(['user','subject','tags','project_members'])
                 ->orderBy($order, $direction)
-                ->paginate(2);
+                ->paginate(4);
           }  
           else 
             if($request->category=='tag')
@@ -81,10 +89,10 @@ class ProjectController extends Controller
              //Project::where('published_at','!=', 'NULL')
              $projects=Tag::find($request->cat_id)
              ->projects()
-             ->where('published_at','!=', 'NULL') 
+             ->where('published_at','!=', 'NULL')->where('name', 'like', $search_text) 
              ->with(['user','subject','tags','project_members'])
              ->orderBy($order, $direction)
-             ->paginate(2);;
+             ->paginate(4);;
          }
 
          if ($request->ajax()) //{

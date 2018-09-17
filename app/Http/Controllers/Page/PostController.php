@@ -21,7 +21,7 @@ class PostController extends Controller
 	                ->where($taggablest.'.taggable_type','App\Post')
 	                ->groupBy($taggablest.'.tag_id')
 	                ->orderBy('tagcounts', 'desc')
-	                ->limit(6)
+	                ->limit(15)
 	                ->get();  
 
 //dd($popular_tags);
@@ -51,8 +51,13 @@ class PostController extends Controller
             break;
         }
 
+        if(!empty($request->search_text))
+            $search_text = '%'.$request->search_text.'%';
+        else
+            $search_text = '%';
+
         
-          if($request->tag_ids)
+          if(count($request->tag_ids))
           {
             //$tags=Tag::where('id', $request->tag_ids)->get();
             $tag_ids = $request->tag_ids;
@@ -62,17 +67,19 @@ class PostController extends Controller
                       ->whereIn(session('tenant').'_taggables.tag_id', $tag_ids)
                       ->where(session('tenant').'_taggables.taggable_type' , 'App\Post')
                       ->whereRaw(session('tenant').'_taggables.taggable_id = '.session('tenant').'_posts.id');
-            })->with(['user','tags','imgs'])
-            ->orderBy($order, $direction)->paginate(1);
+            })->where('content', 'like', $search_text)
+            ->with(['user','tags','imgs'])
+            ->orderBy($order, $direction)
+            ->paginate(5);
             
 
           }  
           else 
             
           {
-	        $posts=Post::with(['user','tags','imgs'])
+	        $posts=Post::where('content', 'like', $search_text)->with(['user','tags','imgs'])
 	         ->orderBy($order, $direction)
-	         ->paginate(1);
+	         ->paginate(5);
              
          }
 

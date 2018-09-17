@@ -99,7 +99,8 @@ class FacultyController extends Controller
             $faculty->name=$request->name;
             $faculty->display_name=$request->display_name;
 
-            if($faculty->save()){
+            if($faculty->save())
+            {
                 Session::flash('success', $request->name.' faculty has been edited successfully');
                 return redirect()->route('faculties.show', $faculty->id);
             }
@@ -107,6 +108,7 @@ class FacultyController extends Controller
             return back()->withErrors('you dont have permission for this activity');    
     }
     
+    /*
     public function destroy($id)
     {   
         if(Auth::user()->hasPermission(['destroy-faculties']))
@@ -119,4 +121,5 @@ class FacultyController extends Controller
         }else
             return back()->withErrors('you dont have permission for this activity');    
     }
+    */
 }

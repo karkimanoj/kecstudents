@@ -93,7 +93,7 @@
 
 							<div class="row mt-4" >
 								<div class="col">
-									<i class="fas fa-comments fa-3x"></i> <span style="font-size: 3rem;"> 3</span>
+									<i class="fas fa-comments fa-3x"></i> <span style="font-size: 3rem;"> <a href="{{Request::url().'#disqus_thread'}}">0</a></span>
 								</div>
 							</div>	
 
@@ -144,9 +144,13 @@
 								<div class="col-md-6 mt-3">
 									<a href="{{ asset($project->filepath) }}" class="btn btn-info ">downoad report</a>
 								</div>
-								<div class="col-md-6 mt-3">
-									<a href="{{ asset($project->url_link) }}" class="btn btn-info "><i class="fab fa-github" > </i> github link</a>
-								</div>
+								
+								@if($project->url_link)
+									<div class="col-md-6 mt-3">
+										<a href="{{ asset($project->url_link) }}" class="btn btn-info "><i class="fab fa-github" > </i> github link</a>
+									</div>
+								@endif
+
 							</div>
 							<div class="row">								
 									<div class="col-md-12 mt-5">
@@ -170,7 +174,7 @@
 								/**
 								*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
 								*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-								{{--
+								
 								var disqus_config = function () {
 								this.page.url = '{{Request::url()}}';  // Replace PAGE_URL with your page's canonical URL variable
 								this.page.identifier = {{$project->id}}; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
@@ -186,7 +190,7 @@
 								s.setAttribute('data-timestamp', +new Date());
 								(d.head || d.body).appendChild(s);
 								})();
-								--}}
+								
 								</script>
 								
 								                            
@@ -251,41 +255,16 @@
 	              	@endif
 
 	              	<div class="row">
-	              		<div class="col-md-11 offset-md-1 mt-4 pl-3 pt-3  bg-white" id="pop_project_div" style="font-size: 0.8rem">
-	              			<h5>popular projects:</h5>
-	              			<ul  class="nav nav-tabs list-group mt-3">
+	              		<div class="col-md-11 offset-md-1 mt-4  bg-white"  style="font-size: 0.8rem">
+	              			<h5 class="mt-2">Popular Projects:</h5>
+	              			<ul  class="nav nav-tabs list-group mt-3 ">
+	              				@foreach($popular_projects as $pop_project)
 							  <li class="nav-item list-group-item">
-							    <a class="nav-link " href="#">
-							    kecstudents portal<br>
-							    <i class="fab fa-cuttlefish" ></i>c programming
+							    <a class="nav-link " href="{{route('user.projects.show',  $pop_project->id)}}">
+							   	{{($loop->index + 1).'. '.$pop_project->name }}
 								</a>
 							  </li>
-							  <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">hamroshoe store
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>c programming</a>
-							  </li>
-							  <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">virtual kec
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>minor project(bct)</a>
-							  </li>
-							  <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">kathmandu valley soil analysis
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>c programming</a>
-							  </li>
-							   <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">kecstudents portal
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>minor project(bct)</a>
-							  </li>
-							   <li class="nav-item list-group-item">
-							    <a class="nav-link " href="#">kathmandu valley soil analysisl
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>soil mechanics</a>
-							  </li>
-
+							  @endforeach
 							</ul>
 	              		</div>
 	              	</div>

@@ -115,9 +115,14 @@
 			           <textarea name="description" required class="form-control" id="add-event-description" maxlength="4000" rows="7"></textarea>	
 			           <hr>
 			        </div>
+
+
+			    
+			     @if(Auth::user()->hasPermission('create-invites'))    
 			        <div class="container">
 			        	<center><h4><I>INVITE USERS</I></h4></center>
 			        </div>
+
 			        <!--Notify start-->
 			        <div class="form-check">
                       <input class="form-check-input" type="checkbox"  id="group_notify_checkbox" checked>
@@ -182,13 +187,18 @@
                   </small>
                 </div>
 		       <!--Notify end-->
+			@endif
+
 		      </div>
 
 		      <div class="modal-footer">
 		        <a  href="#" class="btn btn-secondary" role="button"  data-dismiss="modal">Close</a>
-		        
-		        <input type="submit" name="submit" value="submit without notifying" class="btn btn-primary">
-		        <input type="submit" name="submit" value="submit and notify" class="btn btn-primary">
+		         @if( Auth::user()->hasPermission('create-invites') )
+			        <input type="submit" name="submit" value="submit without notifying" class="btn btn-primary">
+			        <input type="submit" name="submit" value="submit and notify" class="btn btn-primary">
+			     @else
+			         <input type="submit" name="submit" value="submit" class="btn btn-primary">
+			     @endif    
 		      </div>
 		  </form>
 		    </div>
@@ -196,14 +206,14 @@
 		</div>
 		
 
-		<div class="row mt-3">
+		<div class="row mt-3 mb-3">
 			<div class="col-md-12 " id="calendar">
 				
 			</div>	
 		</div>		
 	</div>
 </div>
-
+<!--
 <div class="col-md-4" id="test_event_box" style="display:none">
 	<div class="row">
 		<div class="col-md-11   bg_grey border_purple"  >
@@ -271,7 +281,7 @@
 		</div>			
 	</div>
 </div>
-
+-->
 <!-- closing div of container and main-container-->
 </div>
 </div>

@@ -27,7 +27,7 @@ class DownloadController extends Controller
      */
     public function index()
     {   
-        $downloads=Download::paginate(20);
+        $downloads=Download::latest()->paginate(20);
        return view('manage.downloads.index', ['downloads'=>$downloads]);
     }
 
@@ -90,7 +90,7 @@ class DownloadController extends Controller
              'title'=>'required|min:4|max:191',   
             'description'=>'required|min:4|max:2000',
             'files1'=>'required|array|max:12',
-            'files1.*.file'=>'required|file|max:31000|mimes:pdf,doc,docx,ppt,pps,txt,pptx',
+            'files1.*.file'=>'required|file|max:10000|mimes:pdf,doc,docx,ppt,pps,txt,pptx',
             'files1.*.dname'=>'required_with:files1.*.file|min:3|max:191',
  
             'faculty'=>'required|integer',
@@ -125,7 +125,7 @@ class DownloadController extends Controller
             'title'=>'required|min:4|max:191',   
             'description'=>'required|min:4|max:2000',
             'files1'=>'required|array|max:1',
-            'files1.*.file'=>'required|file|max:31000|mimes:pdf,doc,docx,txt',
+            'files1.*.file'=>'required|file|max:10000|mimes:pdf,doc,docx,txt',
             'files1.*.dname'=>'required_with:files1.*.file|min:3|max:191',
             'faculty'=>'required|integer',
          
@@ -219,14 +219,18 @@ class DownloadController extends Controller
                 Session::flash('success', $i.' file/s uploaded successfully');
 
                 //Notification Part --start
-                if($request->submit == 'Yes')
+                if($request->submit == 'Yes' && Auth::user()->hasPermission('create-invites'))
                 {
                     $roll_no=[];
                     $college = strtoupper(session('tenant'));
                     for($i=0; $i<count($request->facultyn); $i++)
                     {  
-                        if( $request->end_rollno[$i] < $request->start_rollno[$i] )
-                               $request->end_rollno[$i]= $request->start_rollno[$i];
+                        if($request->end_rollno[$i] < $request->start_rollno[$i])
+                        {
+                            $end_rollno = $request->end_rollno;
+                            $end_rollno[$i] = $request->start_rollno[$i];
+                            $request->end_rollno = $end_rollno;
+                        }     
                            
                         $faculties=[]; 
                         if($request->facultyn[$i] == 'All')
@@ -508,7 +512,10 @@ class DownloadController extends Controller
          $download=Download::findOrFail($id);
         if($download->delete())
         {
-           // $download->download_files()->detach();
+           foreach($download->download_files as $file) 
+                    Storage::delete($file->filepath);
+                
+            $download->download_files()->delete();
             Session::flash('success', 'file  was successfully deleted');
              return redirect()->route('downloads.index');
         }

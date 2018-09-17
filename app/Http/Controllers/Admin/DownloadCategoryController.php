@@ -10,10 +10,9 @@ use Session;
 
 class DownloadCategoryController extends Controller
 {
-      
-    public function index()
+     public function index()
     {
-    	$categories=DownloadCategory::all();
+    	$categories=DownloadCategory::all(); 
     	return view('manage.downloads.download_categories', ['categories'=>$categories]);
     }
 

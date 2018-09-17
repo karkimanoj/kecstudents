@@ -55,9 +55,9 @@
 			         <li><a id="publish_btn" href="#">
 			         	@if($project->published_at)
 			                  unpublish 
-			               @else
-			               publish
-			               @endif
+		               @else
+		               publish
+		               @endif
 			           </a>
 			          </li>
 			          <li ><a style="color: red;" data-toggle="modal" data-target="#myModal" href="#">delete </a>
@@ -135,16 +135,17 @@
 			id={{$project->id}};
 			$.ajax({
 				type:'GET',
-				url:host+'/manage/projects/publish' ,
+				url:'{{route('projects.publish')}}',
 				data:{ 'id': id,
 						'status': status
 					 },
 				success: function(e){
-					if(status=='publish'){
-						 $('#publish_btn').text('unpublish');
-						 $('#publised_at').text(e);
+					if(status=='publish')
+					{
+						$('#publish_btn').text('unpublish');
+						$('#publised_at').text(e);
 						 
-						}
+					}
 					else{
 						$('#publish_btn').text('publish');
 						$('#publised_at').text(e);

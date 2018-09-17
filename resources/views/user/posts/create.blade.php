@@ -25,7 +25,7 @@
     </div>
 
     <div class="container">
-
+  <form method="POST" action="{{route('user.posts.store')}} " enctype="multipart/form-data" id="post-form">
     <div class="row ">
         <div class="col-md-9  bg-white mb-3">
 
@@ -39,17 +39,12 @@
 
 
 
-                  <form method="POST" action="{{route('user.posts.store')}} " enctype="multipart/form-data" id="post-form">
-                    {{csrf_field()}}   
-
-                    
-
-                   
+                  
+                    {{csrf_field()}}        
 
                     <div class="form-group {{ $errors->has('content')?'has-error':'' }} mt-2">
                         <label >Ask a question? * : </label>
-                        <textarea name="content" class="form-control" required rows="10" maxlength="10000">
-                        {{ old('content') }}  </textarea>
+                        <textarea required name="content"  class="form-control"  rows="10" maxlength="10000">{{old('content')}}</textarea>
                         @if($errors->has('content'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('content') }}</strong>
@@ -59,7 +54,7 @@
 
                     <div class="form-group mt-3" >
                       <label >tags * :</label>
-                      <select class="form-control" id="tag_select" multiple="multiple" name="tags[]" required> </select>
+                      <select required class="form-control" id="tag_select" multiple="multiple" name="tags[]" > </select>
                       <small class="form-text text-muted">
                       select up to 20 tags. you can create your own tag by typing the tagname and hitting enter.
                       </small>
@@ -82,9 +77,9 @@
                     <!--<div class="form-group text-center">
                       <input type="submit" name="submit" value="submit" class="btn btn-primary btn-lg">
                     </div>-->
-
+                    @if(Auth::user()->hasPermission('create-invites'))
                      <!-- Notify Modal -->
-                    <div class="modal " id="notifyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal " id="notifyModal" tabindex="-1" role="dialog" aria-labelledby="notifyModal" aria-hidden="true">
                       <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -137,7 +132,7 @@
                                       </div>
                                     </div>
                                   </th>
-                                  <td><select class="form-control form-control-sm" name="faculty[]" required="">
+                                  <td><select class="form-control form-control-sm" name="faculty[]" required>
                                     <option value="All">All</option>
                                     @foreach(App\Faculty::all() as  $faculty)
                                     <option value="{{$faculty->id}}">{{$faculty->name}}</option>
@@ -180,9 +175,9 @@
                       </div>
                     </div>
                     <!-- end of Notify Modal -->
-                    
+                    @endif
 
-                  </form>  
+                   
 
 
                 </div>
@@ -230,10 +225,12 @@
                 <div class="card-footer bg-white borderless">
 	                <div class="row">
 	                    <div class="col-md-6">
-	                    
-                      <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#notifyModal">
-                        submit
-                      </button>
+                      @if(Auth::user()->hasPermission('create-invites'))
+                        <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#notifyModal"> submit </button>
+                      @else
+                        <input type="submit"  name="submit" class="btn btn-primary btn-sm btn-block"  value="submit_" >
+                      @endif
+
                         
 	                    </div>
 	                    <div class="col-md-6">
@@ -245,10 +242,10 @@
 
             <div class="card w-100 mt-3 borderless" >
                 <div class="card-body">                       
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new note</a>
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new event</a>
-                   <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
+                 <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
+                  <a href="{{route('user.downloads.create')}}" class=" btn btn-outline-primary btn-block ">upload new materials</a>
+                  
+                   <a href="{{route('user.posts.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
                 </div>
             </div>
 
@@ -256,6 +253,7 @@
         <!-- end of right container with profile cards -->
 
     </div>	
+    </form> 
 </div>
 </div>
 @endsection
@@ -269,6 +267,7 @@
 
   <script type="text/javascript">
       $(document).ready(function(){
+
         $('#add_row_notify').on('click', function(){
           if($('tbody tr').length < 12)
           {
@@ -298,6 +297,18 @@
 
         })
 
+        var permission_flag = '{{Auth::user()->hasPermission('create-invites')}}';
+       /* $('#notify_trigger').on('click', function(){
+
+          
+            //alert($('#post-form')[0].checkValidity());
+            $('#notifyModal').modal('show')
+        });
+
+       $('#post-form').submit(function(){
+          alert('yes')
+          return true;
+        });*/
 
         /*
         $('#post-form').submit(function(){
@@ -318,8 +329,12 @@
             return false;
      
         })*/
-         //select 2 notify part   
-       
+         //select 2 notify part  
+          /*
+        $('#post-form').submit(function(){
+          alert('yes');
+          return false;
+        });*/
 
          
         $('#notify_select').select2({

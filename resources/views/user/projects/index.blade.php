@@ -43,14 +43,34 @@
 								<h4 class="text-muted"> displaying {{$projects->count()}} results  {{
 									isset($active_category->name)?'for '.$active_category->name:''}}</h4>
 							</div>
+							<div class="col-md-3 offset-md-1  ">
 							
+								<a href="{{route('user.projects.create')}}" class="btn btn-primary btn-block  float-right"> upload new project</a>
+								
+							</div>
 						</div>
 
 						<div class="row ">
 							<div class="col-md-12 mt-3">
 								@foreach($projects as $project)
-								<div class="row m-t-30" id="project_box">
-								  <div class="col-md-8 offset-md-2  bg_grey" style=" padding: 0px 20px 15px 20px;" >
+								<div class="row mt-3" id="project_box">
+
+									<div class="col-md-auto v_align_inner_div" >
+										<div class="container">
+											<div class="row">
+												<div class="col-md-12">
+													<i class="fas fa-comments fa-3x " ></i>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-12 text-center" style=" font-size: 2em;">
+												<a href="{{route('user.projects.show', $project->id)}}#disqus_thread" data-disqus-identifier="{{$project->id}}"> 0</a>
+												</div>
+											</div>
+										</div>	
+									</div>	
+
+								  	<div class="col-md-8  bg_grey" style=" padding: 0px 20px 15px 20px;" >
 									
 									    
 
@@ -74,7 +94,7 @@
 									    		<div class="col-md-6" >
 									    			<i class="fas fa-tags"></i>
 									    			@foreach($project->tags as $tag)
-									    			<span class="label label-success">
+									    			<span class="badge badge-success">
 									    				{{$tag->name}}</span>
 									    				
 									    			@endforeach
@@ -83,24 +103,25 @@
 									    			<i class="far fa-clock"></i>
 									    			{{ $project->created_at->toFormattedDateString() }}
 									    		</div>
-									    	</div>
-									    	@foreach($project->project_members as $member)
-										    	@if($member->roll_no==Auth::user()->roll_no)
-											    	<div class="row m-t-10">
-											    		<div class="col-md-6 " >
-											    			<a href="{{route('user.projects.show', $project->id)}}" class="btn btn-primary btn-sm btn-nobg-color" 
-		    											>view</a>
-											    		</div>
-											    		<div class="col-md-6 " >
-											    			<a href="{{route('user.projects.edit', $project->id)}}"  class="btn btn-outline-primary btn-sm "
-		    											>edit</a>
-											    		</div>
-											    	</div>
-										    	@endif
-									    	@endforeach
+									    	</div>										    	
 									    
 									 
 								  </div>
+								  @foreach($project->project_members as $member)
+								   @if($member->roll_no==Auth::user()->roll_no)
+								  <div class="col-md-auto">
+							    		<div class="container mt-2">
+							    			<a href="{{route('user.projects.edit', $project->id)}}">
+							    			<i class="fas fa-edit"></i></a>
+							    		</div>
+							    		<div class="container mt-2">
+							    			<a id="delete_btn{{($project->id)*2}}"  data-toggle="modal" data-target="#myModal" href="#"> <i class="fas fa-trash-alt" ></i></a>
+							    			<input type="hidden" value="{{route('user.projects.destroy',$project->id)}}">
+							    		</div>
+							    	</div>
+							    	@endif
+								@endforeach
+
 								</div>
 								@endforeach
 							
@@ -169,9 +190,9 @@
 					<div class="card w-100 mt-3 borderless" >
 					  <div class="card-body">					 					    
 						  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
-			              <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new note</a>
-			              <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new event</a>
-			              <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
+                  <a href="{{route('user.downloads.create')}}" class=" btn btn-outline-primary btn-block ">upload new materials</a>
+                  
+                   <a href="{{route('user.posts.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
 					  </div>
 					</div>
 			</div>

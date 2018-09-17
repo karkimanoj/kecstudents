@@ -17,6 +17,8 @@ use Storage;
 use Notification;
 use App\Notifications\PostNotification;
 
+use Illuminate\Support\Facades\Hash;
+
 class PostController extends Controller
 {   
     public function __construct()
@@ -31,7 +33,7 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {   
         $posts=Auth::user()->posts()->with('tags')->get();
         //dd($posts);
         return view('user.posts.index', [ 'posts' => $posts]);
@@ -57,8 +59,8 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {  // dd($request);
-        if($request->submit == 'Yes')
+    {     //dd($request)  ;
+        if($request->submit == 'Yes' && Auth::user()->hasPermission('create-invites'))
         {  
             Validator::make($request->all(), [
             'content' => 'required|max:10000',
@@ -96,9 +98,21 @@ class PostController extends Controller
                 else
                      $request->start_rollno[$i]  = $request->end_rollno[$i];
                  */
-                 if($request->end_rollno[$i] < $request->start_rollno[$i])
-                       $request->end_rollno[$i]= $request->start_rollno[$i];
+
+                     $start_roll =  $request->start_rollno[$i];
                    
+
+                   
+                 if($request->end_rollno[$i] < $request->start_rollno[$i])
+                 {
+
+                    $end_rollno = $request->end_rollno;
+                    $end_rollno[$i] = $request->start_rollno[$i];
+                    $request->end_rollno = $end_rollno;
+
+                 }
+                    
+
                    $faculties=[]; 
                 if($request->faculty[$i] == 'All')
                     $faculties = Faculty::pluck('name');
@@ -208,12 +222,12 @@ class PostController extends Controller
             
                 Session::flash('success', 'successfully added new post to discussions and forums'.$msg);
 
-                if($request->submit == 'Yes')
+                if($request->submit == 'Yes' && Auth::user()->hasPermission('create-invites'))
                 {
-                  $when = now()->addSeconds(10);
+                  //$when = now()->addSeconds(10);
                   $data['owner'] = Auth::user()->name;
                   $data['url'] = route('user.posts.show', $post->slug);
-                  Notification::send($users->unique(), (new PostNotification($post, $data))->delay($when));
+                  Notification::send($users->unique(), (new PostNotification($post, $data)));
                 }
             
                return redirect()->route('user.posts.show', $post->slug);
@@ -233,11 +247,18 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($slug)
-    {
+    {   
+        //dd(Hash::make('akash123'));
         $post = Post::where('slug', $slug)->with('tags')->first();
         abort_if(!$post, 404);
+
+        $popular_posts=Post::with('user')
+           ->orderBy('view_count', 'desc')
+           ->limit(10)
+           ->get();
+        //dd($posts);   
         $post->increment('view_count');
-        return view('user.posts.show', ['post' => $post]);
+        return view('user.posts.show', ['post' => $post, 'popular_posts' => $popular_posts]);
     }
 
     /**

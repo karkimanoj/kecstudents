@@ -83,15 +83,15 @@ class ProjectController extends Controller
         Validator::make($request->all() , [
                 'name'=>'required|min:4|max:255',
                 'abstract'=>'required|max:4000',
-                'link'=>'present|nullable|url|max:255|unique:'.$tenant.'_projects,url_link',
+                'link'=>'nullable|url|max:255|unique:'.$tenant.'_projects,url_link',
                 'file'=>'required|file|max:31000|mimetypes:application/pdf,application/msword',
                 'tags'=>'required|max:60',
                 'subject'=>'integer|required',
                 'images'=>'sometimes|array|max:4',
-                'images.*'=>'required|file|image|max:4000',
+                'images.*'=>'nullable|file|image|max:4000',
                 'member_rollno'=>'required|array|max:5',
                 'member_rollno.*'=>
-                    ['sometimes','distinct','max:15',
+                    ['sometimes','distinct','string','max:10',
                         Rule::unique($tenant.'_project_members', 'roll_no')
                             ->where( function($query) use( $subject_id, $tenant){
                                return $query->whereIn('project_id', function($query) use($subject_id, $tenant) 
@@ -119,20 +119,20 @@ class ProjectController extends Controller
         //checking if inputed roll no of member is already member of other projects 
         foreach($request->member_rollno as $roll_no)
         {   
-
+           
             if(!Auth::user()->hasRole(['superadministrator', 'administrator']))
             {
-                if($roll_no==Auth::user()->roll_no)
+                if($college.$roll_no==Auth::user()->roll_no)
                     $user_flag=true;
             }
 
-         
-             array_push($member_rollnos,  $college.trim($roll_no));  
+            //($roll_no==Auth::user()->roll_no) ?  array_push($member_rollnos,  $roll_no) : array_push($member_rollnos,  $college.trim($roll_no));  
+            array_push($member_rollnos,  $college.trim($roll_no));  
         }
 
         if($user_flag==false)
         {
-            return back()->withErrors( Auth::user()->roll_no.' is not present in group member in '.$project->name);
+            return back()->withErrors( Auth::user()->roll_no.' is not present in group member in '.$request->name);
             die(1);
         }
 
@@ -204,7 +204,8 @@ class ProjectController extends Controller
                        $members[$i]=new ProjectMember;
                        $members[$i]->roll_no = $member_rollnos[$i];
                        $members[$i]->name = $member_names[$i] ;
-                       if(User::where('roll_no', $members[$i]->roll_no)->first() && 
+
+                       if(count(User::where('roll_no', $members[$i]->roll_no)->get()) && 
                         ($member_rollnos[$i] != Auth::user()->roll_no) )
                             $members[$i]->deleted_at = now();
 
@@ -313,10 +314,10 @@ class ProjectController extends Controller
     {
         $project=Project::findOrFail($id);
 
-        //if(Auth::user()->hasRole(['superadministrator', 'administrator']))
-           // return view('manage.projects.show', ['project'=>$project]);
-           // else
-        return view('user.projects.show', ['project'=>$project]);
+        $popular_projects=Project::where('published_at','!=', 'NULL')
+                        ->orderBy('view_count', 'desc')
+                        ->limit(10)->get();
+        return view('user.projects.show', ['project'=>$project, 'popular_projects' => $popular_projects]);
     }
 
     /**
@@ -327,8 +328,8 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {   
-        $project_member=ProjectMember::where('project_id', $id)->where('roll_no', Auth::user()->roll_no)->first();    
-        if($project_member)
+        $project_member=ProjectMember::where('project_id', $id)->where('roll_no', Auth::user()->roll_no)->get();    
+        if(count($project_member))
         {
           $project=Project::findOrFail($id);
           $tags=Tag::all();
@@ -364,10 +365,10 @@ class ProjectController extends Controller
             [
                 'name'=>'required|min:4|max:255',
                 'abstract'=>'required|max:4000',
-                'link'=>'sometimes|url|max:255|unique:'.$tenant.'_projects,url_link,'.$id,
+                'link'=>'nullable|url|max:255|unique:'.$tenant.'_projects,url_link,'.$id,
                 'tags'=>'required|max:60',
                 'member_rollno'=>'required|array|max:5',
-                'member_rollno.*'=>['sometimes','distinct', 'max:15',
+                'member_rollno.*'=>['sometimes','distinct','string','max:10',
                     Rule::unique($tenant.'_project_members', 'roll_no')
                         ->where( function($query) use( $subject_id, $id ,$tenant)
                         {
@@ -380,7 +381,7 @@ class ProjectController extends Controller
                            });
                         })
                         ],
-                'member_name'=>'required_with:member_rollno|max:255',
+                'member_name'=>'required_with:member_rollno|max:191',
             ])->validate();
           
                 $project->name=$request->name;
@@ -412,8 +413,6 @@ class ProjectController extends Controller
                     }//end inserting new tags
 
                    //---  $members_changed=0;
-
-
                    $members=[];
                    $member_rollnos=$request->member_rollno;
                    $member_names=$request->member_name;
@@ -431,13 +430,18 @@ class ProjectController extends Controller
                         $members[$i]->roll_no = $member_rollnos[$i];
                         $members[$i]->name = $member_names[$i] ;
 
-                        if($project->project_members()->withTrashed()
+                        $pr = $project->project_members()->withTrashed()
                             ->where('roll_no', $member_rollnos[$i])
-                            ->where('name', $member_names[$i])
-                            ->first()==null && User::where('roll_no', $member_rollnos[$i])->first())
+                            ->get();
+
+                        if(count($pr) == 0 && User::where('roll_no', $member_rollnos[$i])->count())
                         {
                             //---$members_changed=1;
                             $members[$i]->deleted_at = now();
+                        } else
+                        if(count($pr))
+                        {
+                            $members[$i]->deleted_at = $pr->first()->deleted_at;
                         }
 
                         
@@ -494,23 +498,35 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {  
-      $project_member=ProjectMember::where('project_id', $id)->where('roll_no', Auth::user()->roll_no)->with('projects')->first(); 
+      $project_member=ProjectMember::where('project_id', $id)->where('roll_no', Auth::user()->roll_no)->with('projects')->get(); 
 
-      if($project_member)
+      if(count($project_member))
       {
          $project=Project::findOrFail($id);
       
         if($project->delete())
-        {
-            $project->tags()->detach();
+        {   
+             $project->project_members()->forceDelete();
+            if( count($project->imgs) )
+                {   
+                    foreach($project->imgs as $img) 
+                    Storage::delete($img->filepath);
+
+                    $project->imgs()->delete();
+                }
+
+            if(count($project->tags)) $project->tags()->detach();
+
+            
             Session::flash('success', 'file '.$project->filepath.' was successfully deleted');
+            return redirect()->route('user.projects.index');
         } 
       } 
          else
              return back()->withErrors('you dont have access to delete this project');
 
 
-        return redirect()->route('projects.index');
+        return redirect()->route('user.projects.index');
     }
 
 

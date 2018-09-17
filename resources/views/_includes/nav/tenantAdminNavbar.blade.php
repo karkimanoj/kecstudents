@@ -53,27 +53,17 @@
 
 <nav class="navbar navbar-expand-lg navbar-light ">
   <a class="navbar-brand "  href="{{ route('home') }}">
-    {{--<i class="fas fa-graduation-cap fa-lg"  style="color:#228AE6"></i> --}}
+    {{--<i class="fas fa-graduation-cap fa-lg"  style="color:#228AE6"></i> 
     <img src="{{asset('images/Kecstudentslogo2.jpg')}}" height="50" width="140">
-    {{--<span style="font-size: 1.5rem; margin-left: 4px; font-weight:100;" id="brand_name"> Kecstudents</span>--}}
+  <span style="font-size: 1.5rem; margin-left: 4px; font-weight:100;" id="brand_name"> Kecstudents</span>--}}
+  STUDENTS PORTAL
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav"  id="navbar_items">
-       <li class="nav-item ">
-          <a class="nav-link" href="#">Learn </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Discuss</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Share</a>
-        </li>
-    </ul>
-
+    
     <ul class="navbar-nav ml-auto">
         @if(Auth::guard('tenant_admin')->guest())
             <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">login</a></li>
@@ -85,8 +75,7 @@
             </a>
 
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">profile</a>
-              <form method="POST" action="{{ route('tenantadmin.logout') }}" id="logoutForm" style="display: none">
+                            <form method="POST" action="{{ route('tenantadmin.logout') }}" id="logoutForm" style="display: none">
                 {{csrf_field()}} </form>
                 <a class="dropdown-item" href='#' onclick="document.getElementById('logoutForm').submit();" name="logout" >logout</a>               
             </div>

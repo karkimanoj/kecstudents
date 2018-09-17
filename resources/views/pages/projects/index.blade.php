@@ -14,9 +14,9 @@
 					 <div class="row">
 					 	<div class="col-md-8 offset-md-2">
 					 		<div class="input-group input-group-lg">
-								  <input type="text" class="form-control" placeholder="search" aria-label="Large" aria-describedby="basic-addon2">
+								  <input type="text" minlength="3" class="form-control" placeholder="search with 3 or more characters" aria-label="search" aria-describedby="basic-addon2" id="search_field">
 								  <div class="input-group-prepend"> 
-								  	<button class="btn btn-default" type="button" id="basic-addon2">
+								  	<button class="btn btn-default" type="button" id="search_btn">
 								  	<i class="fas fa-search" style="color:#228AE6"></i> projects
 								  </button> 
 								</div>
@@ -44,7 +44,7 @@
 									<select class="form-control select-lg" id="sort-by">
 										<option value="relevance">relevance</option>
 										<option value="date">date </option>
-										<option value="view count">view count</option>
+										<option value="view_count">view count</option>
 										<option value="comments">comments</option>
 									</select>
 								</div>
@@ -171,12 +171,12 @@
 	{
 		var category='{{$cat}}';
 		 var cat_id={{$cat_id}};
-		  var sort_by='relevance';
+		  //var sort_by='relevance';
 		  var host='{{url('/')}}';
 	
 		//$('#v-pills-'+category+' input[value="'+cat_id+'"]').prev().prev().addClass('active');
 		$('a[href="'+host+'/projects/'+category+'/'+cat_id+'"]').addClass('active'); 
-		getprojects(category, cat_id, sort_by);
+		getprojects(category, cat_id);
 
 		$('#v-pills-subject a, #v-pills-tag a').click(function()
 		{
@@ -185,17 +185,21 @@
 			category=category_array[0];
 			cat_id=category_array[1];
 			(category=='subject') ? $('#v-pills-tag').children('a.active').removeClass('active') : $('#v-pills-subject').children('a.active').removeClass('active') ;
-			sort_by=$('#sort-by').val();
-			getprojects(category, cat_id, sort_by);
+			
+			getprojects(category, cat_id);
 		});
 
 		$('#sort-by').change(function(){
-			sort_by=$(this).val();
-			getprojects(category, cat_id, sort_by);
+			$('#search_field').val('');
+			getprojects(category, cat_id);
 		});
 
 
-		
+		$('#search_btn').on('click', function(){
+			
+			getprojects(category, cat_id);
+
+		});
 		
 
 		
@@ -211,7 +215,7 @@
                 //console.log($deactive_class);
                 //url=host+'/projects/ajaxIndex?'+page;
                // alert(url);
-               getprojects(category, cat_id, sort_by, url);
+               getprojects(category, cat_id,  url);
                 //window.history.pushState("", "", url);  this will insert the new url with page=no .here we dont need this
             });
 
@@ -247,14 +251,20 @@
             userroll='{{Auth::user()->roll_no}}';
 
 
-            function getprojects(category, cat_id, sort_by, url='{{route('projects.ajaxIndex')}}') 
-            {
+            function getprojects(category, cat_id,  url='{{route('projects.ajaxIndex')}}') 
+            {	
+            	sort_by = $('#sort-by').val();
+            	search_text = $('#search_field').val();
+            	if(search_text.length < 3)
+            	   search_text = '';
 
                 $.ajax({
                     url : url,
-                    data:{ 'category' : category,
+                    data:{ '_token' : '{{csrf_token()}}',
+                    		'category' : category,
 		                   'cat_id' : cat_id,
-		                   'sort_by' : sort_by
+		                   'sort_by' : sort_by,
+		                   'search_text' : search_text
 					 },
                 }).done(function (data) {
 
@@ -271,7 +281,24 @@
 	                    {
 	                    	project=object.data[j];
 								
-								projectId=project.id
+								projectId=project.id;
+
+							comment_div =['<div class="col-md-auto v_align_inner_div" >',
+							'<div class="container">',
+								'<div class="row">',
+									'<div class="col-md-12">',
+										'<i class="fas fa-comments fa-3x " ></i>',
+									'</div>',
+								'</div>',
+								'<div class="row">',
+									'<div class="col-md-12 text-center" style=" font-size: 2em;">',
+										
+									'<a href="'+host+'/user/projects/'+project.id+'#disqus_thread" data-disqus-identifier="'+project.id+'"> 0</a></div>',
+								'</div>',
+							'</div>',		
+						'</div>'].join('');	
+
+								
 		                    name_div=' <div class="row m-t-10">  <div class="col-md-12" >  <a href="'+host+'/user/projects/'+projectId+'" id="project_name">'+project.name+'</a>																				</div></div> ';
 
 	                    	user_subject_div='<div class="row m-t-10">											<div class="col-md-6" >												<i class="fas fa-user"></i> 									'+project.user.name+'									</div>															<div class="col-md-6" >												<i class="fab fa-cuttlefish"></i>								'+project.subject.name+'										</div>														</div>';
@@ -286,22 +313,38 @@
 
 	                    	tags_user_div='<div class="row m-t-10"> <div class="col-md-6" >						<i class="fas fa-tags"></i>'+tags_div+'</div>										<div class="col-md-6" ><i class="far fa-clock"></i>'+project.created_at+'</div></div>';
 
-	                    	show_edit_div='';
+	                    	edit_btns='';
+	                    	
 	                    	for ( i = 0; i < project.project_members.length; i++) 
 	                    	{
 	                    		if(project.project_members[i].roll_no==userroll)
 	                    		{
-	                    			show_edit_div='<div class="row m-t-10"> <div class="col-md-6 " >					<a href="'+host+'user/projects/{'+project.id+'}" class="btn btn-primary btn-sm btn-nobg-color">view</a>													</div><div class="col-md-6 " >												<a href="'+host+'user/projects/{project}/edit" 					 class="btn btn-outline-primary btn-sm ">edit</a> 									</div></div>';
+	                    			
+
+	                    			edit_btns = ['<div class="col-md-auto">',
+						    		'<div class="container">',
+						    			'<a href="'+host+'/user/projects/'+project.id+'/edit">',
+						    			'<i class="fas fa-edit"></i></a>',
+						    		'</div>',
+						    		'<div class="container">',
+						    			'<i class="fas fa-trash-alt"></i>',
+						    		'</div>',
+						    	'</div>'].join('');
 	                    		}
 	                    	}
 	                    	   
-	                    	project_main_div='<div class="row m-t-30 " id="project_box">								<div class="col-md-8 offset-md-2   border_purple" style=" padding: 0px 20px 15px 20px;" >    																				'+name_div+user_subject_div+tags_user_div+show_edit_div+ '</div></div>';
+	                    	project_main_div='<div class="row m-t-30 " id="project_box">'+comment_div+'								<div class="col-md-8  border_purple" style=" padding: 0px 20px 15px 20px;" >    																				'+name_div+user_subject_div+tags_user_div+ '</div>'+edit_btns+'</div>';
 	                    	
 	                        $('#project_mainbox').append(project_main_div); 
 	                    }
 	                }  
 
-	              	$('#projects_head').text('displaying page '+object.current_page+'( of total '+object.last_page+' ) from '+object.total+' results ');
+	                if(search_text.length >= 3)
+	                	head_text = object.total+' search results for '+"'"+search_text+"'";
+	                else
+	                head_text = 'displaying page '+object.current_page+'( of total '+object.last_page+' ) from '+object.total+' results ';
+
+	              	$('#projects_head').text(head_text);
 	                paginate_cotrols(object.current_page, object.last_page) 
                     //var arr = $.map(object.data[0], function(el) { return el });
                 }).fail(function (error1) {

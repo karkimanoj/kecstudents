@@ -26,7 +26,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-         $projects=Project::paginate(20);
+         $projects=Project::latest()->paginate(20);
 
         return view('manage.projects.index', ['projects'=>$projects]);
       
@@ -53,17 +53,20 @@ class ProjectController extends Controller
     */
       public function publish(Request $request)
       {
-        $id=$request->id;
-        if($request->status=='publish')
-            $date=Carbon::now();
-        else if($request->status=='unpublish')
-            $date=NULL;
+        if($request->ajax())
+        {
+            $id=$request->id;
+            if($request->status=='publish')
+                $date=Carbon::now();
+            else if($request->status=='unpublish')
+                $date=NULL;
 
-        $project=Project::findOrFail($id);
-        $project->published_at=$date;
+            $project=Project::findOrFail($id);
+            $project->published_at=$date;
 
-        if($project->save())
-        return $date;
+            if($project->save())
+            return $date;
+        }
       }
 
 
@@ -87,10 +90,10 @@ class ProjectController extends Controller
                 'tags'=>'required|max:60',
                 'subject'=>'integer|required',
                 'images'=>'sometimes|array|max:4',
-                'images.*'=>'required|file|image|max:4000',
+                'images.*'=>'nullable|file|image|max:4000',
                 'member_rollno'=>'required|array|max:5',
                 'member_rollno.*'=>
-                    ['distinct','required','max:15',
+                    ['sometimes', 'distinct','string','max:10',
                         Rule::unique($tenant.'_project_members', 'roll_no')
                             ->where( function($query) use( $subject_id, $tenant){
                                return $query->whereIn('project_id', function($query) use($subject_id, $tenant) 
@@ -114,23 +117,25 @@ class ProjectController extends Controller
                 $user_flag=false;
 
         $member_rollnos=[];
+         $college=strtoupper(session('tenant'));
         //checking if inputed roll no of member is already member of other projects 
         foreach($request->member_rollno as $roll_no)
         {   
 
-            if(!Auth::user()->hasRole(['superadministrator', 'administrator']))
+           if(!Auth::user()->hasRole(['superadministrator', 'administrator']))
             {
-                if($roll_no==Auth::user()->roll_no)
+                if($college.$roll_no==Auth::user()->roll_no)
                     $user_flag=true;
             }
 
-         
-             array_push($member_rollnos, $roll_no);  
+            //($roll_no==Auth::user()->roll_no) ?  array_push($member_rollnos,  $roll_no) : array_push($member_rollnos,  $college.trim($roll_no));  
+            array_push($member_rollnos,  $college.trim($roll_no));   
+            //dd($member_rollnos) ;
         }
 
          if($user_flag==false)
         {
-            return back()->withErrors( Auth::user()->roll_no.' is not present in group member in '.$project->name);
+            return back()->withErrors( Auth::user()->roll_no.' is not present in group member in '.$request->name);
             die(1);
         }
 
@@ -192,7 +197,6 @@ class ProjectController extends Controller
                     //creating array of ProjectMember objects to insert in project_members table in single saveMany command
                    $members=[];
                    
-                   $member_rollnos=$request->member_rollno;
                    $member_names=$request->member_name;
                    for ($i=0; $i < count($member_rollnos) ; $i++) 
                    { 
@@ -253,13 +257,13 @@ class ProjectController extends Controller
                         Session::flash('success',$project->name.' has been succesfully uploaded');
 
 
-                         return redirect()->route('user.projects.show', $project->id);
+                         return redirect()->route('projects.show', $project->id);
                    }else
                     return back()->withErrors('error in saving project members');
                    
                 } else
                     return back()->withErrors('error occured during saving project');
-             }
+            }
 
 
         }
@@ -316,7 +320,7 @@ class ProjectController extends Controller
                 'link'=>'nullable|url|max:255|unique:'.$tenant.'_projects,url_link,'.$id,
                 'tags'=>'required|max:60',
                 'member_rollno'=>'required|array|max:5',
-                'member_rollno.*'=>['distinct','required','max:15',
+                'member_rollno.*'=>['sometimes','distinct','string','max:10',
                     Rule::unique($tenant.'_project_members', 'roll_no')
                         ->where( function($query) use( $subject_id, $id, $tenant)
                         {
@@ -329,7 +333,7 @@ class ProjectController extends Controller
                            });
                         })
                 ],
-                'member_name'=>'required_with:member_rollno|max:255',
+                'member_name'=>'required_with:member_rollno|max:191',
 
 
         ])->validate();
@@ -366,37 +370,44 @@ class ProjectController extends Controller
                             array_push($tag_ids,  $tag);
                     }//end inserting new tags
 
-                   $members_changed=0;
+                  // $members_changed=0;
 
 
                    $members=[];
                    $member_rollnos=$request->member_rollno;
                    $member_names=$request->member_name;
+                   $college=strtoupper(session('tenant'));
 
                    for ($i=0; $i < count($request->member_rollno) ; $i++) 
                    {   
                         $member_rollnos[$i]=trim($member_rollnos[$i]);
                         $member_names[$i]=trim($member_names[$i]);
-
+                        /*
                       if($project->project_members()->count()!=count($request->member_rollno)) 
                         $members_changed=1;
                     else if($project->project_members()->where('roll_no', $member_rollnos[$i])->where('name', $member_names[$i])->first()==null)
-                           $members_changed=1;
+                           $members_changed=1;*/
 
                        $members[$i]=new ProjectMember;
-                       $members[$i]->roll_no = $member_rollnos[$i];
+                       $members[$i]->roll_no = $college.$member_rollnos[$i];
                        $members[$i]->name = $member_names[$i] ;
+                       $pr = $project->project_members()->withTrashed()
+                            ->where('roll_no', $college.$member_rollnos[$i])
+                            ->get();
+                       if(count($pr))
+                       {
+                            $members[$i]->deleted_at = $pr->first()->deleted_at;
+                       }
                    }
-
+/*
                    if($members_changed==1) 
-                   {
+                   {*/
                       //$project->project_members()->project()->dissociate($project);
 
-                      ProjectMember::where('project_id', '=', $project->id)->delete();
-
+                      ProjectMember::where('project_id', '=', $project->id)->forceDelete();
 
                         $inserting_members=$project->project_members()->saveMany($members);
-                   }
+                   //}
                          $project->tags()->sync($tag_ids, true);
 
                           $images=[];
@@ -442,12 +453,26 @@ class ProjectController extends Controller
     public function destroy($id)
     {
          $project=Project::findOrFail($id);
+         abort_if(!$project, 404);
         if($project->delete())
-        {
-            $project->tags()->detach();
-            Session::flash('success', 'file '.$project->filepath.' was successfully deleted');
-        }
+        {   
+            $project->project_members()->forceDelete();
+            Storage::delete($project->filepath);
+            
+            if( count($project->imgs) )
+            {   
+                foreach($project->imgs as $img) 
+                Storage::delete($img->filepath);
 
+                $project->imgs()->delete();
+            }
+
+            if(count($project->tags)) $project->tags()->detach();
+        
+            Session::flash('success', 'file '.$project->filepath.' was successfully deleted');
+             return redirect()->route('projects.index');
+        } else
+            return back()->withErrors('technical error in deleting project '.$project->name);
             return redirect()->route('projects.index');
     }
 }

@@ -29,7 +29,10 @@ Route::prefix('user')->middleware('subdomain', 'auth', 'role:teacher|staff|stude
 			user routes
 		*/
 
-
+		//notification routes
+		Route::get('/readNotification', 'User\notificationController@markAllAsRead')->name('notification.markAll');	
+		Route::get('/readNotification/{id}', 'User\notificationController@markAsRead')->name('notification.markOne');
+		Route::get('/notifications', 'User\notificationController@index')->name('notifications.index');
 		//all posts  routes 	
 		Route::get('/posts/create', 'User\PostController@create')->name('user.posts.create');	
 
@@ -92,7 +95,14 @@ Route::prefix('manage')->middleware('subdomain','role:superadministrator|adminis
 	*/
 		//Route::get('/test11', 'ManageController@index');
 		//Route::get('/test', 'Project\ProjectController@test');
-
+		Route::get('/collegePeoples/index/{type}', 'Admin\CollegePeopleController@index')->name('collegePeoples.index');
+		Route::get('/collegePeoples/create', 'Admin\CollegePeopleController@create')->name('collegePeoples.create');	
+		
+		Route::get('/collegePeoples/{id}/{type}', 'Admin\CollegePeopleController@show')->name('collegePeoples.show');
+		Route::post('/collegePeoples', 'Admin\CollegePeopleController@store')->name('collegePeoples.store');
+		Route::get('/collegePeoples/{id}/edit/{type}', 'Admin\CollegePeopleController@edit')->name('collegePeoples.edit');
+		Route::put('/collegePeoples/{id}', 'Admin\CollegePeopleController@update')->name('collegePeoples.update');
+		Route::delete('/collegePeoples/{id}/{type}', 'Admin\CollegePeopleController@destroy')->name('collegePeoples.destroy');
 		//Notce resource routes
 		Route::resource('/notices', 'Admin\NoticeController');
 
@@ -113,15 +123,19 @@ Route::prefix('manage')->middleware('subdomain','role:superadministrator|adminis
 		Route::get('/tags', 'Admin\TagController@index')->name('tags.index');
 		Route::delete('/tags/{id}', 'Admin\TagController@destroy')->name('tags.destroy');
 
-		Route::resource('/projects', 'Admin\ProjectController');
-		Route::get('/projects/publish', 'Admin\ProjectController@publish');
-		
-		
-		Route::resource('/downloads', 'Admin\DownloadController');
-		Route::get('/downloads/publish', 'Admin\DownloadController@publish');
 
-		Route::get('/downloads/category', 'Admin\DownloadCategoryController@index')->name('download_categories.index');
-		Route::post('/downloads/category', 'Admin\DownloadCategoryController@store')->name('download_categories.store');
+		//projects routs
+		Route::get('/projects/publish', 'Admin\ProjectController@publish')->name('projects.publish');
+		Route::resource('/projects', 'Admin\ProjectController');
+
+		//download routes
+		Route::get('/downloads/publish', 'Admin\DownloadController@publish')->name('downloads.publish');
+		Route::resource('/downloads', 'Admin\DownloadController');
+		
+
+		//download categories controller
+		Route::get('/downloadsCategory', 'Admin\DownloadCategoryController@index')->name('download_categories.index');
+		Route::post('/downloadsCategory', 'Admin\DownloadCategoryController@store')->name('download_categories.store');
 
 		Route::resource('/subjects', 'Admin\SubjectController');
 
@@ -134,8 +148,8 @@ Route::prefix('manage')->middleware('subdomain','role:superadministrator|adminis
 		Route::resource('/users', 'Admin\UserController');
 
 		Route::get('/', 'Admin\ManageController@index');
-
-		Route::get('/dashboard',  ['as'=>'manage.dashboard', 'uses'=>'Admin\ManageController@dashboard']);
+/*
+		Route::get('/dashboard',  ['as'=>'manage.dashboard', 'uses'=>'Admin\ManageController@dashboard']);*/
 });
 
 
@@ -144,9 +158,12 @@ Route::prefix('manage')->middleware('subdomain','role:superadministrator|adminis
         
  
 
-Route::group([ 'middleware' => ['subdomain']
-    ], function(){
-    	
+Route::middleware('subdomain')->group( function(){
+    	//for first time use after registration
+    	Route::get('/registration/passwordChange', function (){
+		return view('auth.passwords.registeremail');
+		})->name('passwords.firstRegistration');
+
 	Auth::routes();
 	Route::get('/subdomainTest', 'HomeController@subdomain');
 

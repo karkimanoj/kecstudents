@@ -94,7 +94,11 @@
                                                 <i class="fas fa-link" style="color:#228AE6"></i>
                                               </button> 
                                             </span>
-                                            <input type="url" name="link" class="form-control" value="{{$project->url_link or old('link')}}" aria-describedby="basic-addon2" maxlength="255" >
+                                            <input type="url" name="link" class="form-control" 
+                                            @if($project->link)
+                                               value="{{$project->link}}"
+                                              @endif 
+                                              aria-describedby="basic-addon2" maxlength="255" >
                                         </div>  
                                      
                                          <span class="help-block">
@@ -159,7 +163,7 @@
                                          <div class="col-md-3 offset-md-3" >
                                            
                                             
-                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{explode(strtoupper(session('tenant')), $member->roll_no)[1]}}" required maxlength="15" placeholder="roll no">
+                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{explode(strtoupper(session('tenant')), $member->roll_no)[1]}}" required maxlength="10" placeholder="roll no">
 
                                             @if($errors->has('member_rollno[]'))
                                                 <span class="help-block">
@@ -182,8 +186,9 @@
 		                                       
 		                                        <input type="checkbox" class="float-left" style="width: 15%" checked >
                                             
-
-		                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{explode(strtoupper(session('tenant')), $member->roll_no)[1]}}" required maxlength="15" placeholder="roll no">
+         
+		                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{explode(strtoupper(session('tenant')), $member->roll_no)[1]}}" required maxlength="10" placeholder="roll no">
+                                           
 
 		                                        @if($errors->has('member_rollno[]'))
 		                                            <span class="help-block">
@@ -211,7 +216,7 @@
 		                                        
                                         <input type="checkbox" class="float-left" style="width: 15%" >
                                         
-                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{ old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
+                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{ old('member_rollno[]')}}" required maxlength="10" placeholder="roll no">
 
                                         @if($errors->has('member_rollno[]'))
                                             <span class="help-block">
@@ -292,9 +297,9 @@
                 <div class="card-body">                       
               
                   <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new note</a>
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new event</a>
-                   <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
+                  <a href="{{route('user.downloads.create')}}" class=" btn btn-outline-primary btn-block ">upload new materials</a>
+                  
+                   <a href="{{route('user.posts.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
                 </div>
               </div>
             </div>

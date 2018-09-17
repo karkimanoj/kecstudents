@@ -14,10 +14,10 @@
 					 <div class="row">
 					 	<div class="col-md-8 offset-md-2">
 					 		<div class="input-group input-group-lg">
-								  <input type="text" class="form-control" placeholder="search" aria-label="Large" aria-describedby="basic-addon2">
+								  <input type="text" minlength="3" class="form-control" placeholder="search with 3 or more characters" aria-label="search" aria-describedby="basic-addon2" id="search_field">
 								  <div class="input-group-prepend"> 
-								  	<button class="btn btn-default" type="button" id="basic-addon2">
-								  	<i class="fas fa-search" style="color:#228AE6"></i> Post
+								  	<button class="btn btn-default" type="button" id="search_btn">
+								  	<i class="fas fa-search" style="color:#228AE6"></i> Posts
 								  </button> 
 								</div>
 							</div>								
@@ -34,7 +34,7 @@
 		<div class="row">
 			<div class="col-md-10 offset-md-1 "  style="background-color: white;">
 			
-				<div class="row mt-5 mb-5">
+				<div class="row mt-2 mb-5">
 					<div class="col-md-3 m-b-30">
 						<div class="row ">
 							<div class="col-md-11 offset-md-1    bg_grey" style=" padding: 10px;">
@@ -54,7 +54,7 @@
 						</div>
 						
 						<div class="row ">
-							<div class="col-md-11 offset-md-1  bg_grey m-t-30 " style=" padding: 10px;">
+							<div class="col-md-11 offset-md-1  bg_grey mt-3 " style=" padding: 10px;">
 								<a href="{{route('user.posts.index')}}" class="btn btn-primary btn-block btn-nobg-color">View My Posts</a>
 
 							</div>
@@ -63,7 +63,7 @@
 
 								
 						<div class="row">
-							<div class="col-md-11 offset-md-1 mt-1 bg_grey" >
+							<div class="col-md-11 offset-md-1  bg_grey" >
 								<label class="mt-2">Popular Tags</label>
 								<hr>
 								<!--end <div class="nav flex-column nav-pills" id="v-pills-tag" role="tablist" aria-orientation="vertical"> -->
@@ -160,7 +160,6 @@
 <script type="text/javascript">
 	$(document).ready(function ()
 	{
-		  var sort_by='relevance';
 		  var host='{{url('/')}}';
 		  var tag_ids = [];	
 		//$('#v-pills-'+category+' input[value="'+cat_id+'"]').prev().prev().addClass('active');
@@ -168,33 +167,34 @@
 				 tag_ids = $('input[type=checkbox]:checked').map(function() {
 				    return this.value;
 				}).get()
-				sort_by=$('#sort-by').val();
-				getposts(tag_ids, sort_by);
+				
+				getposts(tag_ids);
 			});
 
-		getposts(tag_ids, sort_by);
+		getposts(tag_ids);
 
 		
 
 		$('#sort-by').change(function(){
-			sort_by=$(this).val();
-			getposts(tag_ids, sort_by);
+			$('#search_field').val('');
+			getposts(tag_ids);
 		});
 
 
-		
-		
+		$('#search_btn').on('click', function(){
+			
+			getposts(tag_ids);
 
+		});
 		
-
-            $('body').on('click', '.pagination a', function(e) {
-            	//prevent default action ,i.e,stop directing to route in a tag's href
-                e.preventDefault();
-                 url = $(this).attr('href');
-           
-               getposts(tag_ids, sort_by, url);
-                
-            });
+		$('body').on('click', '.pagination a', function(e) {
+        	//prevent default action ,i.e,stop directing to route in a tag's href
+            e.preventDefault();
+             url = $(this).attr('href');
+       
+           getposts(tag_ids, url);
+            
+        });
 
 
 			//to change page no's in pagination controls
@@ -228,14 +228,20 @@
             user_id='{{Auth::user()->id}}';
 
 
-            function getposts(tag_ids, sort_by, url='{{route('posts.ajaxIndex')}}') 
+            function getposts(tag_ids, url='{{route('posts.ajaxIndex')}}') 
             {
-				
+				sort_by=$('#sort-by').val();
+				search_text = $('#search_field').val();
+
+            	if(search_text.length < 3)
+            	   search_text = '';
+
                 $.ajax({
                     url : url,
-                    data:{ 'token' : '{{csrf_field()}}',
+                    data:{ '_token' : '{{csrf_field()}}',
 		                   'tag_ids' : tag_ids,
-		                   'sort_by' : sort_by
+		                   'sort_by' : sort_by,
+		                   'search_text': search_text
 					 },
 					 dataType: 'json',
                 }).done(function (pdata) {

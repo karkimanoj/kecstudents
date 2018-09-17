@@ -21,7 +21,7 @@
         <nav class="navbar navbar-expand-lg navbar-light ">
           <a class="navbar-brand "  href="{{ route('home') }}">
             {{--<i class="fas fa-graduation-cap fa-lg"  style="color:#228AE6"></i> --}}
-            <img src="{{asset('images/Kecstudentslogo2.jpg')}}" height="50" width="140">
+           STUDENT PORTAL
             {{--<span style="font-size: 1.5rem; margin-left: 4px; font-weight:100;" id="brand_name"> Kecstudents</span>--}}
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">

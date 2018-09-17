@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Notice;
 class HomeController extends Controller
 {
     /**
@@ -21,8 +21,9 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        return view('home');
+    {   
+        $notices = Notice::latest()->limit(8)->get(); 
+        return view('home', ['notices' => $notices]);
     }
 
     public function migrateTables(Request $request)

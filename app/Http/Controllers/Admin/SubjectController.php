@@ -127,8 +127,10 @@ class SubjectController extends Controller
     {
         if(Auth::user()->hasPermission(['update-subjects']))
         {
-            $this->validate($request, ['name'=>'required|max:255|unique:'.session('tenant').'_subjects,name,'.$id,
-                                        'faculty'=>'required']);
+            $this->validate($request, 
+                ['name'=>'required|max:255|unique:'.session('tenant').'_subjects,name,'.$id,
+                  'faculty'=>'required'
+              ]);
 
             $subject=Subject::findOrFail($id);
             $subject->name=$request->name;

@@ -73,7 +73,7 @@
 
 							<div class="row mt-4" >
 								<div class="col">
-									<i class="fas fa-comments fa-3x"></i> <span style="font-size: 2rem;"> 3</span>
+									<i class="fas fa-comments fa-3x"></i> <span style="font-size: 2rem;"><a href="{{Request::url().'#disqus_thread'}}">0</a></span>
 								</div>
 							</div>
 							<div class="row mt-4" >
@@ -224,41 +224,16 @@
 	              	@endif
 
 	              	<div class="row">
-	              		<div class="col-md-11 offset-md-1 mt-4 pl-3 pt-3  bg-white" id="pop_download_div" style="font-size: 0.8rem">
-	              			<h5>popular downloads:</h5>
-	              			<ul  class="nav nav-tabs list-group mt-3">
+	              		<div class="col-md-11 offset-md-1 mt-4   bg-white"  style="font-size: 0.8rem">
+	              			<h5 class="mt-2">Popular Downloads:</h5>
+	              			<ul  class="nav nav-tabs list-group mt-3 ">
+	              				@foreach($popular_downloads as $pop_download)
 							  <li class="nav-item list-group-item">
-							    <a class="nav-link " href="#">
-							    kecstudents portal<br>
-							    <i class="fab fa-cuttlefish" ></i>c programming
+							    <a class="nav-link " href="{{route('user.downloads.show',  $pop_download->id)}}">
+							   	{{($loop->index + 1).'. '.$pop_download->title }}
 								</a>
 							  </li>
-							  <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">hamroshoe store
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>c programming</a>
-							  </li>
-							  <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">virtual kec
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>minor download(bct)</a>
-							  </li>
-							  <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">kathmandu valley soil analysis
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>c programming</a>
-							  </li>
-							   <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">kecstudents portal
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>minor download(bct)</a>
-							  </li>
-							   <li class="nav-item list-group-item">
-							    <a class="nav-link " href="#">kathmandu valley soil analysisl
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>soil mechanics</a>
-							  </li>
-
+							  @endforeach
 							</ul>
 	              		</div>
 	              	</div>

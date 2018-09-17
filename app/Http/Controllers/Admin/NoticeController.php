@@ -21,7 +21,7 @@ class NoticeController extends Controller
      */
     public function index()
     {
-        $notices = Notice::paginate(15);
+        $notices = Notice::latest()->paginate(15);
         return view('manage.notices.index', ['notices' => $notices]);
     }
 

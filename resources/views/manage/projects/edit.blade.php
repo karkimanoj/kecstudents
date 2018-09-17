@@ -72,7 +72,7 @@
 
                                 <div class="row form-group m-t-20{{ $errors->has('link')?'has-error':'' }} ">
                                     <div class="col-md-3">    
-                                        <label class="right m-r-20">github link:</label>
+                                        <label class="right m-r-20">github link (optional):</label>
                                     </div>    
                                      <div class="col-md-8">
                                         <div class="input-group">
@@ -81,7 +81,11 @@
                                                   <i class="fas fa-link" style="color:#228AE6"></i>
                                                 </button> 
                                               </span>
-                                              <input type="url" name="link" class="form-control" value="{{$project->url_link or old('link')}}" aria-describedby="basic-addon2" maxlength="255" >
+                                              <input type="url" name="link" class="form-control" 
+                                              @if($project->link)
+                                               value="{{$project->link}}"
+                                              @endif 
+                                                aria-describedby="basic-addon2" maxlength="255" >
                                         </div>  
 
                                          <span class="help-block">
@@ -148,7 +152,7 @@
                                          <div class="col-md-3 offset-md-3" style="display: none;">
                                             <input type="checkbox" class="pull-left" style="width: 15%" >
                                             
-                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{Auth::user()->roll_no}}" required maxlength="15" placeholder="roll no">
+                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{explode(strtoupper(session('tenant')), $member->roll_no)[1]}}" required maxlength="15" placeholder="roll no">
 
                                             @if($errors->has('member_rollno[]'))
                                                 <span class="help-block">
@@ -171,7 +175,7 @@
 		                                        
 		                                        <input type="checkbox" class="pull-left" style="width: 15%" checked>
 		                                        
-		                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{$member->roll_no or old('member_rollno[]')}}" required maxlength="15" placeholder="roll no">
+		                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-right" value="{{explode(strtoupper(session('tenant')), $member->roll_no)[1]}}" required maxlength="15" placeholder="roll no">
 
 		                                        @if($errors->has('member_rollno[]'))
 		                                            <span class="help-block">

@@ -7,7 +7,7 @@
                 </div>
 
                 <ul class="list-unstyled components">
-                
+                {{--
                     <li >
                         <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Home</a>
                         <ul class="collapse list-unstyled col_ul" id="homeSubmenu">
@@ -15,9 +15,11 @@
                             <li><a href="#">Home 3</a></li>
                         </ul>
                     </li>
+
                     <li class="{{Nav::isRoute('manage.dashboard')}}">
                       <a href="{{route('manage.dashboard')}}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                     </li>
+                    --}}
                     <li>
                         <a href="#pageSubmenu" class="{{Nav::hasSegment(['users','roles','permissions'], 2)}}" data-toggle="collapse" aria-expanded="false">Administration  <span class="caret"></span></a>
                         <ul class="collapse list-unstyled col_ul" id="pageSubmenu" >
@@ -25,6 +27,9 @@
                             <li class="{{Nav::isResource('roles')}}"><a href="{{route('roles.index')}}"><i class="fa fa-user-secret" aria-hidden="true"></i> Manage Roles</a></li>
                             <li class="{{Nav::isResource('permissions')}}"><a href="{{route('permissions.index')}}"><i class="fa fa-key" aria-hidden="true"></i> Manage permission</a></li>
 
+                             <li class="{{Nav::isRoute('collegePeoples.index', 'student')}}"><a href="{{route('collegePeoples.index', 'student')}}"><i class="fa fa-users m-r-5" aria-hidden="true"></i> Manage students</a></li>
+                            <li class="{{Nav::isRoute('collegePeoples.index', 'teacher')}}"><a href="{{route('collegePeoples.index', 'teacher')}}"><i class="fa fa-users m-r-5" aria-hidden="true"></i> Manage teachers</a></li>
+                            <li class="{{Nav::isRoute('collegePeoples.index', 'staff')}}"><a href="{{route('collegePeoples.index', 'staff')}}"><i class="fa fa-users m-r-5" aria-hidden="true"></i> Manage staff</a></li>
                         </ul>
                     </li>
 
@@ -34,6 +39,9 @@
 
                     <li class="{{Nav::isResource('subjects')}}">
                         <a href="{{route('subjects.index')}}">Subjects</a>
+                    </li>
+                    <li class="{{Nav::isResource('notices')}}"> 
+                        <a href="{{route('notices.index')}}">notices</a>
                     </li>
                     <li class="{{Nav::isRoute('download_categories.index')}}">
                         <a href="{{route('download_categories.index')}}">Download Categories</a>

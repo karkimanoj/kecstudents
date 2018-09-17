@@ -357,6 +357,49 @@ class TenantController extends Controller
                 
                  //   End of laratrust tables
                 
+                 if (!Schema::hasTable($ten.'_students')) 
+                {
+                    Schema::connection('mysql')->create($ten.'_students', function(Blueprint $table)
+                    {
+                        $table->increments('id');
+                        $table->string('name');
+                        $table->string('roll_no', 15)->unique();
+                        $table->string('email')->unique();
+                        $table->enum('gender', ['male', 'female']);
+                        $table->date('dob');
+                        $table->timestamps();    
+                    });
+                }
+
+                if (!Schema::hasTable($ten.'_staffs')) 
+                {
+                    Schema::connection('mysql')->create($ten.'_staffs', function(Blueprint $table)
+                    {
+                        $table->increments('id');
+                        $table->string('name');
+                        $table->string('roll_no', 9)->unique();
+                        $table->string('email')->unique();
+                        $table->enum('gender', ['male', 'female']);
+                        $table->date('dob');
+                        $table->timestamps();   
+                    });
+                }
+
+                if (!Schema::hasTable($ten.'_teachers')) 
+                {
+                    Schema::connection('mysql')->create($ten.'_teachers', function(Blueprint $table)
+                    {
+                        $table->increments('id');
+                        $table->string('name');
+                        $table->string('roll_no', 9)->unique();
+                        $table->string('email')->unique();
+                        $table->enum('gender', ['male', 'female']);
+                        $table->date('dob');
+                        $table->timestamps();    
+                    });
+                }
+
+
 
                //tenant faculties table    
                 if (!Schema::hasTable($ten.'_faculties')) 
@@ -419,9 +462,6 @@ class TenantController extends Controller
                     {
                         $table->increments('id');
                         $table->string('title');
-
-                        
-                          //  dont forget to make unsignedInteger on foreignkey of 'id',
                         
                         $table->unsignedInteger('category_id');
                         $table->unsignedInteger('uploader_id');
@@ -429,6 +469,7 @@ class TenantController extends Controller
                         $table->unsignedInteger('faculty_id')->nullable();
                         $table->integer('semester')->length(2)->unsigned()->nullable();
                         $table->text('description');
+                        $table->bigInteger('view_count')->default(0);
                         $table->dateTime('published_at')->nullable();
                         $table->timestamps();
 
@@ -463,14 +504,14 @@ class TenantController extends Controller
                         $table->string('name');
                         $table->string('original_filename');
                         $table->string('filepath')->unique();
-                        $table->string('url_link')->unique();
+                        $table->string('url_link')->nullable();
                         $table->text('abstract');
                         
                          //dont forget to make unsignedInteger on foreignkey of 'id',
                         
                         $table->unsignedInteger('subject_id');
                         $table->unsignedInteger('uploader_id');
-
+                        $table->bigInteger('view_count')->default(0);
                         $table->dateTime('published_at')->nullable();
                         $table->timestamps();
 
@@ -553,6 +594,7 @@ class TenantController extends Controller
                         $table->unsignedInteger('max_members');
                         $table->text('description');
                         $table->unsignedInteger('user_id');
+                        $table->bigInteger('view_count')->default(0);
                         $table->softDeletes();
                         $table->timestamps();
 
@@ -576,6 +618,37 @@ class TenantController extends Controller
                         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
                     });
                 }
+
+                if (!Schema::hasTable($ten.'_posts')) 
+                {
+                    Schema::create($ten.'_posts', function (Blueprint $table) 
+                    {
+                        $table->increments('id');
+                        $table->string('slug')->unique();
+                        $table->unsignedInteger('author_id');
+                        $table->longText('content');
+                        $table->bigInteger('view_count')->default(0);
+                        $table->timestamps();
+                        $table->foreign('author_id')->references('id')->on('users')
+                                                    ->onDelete('cascade')->onUpdate('cascade');
+                    });
+                }
+
+                if (!Schema::hasTable($ten.'_notices')) 
+                {
+                    Schema::create($ten.'_notices', function (Blueprint $table)
+                    {
+                        $table->increments('id');
+                        $table->string('title');
+                        $table->text('content');
+                        $table->unsignedInteger('user_id');
+                        $table->timestamps();
+
+                        $table->foreign('user_id')->references('id')->on('users')
+                              ->onDelete('cascade')->onUpdate('cascade');
+                    }); 
+                }
+
 
         if($tenant->trashed())
         {

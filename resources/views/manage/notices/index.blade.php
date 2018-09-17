@@ -57,7 +57,12 @@
           </tbody>
         </table>
         <center>
-        {{ $notices->links("pagination::bootstrap-4")}}
+        
+        <div class="row">
+              <div class="col-auto offset-md-4">
+                {{$notices->links( "pagination::bootstrap-4") }}
+              </div>
+            </div>
         </center>
         </div>
       </div>

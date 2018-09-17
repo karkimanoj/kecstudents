@@ -80,7 +80,12 @@
 				</table>
 				
 				<center>
-				{{ $tags->links("pagination::bootstrap-4")}}
+				
+				<div class="row">
+	              <div class="col-auto offset-md-4">
+	                {{$tags->links( "pagination::bootstrap-4") }}
+	              </div>
+	            </div>
 				</center>
 			 </div>
 			

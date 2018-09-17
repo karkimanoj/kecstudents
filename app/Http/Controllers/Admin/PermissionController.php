@@ -25,7 +25,7 @@ class PermissionController extends Controller
      */
     public function index()
     {   
-        $permissions=Permission::all();
+        $permissions=Permission::latest()->get();
         return view('manage.permissions.index', ['permissions'=>$permissions]);
     }
 

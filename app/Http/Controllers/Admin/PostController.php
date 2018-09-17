@@ -32,7 +32,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts=Post::with('tags')->paginate(1);
+        $posts=Post::with('tags')->latest()->paginate(10);
         //dd($posts);
         return view('manage.posts.index', [ 'posts' => $posts]);
     }
@@ -147,14 +147,18 @@ class PostController extends Controller
             {   
                 Session::flash('success', 'successfully added new post to discussions and forums'.$msg);
                 //Notification Part --start
-                if($request->submit == 'Yes')
+                if($request->submit == 'Yes' && Auth::user()->hasPermission('create-invites'))
                 {
                     $roll_no=[];
                     $college = strtoupper(session('tenant'));
                     for($i=0; $i<count($request->facultyn); $i++)
                     {  
-                        if( $request->end_rollno[$i] < $request->start_rollno[$i] )
-                               $request->end_rollno[$i]= $request->start_rollno[$i];
+                        if($request->end_rollno[$i] < $request->start_rollno[$i])
+                        {
+                            $end_rollno = $request->end_rollno;
+                            $end_rollno[$i] = $request->start_rollno[$i];
+                            $request->end_rollno = $end_rollno;
+                        }  
                            
                         $faculties=[]; 
                         if($request->facultyn[$i] == 'All')

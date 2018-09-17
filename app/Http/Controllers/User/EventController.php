@@ -28,7 +28,7 @@ class EventController extends Controller
          {  
             $value = $request->session()->get('tenant');
            
-            Event1::where('end_at', '<', now())->delete();
+            Event1::where('end_at', '<', now())->where('deleted_at', NULL)->delete();
             //Event1::where('start_at', '>', now()->toDateString());
 
             return $next($request);
@@ -111,14 +111,19 @@ class EventController extends Controller
             Session::flash('success', $event->title.' succesfully created');
 
             //Notification Part --start
-                if($request->submit == 'submit and notify')
+                if($request->submit == 'submit and notify' && Auth::user()->hasPermission('create-invites'))
                 {
                     $roll_no=[];
                     $college = strtoupper(session('tenant'));
                     for($i=0; $i<count($request->facultyn); $i++)
                     {  
-                        if( $request->end_rollno[$i] < $request->start_rollno[$i] )
-                               $request->end_rollno[$i]= $request->start_rollno[$i];
+                    
+                        if($request->end_rollno[$i] < $request->start_rollno[$i])
+                        {
+                            $end_rollno = $request->end_rollno;
+                            $end_rollno[$i] = $request->start_rollno[$i];
+                            $request->end_rollno = $end_rollno;
+                        }     
                            
                         $faculties=[]; 
                         if($request->facultyn[$i] == 'All')
@@ -168,9 +173,13 @@ class EventController extends Controller
     {
         $event = Event1::withTrashed()->where('id', $id)->with('event1_members.user')->first();
 
+        abort_if(!$event, 404);
+        $popular_events = Event1::orderBy('view_count', 'desc')->limit(10)->get();
+        //dd($popular_events);
         $interested_members = Event1Member::onlyTrashed()->where('event1_id','=', $id)->get();
         return view('user.events.show', ['event' => $event,
-                                         'interested_members' => $interested_members]);
+                                         'interested_members' => $interested_members,
+                                          'popular_events' => $popular_events ]);
     
     }
 

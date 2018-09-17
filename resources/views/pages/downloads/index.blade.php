@@ -13,9 +13,9 @@
 		 <div class="row">
 		 	<div class="col-md-8 offset-md-2">
 		 		<div class="input-group input-group-lg">
-					  <input type="text" class="form-control" placeholder="search" aria-label="Large" aria-describedby="basic-addon2">
+					   <input type="text" minlength="3" class="form-control" placeholder="search with 3 or more characters" aria-label="search" aria-describedby="basic-addon2" id="search_field">
 					  <div class="input-group-prepend"> 
-					  	<button class="btn btn-default" type="button" id="basic-addon2">
+					  	<button class="btn btn-default" type="button" id="search_btn">
 					  	<i class="fas fa-search" style="color:#228AE6"></i> Downloads
 					  </button> 
 					</div>
@@ -32,19 +32,19 @@
 			<div class="col-md-10 offset-md-1 "  style="background-color: white;">
 
 				<div class="row ">
-					<div class="col-md-12 mt-3  " style=" padding: 10px;">
+					<div class="col-md-12 mt-1  " style=" padding: 10px;">
 
 						
 
 						<div class="row mt-3">
 							<div class="col-md-3  " >
 								<div class="row ml-3 bg_grey">
-									<div class="col-md-12  form-group ">
+									<div class="col-md-12 p-1 form-group ">
 										<label> Sort by:</label>
 										<select class="form-control select-lg" id="sort-by">
 											<option value="relevance">relevance</option>
 											<option value="date">date </option>
-											<option value="view count">view count</option>
+											<option value="view_count">view count</option>
 											<option value="comments">comments</option>
 										</select>
 									</div>
@@ -53,7 +53,7 @@
 							
 							<div class="col-md-9">
 								<div class="row ml-1 mr-1 bg_grey" >
-								<div class="col-md-4 form-group" >
+								<div class="col-md-4 p-1 form-group" >
 									<label> Faculty:</label>
 									<select class="form-control select-lg" id="faculty_select">
 										@foreach( $faculties as $faculty )
@@ -62,7 +62,7 @@
 									</select>
 								</div>
 
-								<div class="col-md-4 form-group " >
+								<div class="col-md-4 p-1 form-group " >
 									<label> Semester:</label>
 									<select class="form-control select-lg" id="semester_select">
 										<option value="1">First</option>
@@ -77,7 +77,7 @@
 									</select>
 								</div>
 
-								<div class="col-md-4 form-group " >
+								<div class="col-md-4 p-1 form-group " >
 									<label> Subjects:</label>
 									<select class="form-control select-lg" id="subject_select">
 										
@@ -196,16 +196,16 @@
 	$(document).ready(function ()
 	{
 		var category_id='{{$category_id}}';
-		var sort_by='relevance';
+		//var sort_by='relevance';
 		var host='{{url('/')}}';
 		var subjects_json=@json($fac_sem_sub_arr);
         var all_subjects=JSON.parse(subjects_json);
         
-
 		$('a[href="'+host+'/downloads/'+category_id+'"]').addClass('active');
-            /*
-                function to show subject according to faculty/semester
-            */
+
+        /*
+            function to show subject according to faculty/semester
+        */
         function subjects()
         {
             fac=$('#faculty_select').val();
@@ -224,6 +224,7 @@
 
         $(document).on('change','#faculty_select, #semester_select', function(){
             subjects();
+            $('#search_field').val('');
             getDownloads(category_id);
         });
 
@@ -237,12 +238,16 @@
 			getDownloads(category_id);
 		});
 
-		$('#sort-by').change(function(){
-			
+		$('#sort-by, #subject_select').change(function(){
+			 $('#search_field').val('');
 			getDownloads(category_id);
 		});
 
+		$('#search_btn').on('click', function(){
+			
+			getDownloads(category_id);
 
+		});
 		
 		
 
@@ -292,28 +297,25 @@
 
             function getDownloads(category_id, url='{{route('page.downloads.ajaxCall')}}'  ) 
             {	
-            	//;
-            	//url=host+'/ajaxCall';
-            	sort_by=$('#sort-by').val();
+               	sort_by=$('#sort-by').val();
             	faculty_id=$('#faculty_select').val();
             	semester_id=$('#semester_select').val();
             	subject_id=$('#subject_select').val();
-            	//alert(category_id+' '+sort_by+' '+faculty_id+' '+semester_id+' '+subject_id+' '+url);
-
-          /*  $.ajax({url: host+'/ajaxCall', success: function(result){
-       			 c	onsole.log(result);
-    }});*/
+            	search_text = $('#search_field').val();
+            	if(search_text.length < 3)
+            	   search_text = '';
 
                 $.ajax({
                 	type :'GET',
                     url : url,
                     dataType:'JSON',
                     data:{	'token' : '{{csrf_token()}}',
-                    	 'category_id' : category_id,
+                    	 	'category_id' : category_id,
 		                   'sort_by' : sort_by,
 		                   'faculty_id' : faculty_id,
 		                   'semester' : semester_id,
 		                   'subject_id' : subject_id,
+		                   'search_text' : search_text
 					 },
                 }).done(function (object) {
                 	
@@ -332,8 +334,8 @@
 	                    {
 	                    	download=object.data[j];
 								
-								downloadId=download.id
-								//alert(downloadId);
+							downloadId=download.id
+								
 
 		                    name_div=' <div class="row m-t-10">  <div class="col-md-12" >  <a href="'+host+'/user/downloads/'+downloadId+'" id="download_name">'+download.title+'</a></div></div> ';
 
@@ -343,15 +345,43 @@
 	                    	count_description_div='<div class="row m-t-10"> <div class="col-md-6" >	<button class="btn btn-info btn-sm">'+download.download_files.length+' file/s</button></div>										<div class="col-md-6" ></i> <button type="button" class="btn btn-sm btn-info" data-toggle="popover" title="Description"  data-content="'+download.description +'">description</button> </div></div>';
 
 	                    	
-
+							/*
 	                    	show_edit_div='';
 		                    	if(download.user.roll_no == userroll)
 	                    		{
 	                    			show_edit_div='<div class="row m-t-10"> <div class="col-md-6 " >					<a href="'+host+'user/downloads/'+download.id+'" class="btn btn-primary btn-sm btn-nobg-color">view</a>													</div><div class="col-md-6 " >												<a href="'+host+'user/downloads/'+download.id+'/edit" 					 class="btn btn-outline-primary btn-sm ">edit</a> 									</div></div>';
-	                    		}
+	                    		}*/
 	                    	
+	                    	comment_div =['<div class="col-md-auto v_align_inner_div" >',
+							'<div class="container">',
+								'<div class="row">',
+									'<div class="col-md-12">',
+										'<i class="fas fa-comments fa-3x " ></i>',
+									'</div>',
+								'</div>',
+								'<div class="row">',
+									'<div class="col-md-12 text-center" style=" font-size: 2em;">',
+										
+									'<a href="'+host+'/user/downloads/'+download.id+'#disqus_thread" data-disqus-identifier="'+download.id+'"> 0</a></div>',
+								'</div>',
+							'</div>',		
+						'</div>'].join('');
+
+						edit_btns =''
+                    if(download.user.roll_no == userroll)
+	                {
+                    	edit_btns = ['<div class="col-md-auto">',
+				    		'<div class="container">',
+				    			'<a href="'+host+'/user/downloads/'+download.id+'/edit">',
+				    			'<i class="fas fa-edit"></i></a>',
+				    		'</div>',
+				    		'<div class="container">',
+				    			'<i class="fas fa-trash-alt"></i>',
+				    		'</div>',
+				    	'</div>'].join('')
+				    }
 	                    	   
-	                    	download_main_div='<div class="row m-t-30 " id="project_box">								<div class="col-md-8 offset-md-2   border_purple" style=" padding: 0px 20px 15px 20px;" >    																				'+name_div+user_date_div+count_description_div+show_edit_div+ '</div></div>';
+	                    	download_main_div='<div class="row m-t-30 " id="project_box">'+comment_div+'								<div class="col-md-8  border_purple" style=" padding: 0px 20px 15px 20px;" >    																				'+name_div+user_date_div+count_description_div+ '</div>'+edit_btns+'</div>';
 	                    	
 	                        $('#downloads_mainbox').append(download_main_div); 
 	                        
@@ -362,11 +392,16 @@
 						})
 	                }  
 
-	              	$('#downloads_head').text('displaying page '+object.current_page+'( of total '+object.last_page+' ) from '+object.total+' results ');
+	                if(search_text.length >= 3)
+	                	head_text = object.total+' search results for '+"'"+search_text+"'";
+	                else
+	                head_text = 'displaying page '+object.current_page+'( of total '+object.last_page+' ) from '+object.total+' results ';
+
+	              	$('#downloads_head').text(head_text);
 	                paginate_cotrols(object.current_page, object.last_page) 
                     
                 }).fail(function () {
-                    alert('Articles could not be loaded due to technicle problems.');
+                    alert('downloads could not be loaded due to technicle problems.');
                 });
             }
         

@@ -16,29 +16,26 @@
 
 <div class="main-container">
 
-    <div class="row">
-      <div class="col-md-12" id="top_header" >        
-         <h2 class="text-center">New Upload</h2>          
-      </div>    
-    </div>
+  <div class="row">
+    <div class="col-md-12" id="top_header" >        
+       <h2 class="text-center">New Upload</h2>          
+    </div>    
+  </div>
 
-    <div class="container">
-
+  <div class="container w-100">
+<form method="POST" action="{{route('user.downloads.store')}} " enctype="multipart/form-data" id="uploadForm">
     <div class="row ">
-        <div class="col-md-9  bg-white mb-3">
+        
+            <div class="col-md-9  bg-white mb-3">
 
-        	<div class="row">
-                <div class="col-md-12 file_error" >
-                    
+            	<div class="row">
+                    <div class="col-md-12 file_error" >
+                        
+                    </div>
                 </div>
-            </div>
-        	<div class="panel panel-default mt-3">
-                <div class="panel-body">
-
-
-
-                    <form method="POST" action="{{route('user.downloads.store')}} " enctype="multipart/form-data" id="uploadForm">
-                                {{csrf_field()}}    
+            	<div class="panel panel-default mt-3">
+                    <div class="panel-body">
+                         {{csrf_field()}}    
                                   
                                 <div class="row form-group mt-3{{ $errors->has('title')?'has-error':'' }} ">
                                      
@@ -156,6 +153,7 @@
                                     
                                 </div>
 
+                                @if(Auth::user()->hasPermission('create-invites'))
                                  <!-- Notify Modal -->
                                 <div class="modal " id="notifyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                   <div class="modal-dialog modal-lg" role="document">
@@ -252,12 +250,9 @@
                                     </div>
                                   </div>
                                 </div>
+
+                                @endif
                                 <!-- end of Notify Modal -->
-
-                         
-                                
-                        </form>  
-
 
                 </div>
             </div>
@@ -303,9 +298,11 @@
                 <div class="card-footer bg-white borderless">
 	                <div class="row">
 	                    <div class="col-md-6">
-                        <!--
-                        <button class="btn btn-primary btn-sm btn-block" onclick="document.getElementById('uploadForm').submit();" >upload </button>-->
-	                      <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#notifyModal"> Upload </button>
+                        @if(Auth::user()->hasPermission('create-invites'))
+                          <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#notifyModal"> submit </button>
+                         @else
+                          <input type="submit"  name="submit" class="btn btn-primary btn-sm btn-block"  value="submit_" >
+                        @endif
 	                    </div>
 	                    <div class="col-md-6">
 	                      <button class="btn btn-outline-primary btn-sm btn-block">reset</button>
@@ -316,18 +313,20 @@
 
             <div class="card w-100 mt-3 borderless" >
                 <div class="card-body">                       
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new note</a>
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new event</a>
-                   <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
+                 <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
+                  <a href="{{route('user.downloads.create')}}" class=" btn btn-outline-primary btn-block ">upload new materials</a>
+                  
+                   <a href="{{route('user.posts.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
                 </div>
             </div>
 
         </div>
         <!-- end of right container with profile cards -->
+      
 
     </div>	
-</div>
+    </form>
+  </div>
 </div>
 @endsection
 

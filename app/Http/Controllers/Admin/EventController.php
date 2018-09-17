@@ -24,7 +24,7 @@ class EventController extends Controller
      */
     public function index()
     {   //dd(config('laratrust.tables.permissions'));
-        $events = Auth::user()->event1s()->withTrashed()->paginate(5);
+        $events = Auth::user()->event1s()->withTrashed()->latest()->paginate(5);
         
         return view('manage.events.index', ['events' => $events]);
     }
@@ -89,14 +89,18 @@ class EventController extends Controller
             Session::flash('success', $event->title.' succesfully created');
 
             //Notification Part --start
-                if($request->submit == 'submit and notify')
+                if($request->submit == 'submit and notify' && Auth::user()->hasPermission('create-invites'))
                 {
                     $roll_no=[];
                     $college = strtoupper(session('tenant'));
                     for($i=0; $i<count($request->facultyn); $i++)
                     {  
-                        if( $request->end_rollno[$i] < $request->start_rollno[$i] )
-                               $request->end_rollno[$i]= $request->start_rollno[$i];
+                        if($request->end_rollno[$i] < $request->start_rollno[$i])
+                        {
+                            $end_rollno = $request->end_rollno;
+                            $end_rollno[$i] = $request->start_rollno[$i];
+                            $request->end_rollno = $end_rollno;
+                        }     
                            
                         $faculties=[]; 
                         if($request->facultyn[$i] == 'All')
@@ -221,24 +225,24 @@ class EventController extends Controller
     }
 
     public function ajaxSoftDelete(Request $request)
-    {    $deleted_at='aaaaaa';
+    {    
     
         $event = Event1::withTrashed()->find($request->id);
 
-        if($request->status == 'activate')
+        if($request->status1 == 'activate')
         {   
             $event->restore();
             $deleted_at ='';
         }
         else
-        if($request->status == 'deactivate')
+        if($request->status1 == 'deactivate')
         {
             $event->delete();
-            $deleted_at = ($event->deleted_at)->toDateTimeString();
+            $deleted_at = now()->toDateTimeString();
         }
 
         if($request->ajax())
-            return json_encode([$deleted_at]);
+            return  $deleted_at;
     }
 
     /**

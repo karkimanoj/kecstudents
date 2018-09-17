@@ -11747,7 +11747,7 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
 #top_header {
   min-height: 120px;
   background-color: #5FCF80;
-  padding: 40px;
+  padding: 20px;
   color: white;
 }
 
@@ -11800,7 +11800,7 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
 }
 
 #footer {
-  background-color: #495057;
+  background-color: #5FCF80;
 }
 
 #footer ul {
@@ -11843,6 +11843,83 @@ copied from https://gist.github.com/jacurtis/30da4bf9a6c9b9b5cc0aebac512ca7c9
   font-style: italic !important;
   font-weight: bold !important;
   text-decoration: none !important;
+}
+
+/*
+notification dropdown
+*/
+
+#main_navbar .nav-pills .nav-link.active,
+#main_navbar .nav-pills .show > .nav-link {
+  background-color: white;
+}
+
+#notify_dropdown .dropdown-menu {
+  top: 60px;
+  right: 0px;
+  left: unset;
+  width: 440px;
+  -webkit-box-shadow: 0px 5px 7px -1px #c1c1c1;
+          box-shadow: 0px 5px 7px -1px #c1c1c1;
+  padding-bottom: 0px;
+  padding: 0px;
+}
+
+.ul_notification_container {
+  padding: 0px;
+  list-style: none;
+  max-height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  font-size: 14px;
+}
+
+#notify_dropdown .dropdown-menu:before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  right: 12px;
+  border: 10px solid #343A40;
+  border-color: transparent transparent #343A40 transparent;
+}
+
+#notify_dropdown .head {
+  padding: 5px 15px;
+  border-radius: 3px 3px 0px 0px;
+}
+
+#notify_dropdown .footer {
+  padding: 5px 15px;
+  border-radius: 0px 0px 3px 3px;
+}
+
+#notify_dropdown .notification-box {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#notify_dropdown .bg-gray {
+  background-color: #eee;
+}
+
+@media (max-width: 640px) {
+  .dropdown-menu {
+    top: 50px;
+    left: -16px;
+    width: 290px;
+  }
+
+  .message {
+    font-size: 13px;
+  }
+}
+
+.notification-box:hover {
+  background-color: #F5F5F5;
+}
+
+.notification-box a {
+  text-decoration: none;
 }
 
 /*

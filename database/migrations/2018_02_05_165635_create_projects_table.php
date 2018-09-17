@@ -18,7 +18,7 @@ class CreateProjectsTable extends Migration
             $table->string('name');
             $table->string('original_filename');
             $table->string('filepath')->unique();
-            $table->string('url_link')->unique();
+            $table->string('url_link')->nullable();
             $table->text('abstract');
             /*
                 dont forget to make unsignedInteger on foreignkey of 'id',

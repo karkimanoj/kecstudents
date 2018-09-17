@@ -7,8 +7,8 @@
 @section('content')
 	<div class="main-container">
 		<div class="row">
-			<div class="col-md-4">
-				<h1>Users</h1>
+			<div class="col">
+				<h1>Download Categories</h1>
 			</div>
 			
 

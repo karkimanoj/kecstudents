@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use Illuminate\Support\Collection;
 use App\Event1;
 use Notification;
 use App\Notifications\Event1Notification;
@@ -27,12 +28,14 @@ class Event1Observer
     public function updated(Event1 $event)
     {
         $type = 'updated';
+         $users = new Collection;
        foreach ($event->event1_members()->withTrashed()->get() as $member) {
-            $users[] = $member->user;
+           
+            $users->push($member->user);
         }
 
-        if($users)
-            Notification::send($users, new Event1Notification($event, $type));
+        if(count($users))
+            Notification::send($users->unique(), new Event1Notification($event, $type));
         
     }
     
@@ -42,13 +45,15 @@ class Event1Observer
         if($event->isForceDeleting() === true) {
             $type = 'deleted';
         }
-
+         $users = new Collection;
        foreach ($event->event1_members()->withTrashed()->get() as $member) {
-            $users[] = $member->user;
+            $users->push($member->user);
         }
-        $users[]=$event->user;
+       
+        $users->push($event->user);
 
-        if($users)
-            Notification::send($users, new Event1Notification($event, $type));
+        if(count($users))
+            Notification::send($users->unique(), new Event1Notification($event, $type));
+
     }
 }

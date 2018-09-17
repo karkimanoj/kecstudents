@@ -1,3 +1,5 @@
+
+
 @extends('layouts.app')
 
 @section('styles')
@@ -91,7 +93,7 @@
 
                                 <div class="row form-group m-t-20{{ $errors->has('link')?'has-error':'' }} ">
                                     <div class="col-md-3">    
-                                        <label class="float-right m-r-20">github link:</label>
+                                        <label class="float-right m-r-20">github link <span class="text-muted"> (Optional)</span>:</label>
                                     </div>    
                                      <div class="col-md-8">
                                          <div class="input-group">
@@ -151,7 +153,7 @@
                                              </label> 
                                         </div>
                                          <div class="col-md-8">
-                                             <label class=" m-t-20 m-l-20"><span class="form-text text-muted">Hint: tick checkbox to add members</span> </label> 
+                                             <label class=" m-t-20 m-l-20"><span class="form-text text-muted">Roll No Format: 044BCT2071</span> </label> 
                                         </div>
                                          
                                     </div>
@@ -161,7 +163,7 @@
                                             <div class="col-md-3 offset-md-3" style="display: none;">
                                            
                                             
-                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{Auth::user()->roll_no}}" required maxlength="15" placeholder="roll no">
+                                             <input type="hidden" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{explode(strtoupper(session('tenant')), Auth::user()->roll_no)[1]}}" required maxlength="10" placeholder="roll no">
 
                                             @if($errors->has('member_rollno[]'))
                                                 <span class="help-block">
@@ -183,7 +185,7 @@
                                          <div class="col-md-3 offset-md-3" >
                                            
                                             
-                                             <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{old('member_rollno[]')}}"  required maxlength="15" placeholder="roll no">
+                                             <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{old('member_rollno[]')}}"  required maxlength="10" placeholder="roll no">
 
                                             @if($errors->has('member_rollno[]'))
                                                 <span class="help-block">
@@ -214,7 +216,7 @@
                                         
                                         <input type="checkbox" class="float-left" style="width: 15%" >
                                         
-                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{old('member_rollno[$i]')}}" required maxlength="15" placeholder="roll no">
+                                         <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{old('member_rollno[$i]')}}" required maxlength="10" placeholder="roll no">
 
                                         @if($errors->has('member_rollno[]'))
                                             <span class="help-block">
@@ -287,15 +289,7 @@
                   </div>
                 </div>
               </div>
-              <div class="card w-100 mt-3 borderless" >
-                <div class="card-body">                       
-    
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new note</a>
-                  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new event</a>
-                   <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
-                </div>
-              </div>
+              
             </div>
         </div>
     </div>

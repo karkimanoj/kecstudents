@@ -48,40 +48,71 @@ class DownloadController extends Controller
             case 'relevance':
                 $order='title';
                 $direction='asc';
-             break;  
+            break;  
+            case 'view_count':
+                $order='view_count';
+                $direction='desc';
+             break; 
              default:
                 $order='created_at';
                 $direction='desc';
             break;
         }
 
-        
         $category = DownloadCategory::findOrFail($request->category_id);
 
         if($category->category_type == 'subject')
-          {
-            $downloads = Download::where('category_id','=' ,$request->category_id)
-                        ->where('subject_id', $request->subject_id)
+          { 
+            if(strlen($request->search_text) >= 3)
+            {
+                $search_text = '%'.$request->search_text.'%';
+                $download_parameters = [
+                     ['category_id', $request->category_id], 
+                    ];
+            }
+            else
+            {
+                $search_text = '%';
+                $download_parameters = [
+                     ['category_id', $request->category_id], 
+                     ['subject_id', $request->subject_id]
+                    ];
+            }
+
+
+            $downloads = Download::where($download_parameters)
                         ->whereNotNull('published_at')
+                        ->where('title', 'like', $search_text)
                         ->with(['user','download_files'])
                         ->orderBy($order, $direction)
-                        ->paginate(1);
+                        ->paginate(5);
             
           
           }  
           else 
-            if($category->category_type=='facsem')
+          if($category->category_type=='facsem')
           {
-          
-            //$downloads = Download::all();
-            $downloads = Download::where([
+            if(strlen($request->search_text) >= 3)
+            {    
+                $search_text = '%'.$request->search_text.'%';
+                $download_parameters = [
+                         ['category_id', $request->category_id], 
+                        ];
+            }
+            else{
+                $search_text = '%';
+                $download_parameters = [
                          ['category_id', $request->category_id], 
                          ['faculty_id', $request->faculty_id],
-                          ['semester', $request->semester],
-                        ])->whereNotNull('published_at')
+                          ['semester', $request->semester]
+                        ];
+            }
+
+            $downloads = Download::where( $download_parameters)->whereNotNull('published_at')
+                        ->where('title', 'like', $search_text)
                         ->with(['user','download_files'])
                         ->orderBy($order, $direction)
-                         ->paginate(1);                             
+                         ->paginate(5);                             
                          /*
              $downloads = Download::where([
                          ['category_id', $request->category_id],

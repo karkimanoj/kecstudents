@@ -36,7 +36,8 @@ class UserController extends Controller
      */
     public function index()
     {   
-        $users=User::paginate(5);
+        $tenant = session('tenant');
+        $users=User::where('tenant_identifier', $tenant)->latest()->paginate(10);
         return view('manage.users.index', ['users'=>$users]);
     }
 
@@ -90,7 +91,7 @@ class UserController extends Controller
             $user->name=$request->name;
             $user->email=$request->email;
             $user->roll_no=$request->roll_no;
-            $user->tenant_identifer = $college;
+            $user->tenant_identifier = $college;
             $user->password=Hash::make($password);
             $user->api_token=bin2hex(openssl_random_pseudo_bytes(30));
 

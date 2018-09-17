@@ -3,7 +3,25 @@
 @section('content')
 <div class="container-fluid" style="background-color:#F8F9FA">
     <div class="row" id="top_header" >
-        
+        <div id="carousel-example-generic" class="carousel slide w-100" data-ride="carousel">
+              
+              <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox"  >
+             <h4><a href="https://kec.edu.np/notice">Notice</a></h4>
+
+                <marquee width="100%" scrollamount="7" onmouseover="this.stop();" onmouseout="this.start();"  >  
+                @foreach($notices as $notice)        
+                  <span class="ticker" style="font-weight: 2em; font-size: 1.2em"><a href="{{route('notice.show', $notice->id)}}">{{$notice->title}}</a>
+                  &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                @endforeach  
+                </marquee>
+            </div>
+            
+              <!-- Controls -->
+
+           </div>
+      </div>  
+
     </div>
 
     <div class="row" style="margin: 2% 1%;">
@@ -90,7 +108,7 @@
                    </div>
                
                </div>
-
+<!--
             </div> <div class="row " >
 
                <div class="col-md-6 m-t-20" >
@@ -114,7 +132,7 @@
                
                </div>
 
-            </div> 
+            </div> -->
 
           </div>
     </div>
@@ -129,25 +147,27 @@
      
       $('#project_div').click(function(){
 
-        window.open('{{ route('projects.home', ['category'=>'subject', 'cat_id'=>0]) }}', "_self");
+        window.open('{{ route('projects.home', ['category'=>'subject', 'cat_id'=>0]) }}' ,'_self');
         
       });
       $('#download_div').click(function(){
 
-        window.open('{{ route('downloads.home', 9) }}',"_self");
+        window.open("{{ route('downloads.home', 9) }}" ,'_self');
         
       });
   
        $('#event_div').click(function(){
 
-        window.open('{{ route('user.events.index') }}',"_self");
+        window.open("{{route('user.events.index')}}" ,'_self');
         
       });
         $('#forum_box').click(function(){
 
-        window.open('{{ route('posts.home') }} ,"_self"');
+        window.open("{{route('posts.home')}}",'_self');
         
       });
+      
+
       
     });
   </script>

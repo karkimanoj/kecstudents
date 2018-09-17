@@ -149,7 +149,7 @@
 			id={{$download->id}};
 			$.ajax({
 				type:'GET',
-				url:host+'/manage/downloads/publish' ,
+				url: '{{route('downloads.publish')}}',
 				data:{ 'id': id,
 						'status': status
 					 },

@@ -7,10 +7,12 @@ use App\Event1;
 use App\Event1Member;
 use App\Post;
 use App\Project;
+//use App\User;
 use App\Observers\Event1Observer;
 use App\Observers\PostObserver;
 use App\Observers\Event1MemberObserver;
 use App\Observers\ProjectObserver;
+//use App\Observers\UserObserver;
 
 class ObserverServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,7 @@ class ObserverServiceProvider extends ServiceProvider
         Post::observe(PostObserver::class);
         Event1Member::observe(Event1MemberObserver::class);
         Project::observe(ProjectObserver::class);
+        //User::observe(UserObserver::class);
     }
 
     /**

@@ -54,7 +54,7 @@
 			          </li>
 			         <li><a id="disable_btn" href="#">
 			         	@if($event->deleted_at)
-			                  activate
+			                 activate
 			               @else
 			               deactivate
 			               @endif
@@ -226,27 +226,28 @@
 
 		$('#disable_btn').click(function()
 		{
-			status=$(this).text().trim();
+			status1=$(this).text().trim();
 			
 			
 			id='{{$event->id}}';
-			alert(status)
+			alert(status1)
 			$.ajax({
 				type:'GET',
 				url:'{{route('events.softDelete')}}' ,
 				dataType : 'JSON',
 				data:{
 					'id': id,
-						'status': status
+						'status1': status1
 					 },
 				success: function(e){
-					console.log(e )
+					//console.log(e )
 					
-					if(status=='activate'){
-						 $('#disable_btn').text('deactivate');
-						 $('#deleted_at').text(e);
+					if(status1=='activate')
+					{
+						$('#disable_btn').text('deactivate');
+						$('#deleted_at').text(e);
 						 
-						}
+					}
 					else{
 						$('#disable_btn').text('activate');
 						$('#deleted_at').text(e);
@@ -254,7 +255,7 @@
 					}
 				},
 				error: function(e){
-					console.log(e);
+					console.log(e)
 				}	
 			});
 		});

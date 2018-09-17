@@ -10,7 +10,7 @@ class TagController extends Controller
 {
     public function index()
     {
-    	$tags=Tag::paginate(40);
+    	$tags=Tag::latest()->paginate(40);
     	return view('manage.tags.index', ['tags'=>$tags]);
     }
 

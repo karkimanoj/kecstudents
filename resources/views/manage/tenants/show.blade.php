@@ -189,11 +189,10 @@
 						    </p>
 						    
 						    <p>
-							<label> Superadministrators: 
-								@if($tenant->trashed() == false)
+						    @if($tenant->trashed() == false)
+							   <label> Superadministrators: </label>
 								<input type="button" name="add-user" class="btn btn-info" value="add new superadmin" data-toggle="modal" data-target="#add-user-modal">
-								@endif
-							</label>
+							@endif
 							@if($superadmins)		 
 						    	<table class="table table-bordered">
 								  <thead class="thead-dark">

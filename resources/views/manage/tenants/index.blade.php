@@ -106,7 +106,12 @@
 					</tbody>
 				</table>
 				<center>
-				{{ $tenants->links("pagination::bootstrap-4")}}
+				
+				<div class="row">
+	              <div class="col-auto offset-md-4">
+	                {{$tenants->links( "pagination::bootstrap-4") }}
+	              </div>
+	            </div>
 				</center>
 				</div>
 			</div>

@@ -1,3 +1,5 @@
+
+
 @extends('layouts.manage')
 
 @section('styles')
@@ -133,7 +135,7 @@
                                              <label class="m-t-20">project members ( max 6):</label> 
                                         </div>
                                          <div class="col-md-8">
-                                             <label class=" m-t-20 m-l-20"><span class="form-text text-muted">Hint: tick checkbox to add members</span> </label> 
+                                             <label class=" m-t-20 m-l-20"><span class="form-text text-muted">Hint: tick checkbox to add members Rollno format: 044BCT2071</span> </label> 
                                         </div>
                                          
                                     </div>
@@ -143,7 +145,7 @@
                                          <div class="col-md-3 offset-md-3" >
                                           
                                             
-                                             <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{old('member_rollno[0]')}}"  required maxlength="15" placeholder="roll no">
+                                             <input type="text" style="width: 85%" name="member_rollno[]"  class="form-control float-float-right" value="{{old('member_rollno[0]')}}"  required maxlength="10" placeholder="roll no">
 
                                             @if($errors->has('member_rollno[0]'))
                                                 <span class="help-block">
@@ -164,7 +166,7 @@
                                             <div class="col-md-3 offset-md-3" style="display: none;">
                                             
                                             
-                                             <input type="hidden" style="width: 85%" name="member_rollno[0]"  class="form-control float-float-right" value="{{Auth::user()->roll_no or old('member_rollno[0]') }}" required maxlength="15" placeholder="roll no">
+                                             <input type="hidden" style="width: 85%" name="member_rollno[0]"  class="form-control float-float-right" value="{{explode(strtoupper(session('tenant')), Auth::user()->roll_no)[1]}}" required maxlength="10" placeholder="roll no">
 
                                             @if($errors->has('member_rollno[0]'))
                                                 <span class="help-block">
@@ -194,7 +196,7 @@
                                         
                                         <input type="checkbox" class="float-left" style="width: 15%" >
                                         
-                                         <input type="text" style="width: 85%" name="member_rollno[$i]"  class="form-control float-float-right" value="{{old('member_rollno[$i]')}}" required maxlength="15" placeholder="roll no">
+                                         <input type="text" style="width: 85%" name="member_rollno[$i]"  class="form-control float-float-right" value="{{old('member_rollno[$i]')}}" required maxlength="10" placeholder="roll no">
 
                                         @if($errors->has('member_rollno[$i]'))
                                             <span class="help-block">

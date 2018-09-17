@@ -196,41 +196,16 @@
 	              	@endif
 
 	              	<div class="row">
-	              		<div class="col-md-11 offset-md-1 mt-4 pl-3 pt-3  bg-white" id="pop_project_div" style="font-size: 0.8rem">
+	              		<div class="col-md-11 offset-md-1 mt-4   bg-white"  style="font-size: 0.8rem">
 	              			<h5>popular posts:</h5>
-	              			<ul  class="nav nav-tabs list-group mt-3">
+	              			<ul  class="nav nav-tabs list-group mt-3 ">
+	              				@foreach($popular_posts as $pop_post)
 							  <li class="nav-item list-group-item">
-							    <a class="nav-link " href="#">
-							    kecstudents portal<br>
-							    <i class="fab fa-cuttlefish" ></i>c programming
+							    <a class="nav-link " href="{{route('user.posts.show', $pop_post->slug)}}">
+							   	{{($loop->index + 1).'. '.substr(strip_tags($pop_post->content ),0,60) }} <span style="color: blue"> {{ strlen(strip_tags($pop_post->content ))>60?'....?':'' }}<br>
 								</a>
 							  </li>
-							  <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">hamroshoe store
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>c programming</a>
-							  </li>
-							  <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">virtual kec
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>minor post(bct)</a>
-							  </li>
-							  <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">kathmandu valley soil analysis
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>c programming</a>
-							  </li>
-							   <li class="nav-item list-group-item">
-							    <a class="nav-link" href="#">kecstudents portal
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>minor post(bct)</a>
-							  </li>
-							   <li class="nav-item list-group-item">
-							    <a class="nav-link " href="#">kathmandu valley soil analysisl
-							    <br>
-							    <i class="fab fa-cuttlefish" ></i>soil mechanics</a>
-							  </li>
-
+							  @endforeach
 							</ul>
 	              		</div>
 	              	</div>

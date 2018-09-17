@@ -44,15 +44,62 @@
     @yield('scripts')
     <script type="text/javascript">
       $(document).ready(function (){
-
-        var userId = {{Auth::user()->id}};
-        //alert(userId);
+       
+        count = {{Auth::user()->unreadNotifications->count()}};
+        if(count)
+          $('#notify_dropdown .badge').show();
+        else
+          $('#notify_dropdown .badge').hide();
+         
+        userId = {{Auth::user()->id}};
 
         Echo.private('App.User.' + userId)
         .notification((notification) => {
-        console.log(notification.message); 
+          
+          str = notification.type;
+          notification_type = str.split("\\")[2];  
+          switch(notification_type) {
+              case 'DownloadNotification':
+                 notification_icon = '<i class="fas fa-download"></i>';
+                  break;
+              case 'Event1Notification':
+              case 'Event1MemberNotification':
+                  notification_icon = '<i class="fas fa-calendar-alt " ></i>';
+                  break;
+              case 'PostNotification':
+                  notification_icon = '<i class="fab fa-forumbee" ></i>';
+                  break;
+              case 'ProjectNotification':
+                  notification_icon = '<i class="fas fa-project-diagram " ></i>';
+                  break;        
+              default:
+                  notification_icon = '<i class="fas fa-comment"></i>';
+              }
+              
+            ind_notification = ['<li class="notification-box" >',
+                          ' <a href="'+notification.url+'">',
+                        '<div class="row"> <div class="col-lg col-sm col "> <div class="container ml-2">',
+                        notification.message,
+                        '</div><div class="container ml-2">',
+                        notification_icon,
+                        '<small class=" text-secondary"> just now </small>',
+                        ' </div> </div> </div></a></li>'
+                        ].join('');
+
+          $('.ul_notification_container').prepend(ind_notification);
+          
+
+          $('#notify_dropdown .badge').show();
+          if($('#notify_dropdown .badge').length)
+          {
+            $badge = $('#notify_dropdown .badge');
+            count=parseInt($badge.text());
+          
+            count = count + 1;
+            $badge.text(count);
+          } 
     });
-      });
+  });
     </script>
 </body>
 </html>

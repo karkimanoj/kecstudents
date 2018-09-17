@@ -1,7 +1,4 @@
 
-
-
-
 @extends('layouts.app')
 
 @section('content')
@@ -97,17 +94,14 @@
 												</div>
 											</div>
 										</div>	
-										
+									</div>	
 										<!--
 											<div class="container v_align_inner_div" style="border: 1px solid black;">
 											</div>
 										<div class="container" style="height:50%; border: 1px solid black;">
 											
 										</div>-->
-										
 									
-											
-									</div>
 								    <div class="col-md-9 card "  style="border: 1px solid black">
 									
 								    
@@ -243,9 +237,10 @@
 							</div>
 					<div class="card w-100 mt-3 borderless" >
 					  <div class="card-body">					 					    
-						  <a href="{{route('user.posts.create')}}" class=" btn btn-outline-primary btn-block ">Upload New File/s</a>
-			              <a href="#" class=" btn btn-outline-primary btn-block ">Create New event</a>
-			              <a href="#" class=" btn btn-outline-primary btn-block ">Create New post</a>
+						  <a href="{{route('user.projects.create')}}" class=" btn btn-outline-primary btn-block ">upload new project</a>
+                  <a href="{{route('user.downloads.create')}}" class=" btn btn-outline-primary btn-block ">upload new materials</a>
+                  
+                   <a href="{{route('user.posts.create')}}" class=" btn btn-outline-primary btn-block ">create new post</a>
 					  </div>
 					</div>
 			</div>

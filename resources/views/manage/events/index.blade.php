@@ -100,7 +100,12 @@
 					</tbody>
 				</table>
 				<center>
-				{{ $events->links("pagination::bootstrap-4")}}
+				
+				<div class="row">
+		          <div class="col-auto offset-md-4">
+		            {{$events->links( "pagination::bootstrap-4") }}
+		          </div>
+		        </div>
 				</center>
 				</div>
 			</div>
